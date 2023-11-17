@@ -4,7 +4,7 @@ import com.gregori.domain.member.Member;
 
 public interface MemberService {
     Long signup(Member member);
-    Member updateMember(Long memberId, Member member);
-    String deleteMember(Long memberId);
+    Long updateMember(Long memberId, Member member);
+    Long deleteMember(Long memberId);
     Member findMember(Long memberId);
 }

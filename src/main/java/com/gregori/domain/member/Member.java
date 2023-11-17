@@ -1,26 +1,18 @@
 package com.gregori.domain.member;
 
 import com.gregori.domain.AbstractEntity;
-import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 
 @Getter
-@Entity
 @NoArgsConstructor
-@Table(name = "member")
 public class Member extends AbstractEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String email;
     private String password;
-
-    @Enumerated(EnumType.STRING)
     private Status status;
 
     @Getter

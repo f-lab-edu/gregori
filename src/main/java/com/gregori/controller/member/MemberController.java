@@ -2,44 +2,34 @@ package com.gregori.controller.member;
 
 import com.gregori.domain.member.Member;
 import com.gregori.service.member.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
 
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
     @PostMapping("/signup")
     public Long signup(Member initMember) {
-        Long memberId = memberService.signup(initMember);
-
-        return memberId;
+        return memberService.signup(initMember);
     }
 
     @PostMapping("/{memberId}/update")
     public Long updatePost(Long memberId, Member updateMember) {
-        Member member = memberService.updateMember(memberId, updateMember);
-
-        return member.getId();
+        return memberService.updateMember(memberId, updateMember);
     }
 
-    @DeleteMapping("/{memberId}/delete")
+    @DeleteMapping("/{memberId}")
     public Long deleteMember(Long memberId) {
-        memberService.deleteMember(memberId);
-
-        return memberId;
+        return memberService.deleteMember(memberId);
     }
 
     @GetMapping("{memberId}")
     public Member member(Long memberId) {
-        Member member = memberService.findMember(memberId);
-
-        return member;
+        return memberService.findMember(memberId);
     }
 }

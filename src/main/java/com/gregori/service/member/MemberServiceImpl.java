@@ -13,25 +13,19 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Long signup(Member initMember) {
-        Member member = memberStore.save(initMember);
-
-        return member.getId();
+        return memberStore.save(initMember);
     }
 
     @Override
     @Transactional
-    public Member updateMember(Long memberId, Member updateMember) {
-        Member member = memberStore.update(memberId, updateMember);
-
-        return member;
+    public Long updateMember(Long memberId, Member updateMember) {
+        return memberStore.update(memberId, updateMember);
     }
 
     @Override
     @Transactional
-    public String deleteMember(Long memberId) {
-        memberStore.deactivate(memberId);
-
-        return "회원 탈퇴가 완료되었습니다.";
+    public Long deleteMember(Long memberId) {
+        return memberStore.deactivate(memberId);
     }
 
     @Override
