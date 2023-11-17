@@ -15,14 +15,14 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/create")
-    public String registerMember(Member initMember) {
-        Member member = memberService.registerMember(initMember);
+    @PostMapping("/signup")
+    public Long signup(Member initMember) {
+        Long memberId = memberService.signup(initMember);
 
-        return member.getName();
+        return memberId;
     }
 
-    @PostMapping("/{postId}/update")
+    @PostMapping("/{memberId}/update")
     public Long updatePost(Long memberId, Member updateMember) {
         Member member = memberService.updateMember(memberId, updateMember);
 
@@ -38,7 +38,7 @@ public class MemberController {
 
     @GetMapping("{memberId}")
     public Member member(Long memberId) {
-        Member member = memberService.getMemberById(memberId);
+        Member member = memberService.findMember(memberId);
 
         return member;
     }

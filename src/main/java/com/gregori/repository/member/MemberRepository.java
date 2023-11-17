@@ -2,9 +2,9 @@ package com.gregori.repository.member;
 
 import com.gregori.domain.member.Member;
 
+import java.util.Optional;
+
 public interface MemberRepository {
-    Member create(Member member);
-    Member update(Long memberId, Member member);
-    String delete(Long memberId);
-    Member getMemberById(Long memberId);
+    Member save(Member member);
+    Optional<Member> findById(Long memberId);
 }
