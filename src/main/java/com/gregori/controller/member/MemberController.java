@@ -30,7 +30,6 @@ public class MemberController {
 
     @GetMapping("{memberId}")
     public Member findMemberById(Long memberId) {
-        return memberService.findMemberById(1L);
-        // return memberService.findMemberById(memberId);
+        return memberService.findMemberById(memberId);
     }
 }
