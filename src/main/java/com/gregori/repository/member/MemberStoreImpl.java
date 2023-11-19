@@ -14,24 +14,33 @@ public class MemberStoreImpl implements MemberStore {
 
     @Override
     public Long save(Member member) {
-        if (!StringUtils.hasText(member.getName())) throw new RuntimeException("Empty name");
-        if (!StringUtils.hasText(member.getEmail())) throw new RuntimeException("Empty email");
-        if (!StringUtils.hasText(member.getPassword())) throw new RuntimeException("Empty password");
+        if (!StringUtils.hasText(member.getName())) {
+            throw new RuntimeException("Empty name");
+        }
+        if (!StringUtils.hasText(member.getEmail())) {
+            throw new RuntimeException("Empty email");
+        }
+        if (!StringUtils.hasText(member.getPassword())) {
+            throw new RuntimeException("Empty password");
+        }
 
         return memberMapper.insert(member);
     }
 
     @Override
     public Long update(Long memberId, Member member) {
-        if (memberId == null) throw new RuntimeException("Empty id");
-        if (!StringUtils.hasText(member.getName())) throw new RuntimeException("Empty name");
-        if (!StringUtils.hasText(member.getPassword())) throw new RuntimeException("Empty password");
+        if (memberId == null) {
+            throw new RuntimeException("Empty id");
+        }
+        if (!StringUtils.hasText(member.getName())) {
+            throw new RuntimeException("Empty name");
+        }
+        if (!StringUtils.hasText(member.getPassword())) {
+            throw new RuntimeException("Empty password");
+        }
 
         Member newMember = findById(memberId);
         newMember.updateMemberInfo(member.getName(), member.getPassword());
-
-        System.out.println("수정: " + member.getStatus());
-        System.out.println("기존: " + newMember.getStatus());
 
         return memberMapper.update(newMember);
     }
@@ -46,6 +55,7 @@ public class MemberStoreImpl implements MemberStore {
 
     @Override
     public Member findById(Long memberId) {
-        return memberMapper.findById(memberId);
+        return memberMapper.findById(memberId)
+            .orElseThrow(() -> new RuntimeException("Member entity not found"));
     }
 }

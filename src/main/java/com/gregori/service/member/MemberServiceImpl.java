@@ -2,6 +2,7 @@ package com.gregori.service.member;
 
 import com.gregori.domain.member.Member;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public Member findMember(Long memberId) {
+    public Member findMemberById(Long memberId) {
         return memberStore.findById(memberId);
     }
 }

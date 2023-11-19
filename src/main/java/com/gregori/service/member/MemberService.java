@@ -6,5 +6,5 @@ public interface MemberService {
     Long signup(Member member);
     Long updateMember(Long memberId, Member member);
     Long deleteMember(Long memberId);
-    Member findMember(Long memberId);
+    Member findMemberById(Long memberId);
 }

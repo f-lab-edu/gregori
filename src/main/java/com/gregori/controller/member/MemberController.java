@@ -18,7 +18,7 @@ public class MemberController {
         return memberService.signup(initMember);
     }
 
-    @PostMapping("/{memberId}/update")
+    @PostMapping("/{memberId}")
     public Long updatePost(Long memberId, Member updateMember) {
         return memberService.updateMember(memberId, updateMember);
     }
@@ -29,7 +29,8 @@ public class MemberController {
     }
 
     @GetMapping("{memberId}")
-    public Member member(Long memberId) {
-        return memberService.findMember(memberId);
+    public Member findMemberById(Long memberId) {
+        return memberService.findMemberById(1L);
+        // return memberService.findMemberById(memberId);
     }
 }
