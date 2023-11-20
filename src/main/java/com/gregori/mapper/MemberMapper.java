@@ -1,4 +1,4 @@
-package com.gregori.repository.mapper;
+package com.gregori.mapper;
 
 import java.util.Optional;
 
