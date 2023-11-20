@@ -17,19 +17,4 @@ public class MemberController {
     public Long signup(Member initMember) {
         return memberService.signup(initMember);
     }
-
-    @PostMapping("/{memberId}")
-    public Long updateMember(Long memberId, Member updateMember) {
-        return memberService.updateMember(memberId, updateMember);
-    }
-
-    @DeleteMapping("/{memberId}")
-    public Long deleteMember(Long memberId) {
-        return memberService.deleteMember(memberId);
-    }
-
-    @GetMapping("{memberId}")
-    public Member findMemberById(Long memberId) {
-        return memberService.findMemberById(memberId);
-    }
 }
