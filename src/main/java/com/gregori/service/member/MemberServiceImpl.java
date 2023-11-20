@@ -1,6 +1,6 @@
 package com.gregori.service.member;
 
-import com.gregori.controller.member.MemberSignUpDto;
+import com.gregori.dto.member.MemberSignUpDto;
 import com.gregori.domain.member.Member;
 import com.gregori.mapper.MemberMapper;
 
