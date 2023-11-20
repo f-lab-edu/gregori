@@ -19,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping("/{memberId}")
-    public Long updatePost(Long memberId, Member updateMember) {
+    public Long updateMember(Long memberId, Member updateMember) {
         return memberService.updateMember(memberId, updateMember);
     }
 
