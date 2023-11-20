@@ -1,5 +1,6 @@
 package com.gregori.service.member;
 
+import com.gregori.controller.member.MemberSignUpDto;
 import com.gregori.domain.member.Member;
 import com.gregori.mapper.MemberMapper;
 
@@ -16,18 +17,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long signup(Member member) {
-        if (!StringUtils.hasText(member.getName())) {
+    public Long signup(MemberSignUpDto memberSignUpDto) {
+        if (!StringUtils.hasText(memberSignUpDto.getName())) {
             throw new RuntimeException("Empty name");
         }
-        if (!StringUtils.hasText(member.getEmail())) {
+        if (!StringUtils.hasText(memberSignUpDto.getEmail())) {
             throw new RuntimeException("Empty email");
         }
-        if (!StringUtils.hasText(member.getPassword())) {
+        if (!StringUtils.hasText(memberSignUpDto.getPassword())) {
             throw new RuntimeException("Empty password");
         }
 
-        return memberMapper.insert(member);
+        memberMapper.findByEmail(memberSignUpDto.getEmail())
+            .ifPresent(m -> {
+                throw new RuntimeException("The email already exists.");
+            });
+
+        return memberMapper.insert(Member.builder()
+            .name(memberSignUpDto.getName())
+            .email(memberSignUpDto.getEmail())
+            .password(memberSignUpDto.getPassword())
+            .build());
     }
 
     @Override
@@ -62,6 +72,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public Member findMemberById(Long memberId) {
         return memberMapper.findById(memberId)
-            .orElseThrow(() -> new RuntimeException("Member entity not found"));
+            .orElseThrow(() -> new RuntimeException("Member entity not found by id"));
+    }
+
+    @Override
+    public Member findMemberByEmail(String memberEmail) {
+        return memberMapper.findByEmail(memberEmail)
+            .orElseThrow(() -> new RuntimeException("Member entity not found by email"));
     }
 }

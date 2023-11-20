@@ -1,6 +1,8 @@
 package com.gregori.domain.member;
 
 import com.gregori.domain.AbstractEntity;
+
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ public class Member extends AbstractEntity {
         private final String description;
     }
 
+    @Builder
     public Member(String name, String email, String password) {
         if (!StringUtils.hasText(name)) {
             throw new RuntimeException("Empty name");

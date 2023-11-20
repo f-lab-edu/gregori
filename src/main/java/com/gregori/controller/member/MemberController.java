@@ -14,8 +14,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/signup")
-    public Long signup(Member initMember) {
-        return memberService.signup(initMember);
+    public Long signup(MemberSignUpDto memberSignUpDto) {
+        return memberService.signup(memberSignUpDto);
     }
 
     @PostMapping("/{memberId}")
