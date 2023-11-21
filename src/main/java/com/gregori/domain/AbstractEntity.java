@@ -2,12 +2,13 @@ package com.gregori.domain;
 
 import lombok.Getter;
 
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 public class AbstractEntity {
+    private ZonedDateTime createdAt;
 
-    private final ZonedDateTime createdAt = ZonedDateTime.now();
-
-    private final ZonedDateTime updatedAt = ZonedDateTime.now();
+    private ZonedDateTime updatedAt;
 }
