@@ -7,3 +7,14 @@ CREATE TABLE members (
     created_at DATETIME              NOT NULL             COMMENT '회원 가입 날짜',
     updated_at DATETIME              NOT NULL             COMMENT '회원 수정 날짜'
 );
+
+
+CREATE TABLE items (
+    id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '상품 인덱스',
+    name       VARCHAR(255)          NOT NULL             COMMENT '상품 이름',
+    price      BIGINT                NOT NULL             COMMENT '상품 가격',
+    inventory  BIGINT                NOT NULL             COMMENT '상품 재고',
+    status     VARCHAR(255)          NOT NULL             COMMENT '상품 상태: PRE_SALE-준비중, ON_SALE-판매중, END_OF_SALE-판매종료',
+    created_at DATETIME              NOT NULL             COMMENT '상품 가입 날짜',
+    updated_at DATETIME              NOT NULL             COMMENT '상품 수정 날짜'
+);
