@@ -10,4 +10,5 @@ public interface MemberMapper {
     Long insert(Member member);
     Long update(Member member);
     Optional<Member> findById(Long memberId);
+    Optional<Member> findByEmail(String email);
 }

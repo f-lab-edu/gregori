@@ -1,5 +1,6 @@
 package com.gregori.service.member;
 
+import com.gregori.dto.member.MemberSignUpDto;
 import com.gregori.domain.member.Member;
 import com.gregori.dto.member.MemberResponseDto;
 import com.gregori.dto.member.MemberUpdateDto;
@@ -18,18 +19,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long signup(Member member) {
-        if (!StringUtils.hasText(member.getName())) {
-            throw new RuntimeException("Empty name");
-        }
-        if (!StringUtils.hasText(member.getEmail())) {
-            throw new RuntimeException("Empty email");
-        }
-        if (!StringUtils.hasText(member.getPassword())) {
-            throw new RuntimeException("Empty password");
-        }
+    public Long signup(MemberSignUpDto memberSignUpDto) {
+        memberMapper.findByEmail(memberSignUpDto.getEmail())
+            .ifPresent(m -> {
+                throw new RuntimeException("The email already exists.");
+            });
 
-        return memberMapper.insert(member);
+        return memberMapper.insert(Member.builder()
+            .name(memberSignUpDto.getName())
+            .email(memberSignUpDto.getEmail())
+            .password(memberSignUpDto.getPassword())
+            .build());
     }
 
     @Override
@@ -55,8 +55,23 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberResponseDto findMemberById(Long memberId) {
-         Member member = memberMapper.findById(memberId)
-            .orElseThrow(() -> new RuntimeException("Member entity not found"));
+        Member member = memberMapper.findById(memberId)
+            .orElseThrow(() -> new RuntimeException("Member entity not found by id"));
+
+        return MemberResponseDto.builder()
+            .id(member.getId())
+            .name(member.getName())
+            .email(member.getEmail())
+            .status(member.getStatus().toString())
+            .createdAt(member.getCreatedAt())
+            .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberResponseDto findMemberByEmail(String memberEmail) {
+        Member member = memberMapper.findByEmail(memberEmail)
+            .orElseThrow(() -> new RuntimeException("Member entity not found by email"));
 
         return MemberResponseDto.builder()
             .id(member.getId())

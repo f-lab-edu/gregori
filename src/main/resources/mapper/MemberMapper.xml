@@ -21,4 +21,10 @@
         FROM members
         WHERE id = #{id}
     </select>
+
+    <select id="findByEmail" resultType="com.gregori.domain.member.Member" parameterType="String">
+        SELECT id, name, email, password, status
+        FROM members
+        WHERE email = #{email}
+    </select>
 </mapper>
