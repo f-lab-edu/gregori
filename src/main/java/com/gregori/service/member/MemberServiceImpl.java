@@ -1,7 +1,8 @@
 package com.gregori.service.member;
 
-import com.gregori.dto.member.MemberSignUpDto;
+import com.gregori.dto.member.MemberRegisterDto;
 import com.gregori.domain.member.Member;
+import com.gregori.dto.member.MemberSignInDto;
 import com.gregori.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -17,27 +18,44 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long signup(MemberSignUpDto memberSignUpDto) {
-        if (!StringUtils.hasText(memberSignUpDto.getName())) {
+    public Long register(MemberRegisterDto memberRegisterDto) {
+        if (!StringUtils.hasText(memberRegisterDto.getName())) {
             throw new RuntimeException("Empty name");
         }
-        if (!StringUtils.hasText(memberSignUpDto.getEmail())) {
+        if (!StringUtils.hasText(memberRegisterDto.getEmail())) {
             throw new RuntimeException("Empty email");
         }
-        if (!StringUtils.hasText(memberSignUpDto.getPassword())) {
+        if (!StringUtils.hasText(memberRegisterDto.getPassword())) {
             throw new RuntimeException("Empty password");
         }
 
-        memberMapper.findByEmail(memberSignUpDto.getEmail())
+        memberMapper.findByEmail(memberRegisterDto.getEmail())
             .ifPresent(m -> {
                 throw new RuntimeException("The email already exists.");
             });
 
         return memberMapper.insert(Member.builder()
-            .name(memberSignUpDto.getName())
-            .email(memberSignUpDto.getEmail())
-            .password(memberSignUpDto.getPassword())
+            .name(memberRegisterDto.getName())
+            .email(memberRegisterDto.getEmail())
+            .password(memberRegisterDto.getPassword())
             .build());
+    }
+
+    @Override
+    @Transactional
+    public Long signIn(MemberSignInDto memberSignInDto) {
+        Member member = memberMapper.findByEmailAndPassword(memberSignInDto.getEmail(), memberSignInDto.getPassword())
+            .orElseThrow(() -> new RuntimeException("Member entity not found by email and password"));
+
+        // 로그인 코드 작성
+
+        return null;
+    }
+
+    @Override
+    public Long signOut(Long memberId) {
+        // 로그아웃 코드 작성
+        return null;
     }
 
     @Override

@@ -13,4 +13,5 @@ public interface MemberMapper {
     Long update(Member member);
     Optional<Member> findById(Long memberId);
     Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmailAndPassword(String email, String password);
 }

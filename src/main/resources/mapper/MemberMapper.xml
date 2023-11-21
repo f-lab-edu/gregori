@@ -10,6 +10,12 @@
         VALUES (#{name}, #{email}, #{password}, #{status}, #{createdAt}, #{updatedAt})
     </insert>
 
+    <select id="findByEmailAndPassword" resultType="com.gregori.domain.member.Member" parameterType="com.gregori.domain.member.Member">
+        SELECT id, name, email, password, status
+        FROM members
+        WHERE email = #{email} AND password = #{password}
+    </select>
+
     <update id="update">
         UPDATE members
         SET name = #{name}, password = #{password}, status = #{status}
