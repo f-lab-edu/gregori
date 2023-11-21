@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gregori.mapper.MemberMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.domain.member.Member">
+        INSERT INTO members (name, email, password, status, created_at, updated_at)
+        VALUES (#{name}, #{email}, #{password}, #{status}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <update id="update">
+        UPDATE members
+        SET name = #{name}, password = #{password}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findById" resultType="com.gregori.domain.member.Member" parameterType="Long">
+        SELECT id, name, email, password, status
+        FROM members
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByEmail" resultType="com.gregori.domain.member.Member" parameterType="String">
+        SELECT id, name, email, password, status
+        FROM members
+        WHERE email = #{email}
+    </select>
+</mapper>
