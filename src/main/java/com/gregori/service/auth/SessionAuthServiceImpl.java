@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceSessionImpl implements AuthService {
+public class SessionAuthServiceImpl implements AuthService {
 	private final MemberMapper memberMapper;
 	private final SessionMapper sessionMapper;
 

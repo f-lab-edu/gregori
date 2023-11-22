@@ -6,8 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import com.gregori.mapper.MemberMapper;
 import com.gregori.mapper.SessionMapper;
 import com.gregori.service.auth.AuthService;
-import com.gregori.service.auth.AuthServiceCookieImpl;
-import com.gregori.service.auth.AuthServiceSessionImpl;
+import com.gregori.service.auth.SessionAuthServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +18,6 @@ public class Authconfig {
 
 	@Bean
 	public AuthService authService() {
-		return new AuthServiceSessionImpl(memberMapper, sessionMapper);
+		return new SessionAuthServiceImpl(memberMapper, sessionMapper);
 	}
 }
