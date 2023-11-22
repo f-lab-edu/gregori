@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.gregori.dto.auth.AuthSignInDto;
 import com.gregori.service.auth.AuthService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -23,12 +25,13 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signin")
-	public ResponseEntity<String> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
-		return authService.signIn(authSignInDto);
+	public ResponseEntity<String> signIn(@RequestBody @Valid AuthSignInDto authSignInDto,
+		HttpServletRequest request, HttpServletResponse response) {
+		return authService.signIn(authSignInDto, request, response);
 	}
 
-	@GetMapping("signout/{memberId}")
-	public ResponseEntity<String> signOut(@RequestParam Long memberId) {
-		return authService.signOut(memberId);
+	@PostMapping("signout")
+	public ResponseEntity<String> signOut(@RequestBody HttpServletRequest request, HttpServletResponse response) {
+		return authService.signOut(request, response);
 	}
 }

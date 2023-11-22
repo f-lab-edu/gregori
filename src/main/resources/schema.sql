@@ -7,3 +7,8 @@ CREATE TABLE members (
     created_at DATETIME              NOT NULL             COMMENT '회원 가입 날짜',
     updated_at DATETIME              NOT NULL             COMMENT '회원 수정 날짜'
 );
+
+CREATE TABLE sessions (
+    id         VARCHAR(255)          NOT NULL PRIMARY KEY COMMENT '세션 아이디',
+    member_id  BIGINT                NOT NULL             COMMENT '회원 인덱스'
+);
