@@ -2,7 +2,6 @@ package com.gregori.service.member;
 
 import com.gregori.dto.member.MemberRegisterDto;
 import com.gregori.domain.member.Member;
-import com.gregori.dto.member.MemberSignInDto;
 import com.gregori.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -39,23 +38,6 @@ public class MemberServiceImpl implements MemberService {
             .email(memberRegisterDto.getEmail())
             .password(memberRegisterDto.getPassword())
             .build());
-    }
-
-    @Override
-    @Transactional
-    public Long signIn(MemberSignInDto memberSignInDto) {
-        Member member = memberMapper.findByEmailAndPassword(memberSignInDto.getEmail(), memberSignInDto.getPassword())
-            .orElseThrow(() -> new RuntimeException("Member entity not found by email and password"));
-
-        // 로그인 코드 작성
-
-        return null;
-    }
-
-    @Override
-    public Long signOut(Long memberId) {
-        // 로그아웃 코드 작성
-        return null;
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.gregori.dto.member;
+package com.gregori.dto.auth;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 @Getter
-public class MemberSignInDto {
+public class AuthSignInDto {
 	/**
 	 * Description: 8~15자 비밀번호(대소문자 2개 이상, 숫자 1개 이상, 특수 문자 1개 이상, 공백 비허용)
 	 * Matches: &test*81, te$tPa55word, testpass(7
@@ -22,7 +22,7 @@ public class MemberSignInDto {
 	@Pattern(regexp = REGEX_PASSWORD, message = "password 형식이 일치해야 합니다.")
 	private String password;
 
-	public MemberSignInDto(String email, String password) {
+	public AuthSignInDto(String email, String password) {
 		this.email = email;
 		this.password = password;
 	}
