@@ -6,8 +6,8 @@
 <mapper namespace="com.gregori.mapper.MemberMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.domain.member.Member">
-        INSERT INTO members (name, email, password, status, created_at, updated_at)
-        VALUES (#{name}, #{email}, #{password}, #{status}, #{createdAt}, #{updatedAt})
+        INSERT INTO members (name, email, password, status)
+        VALUES (#{name}, #{email}, #{password}, #{status})
     </insert>
 
     <select id="findByEmailAndPassword" resultType="com.gregori.domain.member.Member" parameterType="com.gregori.domain.member.Member">
@@ -23,7 +23,7 @@
     </update>
 
     <select id="findById" resultType="com.gregori.domain.member.Member" parameterType="Long">
-        SELECT id, name, email, password, status
+        SELECT id, name, email, password, status, created_at, updated_at
         FROM members
         WHERE id = #{id}
     </select>

@@ -25,19 +25,4 @@ public class MemberController {
 
         return ResponseEntity.status(HttpStatus.OK).body("회원 가입에 성공했습니다.");
     }
-
-    @PostMapping("/{memberId}")
-    public Long updateMember(Long memberId, Member updateMember) {
-        return memberService.updateMember(memberId, updateMember);
-    }
-
-    @DeleteMapping("/{memberId}")
-    public Long deleteMember(Long memberId) {
-        return memberService.deleteMember(memberId);
-    }
-
-    @GetMapping("{memberId}")
-    public Member findMemberById(Long memberId) {
-        return memberService.findMemberById(memberId);
-    }
 }

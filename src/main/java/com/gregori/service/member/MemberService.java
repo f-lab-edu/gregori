@@ -1,12 +1,13 @@
 package com.gregori.service.member;
 
 import com.gregori.dto.member.MemberRegisterDto;
-import com.gregori.domain.member.Member;
+import com.gregori.dto.member.MemberResponseDto;
+import com.gregori.dto.member.MemberUpdateDto;
 
 public interface MemberService {
     Long register(MemberRegisterDto memberRegisterDto);
-    Long updateMember(Long memberId, Member member);
-    Long deleteMember(Long memberId);
-    Member findMemberById(Long memberId);
-    Member findMemberByEmail(String memberEmail);
+    Long updateMember(MemberUpdateDto mypageUpdateDto);
+    Long deactivateMember(Long memberId);
+    MemberResponseDto findMemberById(Long memberId);
+    MemberResponseDto findMemberByEmail(String memberEmail);
 }

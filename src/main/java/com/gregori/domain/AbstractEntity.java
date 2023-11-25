@@ -6,8 +6,7 @@ import java.time.ZonedDateTime;
 
 @Getter
 public class AbstractEntity {
+    private ZonedDateTime createdAt;
 
-    private final ZonedDateTime createdAt = ZonedDateTime.now();
-
-    private final ZonedDateTime updatedAt = ZonedDateTime.now();
+    private ZonedDateTime updatedAt;
 }
