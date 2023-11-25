@@ -25,11 +25,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new RuntimeException("The email already exists.");
             });
 
-        return memberMapper.insert(Member.builder()
-            .name(memberSignUpDto.getName())
-            .email(memberSignUpDto.getEmail())
-            .password(memberSignUpDto.getPassword())
-            .build());
+        return memberMapper.insert(new MemberSignUpDto().toEntity(memberSignUpDto));
     }
 
     @Override
@@ -58,13 +54,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberMapper.findById(memberId)
             .orElseThrow(() -> new RuntimeException("Member entity not found by id"));
 
-        return MemberResponseDto.builder()
-            .id(member.getId())
-            .name(member.getName())
-            .email(member.getEmail())
-            .status(member.getStatus().toString())
-            .createdAt(member.getCreatedAt())
-            .build();
+        return new MemberResponseDto().toEntity(member);
     }
 
     @Override
@@ -73,12 +63,6 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberMapper.findByEmail(memberEmail)
             .orElseThrow(() -> new RuntimeException("Member entity not found by email"));
 
-        return MemberResponseDto.builder()
-            .id(member.getId())
-            .name(member.getName())
-            .email(member.getEmail())
-            .status(member.getStatus().toString())
-            .createdAt(member.getCreatedAt())
-            .build();
+        return new MemberResponseDto().toEntity(member);
     }
 }

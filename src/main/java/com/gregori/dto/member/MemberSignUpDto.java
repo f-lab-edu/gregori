@@ -1,14 +1,18 @@
 package com.gregori.dto.member;
 
-import static com.gregori.dto.RegexPatterns.*;
+import static com.gregori.common.RegexPatterns.*;
+
+import com.gregori.domain.member.Member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-// @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class MemberSignUpDto {
 
 	@NotEmpty(message = "name은 필수값입니다.")
@@ -27,5 +31,13 @@ public class MemberSignUpDto {
 		this.name = name;
 		this.email = email;
 		this.password = password;
+	}
+
+	public Member toEntity(MemberSignUpDto memberSignUpDto) {
+		return Member.builder()
+			.name(memberSignUpDto.getName())
+			.email(memberSignUpDto.getEmail())
+			.password(memberSignUpDto.getPassword())
+			.build();
 	}
 }

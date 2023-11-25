@@ -1,7 +1,7 @@
 package com.gregori.dto.member;
 
 
-import static com.gregori.dto.RegexPatterns.*;
+import static com.gregori.common.RegexPatterns.*;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
