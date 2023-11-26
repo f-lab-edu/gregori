@@ -1,5 +1,7 @@
 package com.gregori.service.member;
 
+import com.gregori.common.exception.DuplicateException;
+import com.gregori.common.exception.NotFoundException;
 import com.gregori.dto.member.MemberRegisterDto;
 import com.gregori.domain.member.Member;
 import com.gregori.dto.member.MemberResponseDto;
@@ -21,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
     public Long register(MemberRegisterDto memberRegisterDto) {
         memberMapper.findByEmail(memberRegisterDto.getEmail())
             .ifPresent(m -> {
-                throw new RuntimeException("The email already exists.");
+                throw new DuplicateException();
             });
 
         return memberMapper.insert(new MemberRegisterDto().toEntity(memberRegisterDto));
@@ -31,7 +33,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long updateMember(MemberUpdateDto mypageUpdateDto) {
         Member member = memberMapper.findById(mypageUpdateDto.getId())
-            .orElseThrow(() -> new RuntimeException("Member entity not found"));
+            .orElseThrow(NotFoundException::new);
         member.updateMemberInfo(mypageUpdateDto.getName(), mypageUpdateDto.getPassword());
 
         return memberMapper.update(member);
@@ -41,7 +43,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Long deactivateMember(Long memberId) {
         Member member = memberMapper.findById(memberId)
-            .orElseThrow(() -> new RuntimeException("Member entity not found"));
+            .orElseThrow(NotFoundException::new);
         member.deactivate();
 
         return memberMapper.update(member);
@@ -51,7 +53,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto findMemberById(Long memberId) {
         Member member = memberMapper.findById(memberId)
-            .orElseThrow(() -> new RuntimeException("Member entity not found by id"));
+            .orElseThrow(NotFoundException::new);
 
         return new MemberResponseDto().toEntity(member);
     }
@@ -60,7 +62,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto findMemberByEmail(String memberEmail) {
         Member member = memberMapper.findByEmail(memberEmail)
-            .orElseThrow(() -> new RuntimeException("Member entity not found by email"));
+            .orElseThrow(NotFoundException::new);
 
         return new MemberResponseDto().toEntity(member);
     }

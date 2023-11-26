@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gregori.common.exception.NotFoundException;
 import com.gregori.domain.auth.Session;
 import com.gregori.domain.member.Member;
 import com.gregori.dto.auth.AuthSignInDto;
@@ -32,7 +33,7 @@ public class SessionAuthServiceImpl implements AuthService {
 	public ResponseEntity<String> signIn(AuthSignInDto memberSignInDto,
 		HttpServletRequest request, HttpServletResponse response) {
 		Member member = memberMapper.findByEmailAndPassword(memberSignInDto.getEmail(), memberSignInDto.getPassword())
-			.orElseThrow(() -> new RuntimeException("Member entity not found by email and password"));
+			.orElseThrow(NotFoundException::new);
 
 		String sessionId = UUID.randomUUID().toString();
 		sessionMapper.insert(Session.builder()

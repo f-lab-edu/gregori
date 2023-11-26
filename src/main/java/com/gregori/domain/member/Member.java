@@ -26,16 +26,6 @@ public class Member extends AbstractEntity {
 
     @Builder
     public Member(String name, String email, String password) {
-        if (!StringUtils.hasText(name)) {
-            throw new RuntimeException("Empty name");
-        }
-        if (!StringUtils.hasText(email)) {
-            throw new RuntimeException("Empty email");
-        }
-        if (!StringUtils.hasText(password)) {
-            throw new RuntimeException("Empty password");
-        }
-
         this.name = name;
         this.email = email;
         this.password = password;
@@ -43,13 +33,6 @@ public class Member extends AbstractEntity {
     }
 
     public void updateMemberInfo(String name, String password) {
-        if (!StringUtils.hasText(name)) {
-            throw new RuntimeException("Empty name");
-        }
-        if (!StringUtils.hasText(password)) {
-            throw new RuntimeException("Empty password");
-        }
-
         this.name = name;
         this.password = password;
     }
