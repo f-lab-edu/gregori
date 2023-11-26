@@ -9,5 +9,4 @@ public interface MemberService {
     Long updateMember(MemberUpdateDto mypageUpdateDto);
     Long deactivateMember(Long memberId);
     MemberResponseDto findMemberById(Long memberId);
-    MemberResponseDto findMemberByEmail(String memberEmail);
 }

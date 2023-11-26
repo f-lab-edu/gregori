@@ -10,6 +10,7 @@ import com.gregori.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberMapper memberMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -26,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
                 throw new DuplicateException();
             });
 
-        return memberMapper.insert(new MemberRegisterDto().toEntity(memberRegisterDto));
+        return memberMapper.insert(memberRegisterDto.toEntity(passwordEncoder));
     }
 
     @Override
@@ -53,15 +55,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberResponseDto findMemberById(Long memberId) {
         Member member = memberMapper.findById(memberId)
-            .orElseThrow(NotFoundException::new);
-
-        return new MemberResponseDto().toEntity(member);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public MemberResponseDto findMemberByEmail(String memberEmail) {
-        Member member = memberMapper.findByEmail(memberEmail)
             .orElseThrow(NotFoundException::new);
 
         return new MemberResponseDto().toEntity(member);

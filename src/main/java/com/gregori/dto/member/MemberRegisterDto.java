@@ -2,16 +2,20 @@ package com.gregori.dto.member;
 
 import static com.gregori.common.RegexPatterns.*;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.gregori.domain.member.Member;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class MemberRegisterDto {
 	@NotEmpty(message = "name은 필수값입니다.")
 	@Pattern(regexp = NAME_REGEX, message = "name 형식이 일치해야 합니다.")
@@ -25,17 +29,11 @@ public class MemberRegisterDto {
 	@Pattern(regexp = PASSWORD_REGEX, message = "password 형식이 일치해야 합니다.")
 	private String password;
 
-	public MemberRegisterDto(String name, String email, String password) {
-		this.name = name;
-		this.email = email;
-		this.password = password;
-	}
-
-	public Member toEntity(MemberRegisterDto memberRegisterDto) {
+	public Member toEntity(PasswordEncoder passwordEncoder) {
 		return Member.builder()
-			.name(memberRegisterDto.getName())
-			.email(memberRegisterDto.getEmail())
-			.password(memberRegisterDto.getPassword())
+			.name(name)
+			.email(email)
+			.password(passwordEncoder.encode(password))
 			.build();
 	}
 }

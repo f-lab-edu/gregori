@@ -1,6 +1,5 @@
 package com.gregori.controller.member;
 
-import com.gregori.domain.member.Member;
 import com.gregori.dto.member.MemberRegisterDto;
 import com.gregori.service.member.MemberService;
 
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
-
     private final MemberService memberService;
 
     @PostMapping("/register")
