@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gregori.mapper.RefreshTokenMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.domain.auth.RefreshToken">
+        INSERT INTO refresh_tokens (rt_key, rt_value)
+        VALUES (#{rtKey}, #{rtValue})
+    </insert>
+
+    <update id="update">
+        UPDATE refresh_tokens
+        SET rt_value = #{rtValue}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM refresh_tokens
+        WHERE id = #{id}
+    </delete>
+
+    <select id="findByRtKey" resultType="com.gregori.domain.auth.RefreshToken" parameterType="String">
+        SELECT id, rt_key, rt_value
+        FROM refresh_tokens
+        WHERE rt_key = #{rtKey}
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
+</mapper>
