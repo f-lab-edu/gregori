@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum AppErrorMessage {
+	ILLEGAL_ARGUMENT_ERROR("유효하지 않은 입력값입니다."),
 	ENTITY_NOT_FOUND_ERROR("존재하지 않는 엔티티입니다."),
 	ENTITY_DUPLICATE_ERROR("이미 존재하는 엔티티입니다.");
 
