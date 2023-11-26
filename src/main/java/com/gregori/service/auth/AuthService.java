@@ -1,13 +1,11 @@
 package com.gregori.service.auth;
 
-import org.springframework.http.ResponseEntity;
-
 import com.gregori.dto.auth.AuthSignInDto;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.gregori.dto.auth.TokenDto;
+import com.gregori.dto.auth.TokenRequestDto;
 
 public interface AuthService {
-	ResponseEntity<String> signIn(AuthSignInDto memberSignInDto, HttpServletRequest request, HttpServletResponse response);
-	ResponseEntity<String> signOut(HttpServletRequest request, HttpServletResponse response);
+	TokenDto signIn(AuthSignInDto memberSignInDto);
+	Long signOut(TokenRequestDto tokenRequestDto);
+	TokenDto refresh(TokenRequestDto tokenRequestDto);
 }
