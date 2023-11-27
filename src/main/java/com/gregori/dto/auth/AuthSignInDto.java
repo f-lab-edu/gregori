@@ -2,12 +2,18 @@ package com.gregori.dto.auth;
 
 import static com.gregori.common.RegexPatterns.*;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+
+import com.gregori.domain.auth.RefreshToken;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class AuthSignInDto {
 	@NotEmpty(message = "email은 필수값입니다.")
 	@Email(message = "email 형식과 일치해야 합니다.")
@@ -17,8 +23,14 @@ public class AuthSignInDto {
 	@Pattern(regexp = PASSWORD_REGEX, message = "password 형식이 일치해야 합니다.")
 	private String password;
 
-	public AuthSignInDto(String email, String password) {
-		this.email = email;
-		this.password = password;
+	public UsernamePasswordAuthenticationToken toAuthentication() {
+		return new UsernamePasswordAuthenticationToken(email, password);
+	}
+
+	public RefreshToken toEntity(String name, String token) {
+		return RefreshToken.builder()
+			.rtKey(name)
+			.rtValue(token)
+			.build();
 	}
 }
