@@ -7,6 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gregori.common.exception.AccessDeniedException;
+import com.gregori.common.exception.UnauthorizedException;
+import com.gregori.domain.auth.RefreshToken;
 import com.gregori.mapper.RefreshTokenMapper;
 
 import jakarta.servlet.FilterChain;
@@ -34,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 			Authentication authentication = tokenProvider.getAuthentication(jwt);
 			refreshTokenMapper.findByRtKey(authentication.getName())
-				.orElseThrow(() -> new RuntimeException("로그아웃한 사용자입니다."));
+				.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 

@@ -1,18 +1,17 @@
 package com.gregori.controller.auth;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.gregori.config.jwt.TokenProvider;
+import com.gregori.common.response.CustomResponse;
 import com.gregori.dto.auth.AuthSignInDto;
-import com.gregori.dto.auth.TokenDto;
 import com.gregori.dto.auth.TokenRequestDto;
 import com.gregori.service.auth.AuthService;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -21,16 +20,17 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/auth")
 public class AuthController {
 	private final AuthService authService;
-	private final TokenProvider tokenProvider;
 
 	@PostMapping("/signin")
-	public ResponseEntity<TokenDto> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
-		return ResponseEntity.ok(authService.signIn(authSignInDto));
+	public ResponseEntity<Object> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
+		CustomResponse<Object> response = CustomResponse.success(authService.signIn(authSignInDto), "로그인에 성공했습니다.");
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<String> signOut(@RequestBody TokenRequestDto tokenRequestDto) {
-		authService.signOut(tokenRequestDto);
-		return ResponseEntity.ok().body("성공적으로 로그아웃했습니다.");
+	public ResponseEntity<Object> signOut(@RequestBody TokenRequestDto tokenRequestDto) {
+		CustomResponse<Object> response = CustomResponse.success(authService.signOut(tokenRequestDto), "로그아웃에 성공했습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

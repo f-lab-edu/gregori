@@ -1,6 +1,8 @@
 package com.gregori.common.exception;
 
-// @Getter
+import lombok.Getter;
+
+@Getter
 public class BaseException extends RuntimeException {
 	private AppErrorMessage appErrorMessage;
 

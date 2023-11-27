@@ -6,7 +6,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gregori.common.exception.IllegalArgumentException;
+import com.gregori.common.exception.UnauthorizedException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.config.jwt.TokenProvider;
 import com.gregori.domain.auth.RefreshToken;
 import com.gregori.dto.auth.AuthSignInDto;
@@ -42,37 +43,39 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public Long signOut(TokenRequestDto tokenRequestDto) {
-		if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-			throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
-		}
-		Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-		RefreshToken refreshToken = refreshTokenMapper.findByRtKey(authentication.getName())
-			.orElseThrow(() -> new RuntimeException("로그아웃한 사용자입니다."));
-
-		if (!refreshToken.getRtValue().equals(tokenRequestDto.getRefreshToken())) {
-			throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
-		}
+		RefreshToken refreshToken = getRefreshToken(tokenRequestDto, getAuthentication(tokenRequestDto));
 
 		return refreshTokenMapper.delete(refreshToken.getId());
 	}
 
+	@Override
+	@Transactional
 	public TokenDto refresh(TokenRequestDto tokenRequestDto) {
-		if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-			throw new IllegalArgumentException("Refresh Token이 유효하지 않습니다.");
-		}
-
-		Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-		RefreshToken refreshToken = refreshTokenMapper.findByRtKey(authentication.getName())
-			.orElseThrow(() -> new RuntimeException("로그아웃한 사용자입니다."));
-
-		if (!refreshToken.getRtValue().equals(tokenRequestDto.getRefreshToken())) {
-			throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
-		}
-
+		Authentication authentication = getAuthentication(tokenRequestDto);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
+		RefreshToken refreshToken = getRefreshToken(tokenRequestDto, authentication);
 		refreshToken.updateValue(tokenDto.getRefreshToken());
 		refreshTokenMapper.update(refreshToken);
 
 		return tokenDto;
   	}
+
+	private RefreshToken getRefreshToken(TokenRequestDto tokenRequestDto, Authentication authentication) {
+		RefreshToken refreshToken = refreshTokenMapper.findByRtKey(authentication.getName())
+			.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
+
+		if (!refreshToken.getRtValue().equals(tokenRequestDto.getRefreshToken())) {
+			throw new UnauthorizedException("토큰의 유저 정보가 일치하지 않습니다.");
+		}
+
+		return refreshToken;
+	}
+
+	private Authentication getAuthentication(TokenRequestDto tokenRequestDto) {
+		if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
+			throw new ValidationException("Refresh Token이 유효하지 않습니다.");
+		}
+
+		return tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+	}
 }

@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.gregori.dto.member.MemberResponseDto;
+import com.gregori.common.exception.AccessDeniedException;
+import com.gregori.common.response.CustomResponse;
 import com.gregori.dto.member.MemberUpdateDto;
 import com.gregori.service.member.MemberService;
 
@@ -28,36 +29,40 @@ public class MypageController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public ResponseEntity<String> updateMember(@RequestBody @Valid MemberUpdateDto mypageUpdateDto) {
+	public ResponseEntity<Object> updateMember(@RequestBody @Valid MemberUpdateDto mypageUpdateDto) {
 		AuthorizationCheck(mypageUpdateDto.getId());
 
-		memberService.updateMember(mypageUpdateDto);
+		CustomResponse<Object> response = CustomResponse
+			.success(memberService.updateMember(mypageUpdateDto), "회원 수정에 성공했습니다.");
 
-		return ResponseEntity.status(HttpStatus.OK).body("회원 수정에 성공했습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@DeleteMapping("/{memberId}")
-	public ResponseEntity<String> deactivateMember(@PathVariable Long memberId) {
+	public ResponseEntity<Object> deactivateMember(@PathVariable Long memberId) {
 		AuthorizationCheck(memberId);
 
-		memberService.deactivateMember(memberId);
+		CustomResponse<Object> response = CustomResponse
+			.success(memberService.deactivateMember(memberId), "회원 탈퇴에 성공했습니다.");
 
-		return ResponseEntity.status(HttpStatus.OK).body("회원 탈퇴에 성공했습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{memberId}")
-	public ResponseEntity<MemberResponseDto> findMemberById(@PathVariable Long memberId) {
+	public ResponseEntity<Object> findMemberById(@PathVariable Long memberId) {
 		AuthorizationCheck(memberId);
 
-		MemberResponseDto memberResponseDto = memberService.findMemberById(memberId);
-		return ResponseEntity.status(HttpStatus.OK).body(memberResponseDto);
+		CustomResponse<Object> response = CustomResponse
+			.success(memberService.findMemberById(memberId), "회원 정보를 가져왔습니다.");
+
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	private void AuthorizationCheck(Long memberId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		Long currentMemberId = parseLong(authentication.getName());
 		if (currentMemberId != memberId) {
-			throw new RuntimeException("접근이 거부되었습니다.");
+			throw new AccessDeniedException();
 		}
 	}
 }
