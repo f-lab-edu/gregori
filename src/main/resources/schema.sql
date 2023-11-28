@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS members;
+DROP TABLE IF EXISTS refresh_tokens;
+
 CREATE TABLE members (
     id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '회원 인덱스',
     name       VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 이름',

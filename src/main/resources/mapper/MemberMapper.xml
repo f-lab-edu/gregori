@@ -22,6 +22,10 @@
         WHERE id = #{id}
     </update>
 
+    <update id="deleteAll">
+        DELETE FROM members
+    </update>
+
     <select id="findById" resultType="com.gregori.domain.member.Member" parameterType="Long">
         SELECT id, name, email, password, status, authority, created_at, updated_at
         FROM members

@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,6 +64,11 @@ class AuthControllerIntegrationTest {
 
 		MemberRegisterDto member2 = new MemberRegisterDto("이호", "b@b.b", "bb22222@");
 		memberMapper.insert(member2.toEntity(passwordEncoder));
+	}
+
+	@AfterAll
+	void AfterAll() {
+		memberMapper.deleteAll();
 	}
 
 	@Test
