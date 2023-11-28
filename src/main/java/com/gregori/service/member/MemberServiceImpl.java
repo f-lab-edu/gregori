@@ -22,13 +22,16 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long register(MemberRegisterDto memberRegisterDto) {
+    public MemberResponseDto register(MemberRegisterDto memberRegisterDto) {
         memberMapper.findByEmail(memberRegisterDto.getEmail())
             .ifPresent(m -> {
                 throw new DuplicateException();
             });
 
-        return memberMapper.insert(memberRegisterDto.toEntity(passwordEncoder));
+        Member member = memberRegisterDto.toEntity(passwordEncoder);
+        memberMapper.insert(member);
+
+        return new MemberResponseDto().toEntity(member);
     }
 
     @Override

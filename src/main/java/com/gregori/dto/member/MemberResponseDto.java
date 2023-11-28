@@ -1,7 +1,5 @@
 package com.gregori.dto.member;
 
-import java.time.ZonedDateTime;
-
 import com.gregori.domain.member.Member;
 
 import lombok.AllArgsConstructor;
@@ -18,7 +16,6 @@ public class MemberResponseDto {
 	private String email;
 	private String name;
 	private String status;
-	private ZonedDateTime createdAt;
 
 	public MemberResponseDto toEntity(Member member) {
 		return MemberResponseDto.builder()
@@ -26,7 +23,6 @@ public class MemberResponseDto {
 			.name(member.getName())
 			.email(member.getEmail())
 			.status(member.getStatus().toString())
-			.createdAt(member.getCreatedAt())
 			.build();
 	}
 }

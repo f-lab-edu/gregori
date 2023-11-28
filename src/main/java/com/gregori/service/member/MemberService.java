@@ -5,7 +5,7 @@ import com.gregori.dto.member.MemberResponseDto;
 import com.gregori.dto.member.MemberUpdateDto;
 
 public interface MemberService {
-    Long register(MemberRegisterDto memberRegisterDto);
+    MemberResponseDto register(MemberRegisterDto memberRegisterDto);
     Long updateMember(MemberUpdateDto mypageUpdateDto);
     Long deactivateMember(Long memberId);
     MemberResponseDto findMemberById(Long memberId);
