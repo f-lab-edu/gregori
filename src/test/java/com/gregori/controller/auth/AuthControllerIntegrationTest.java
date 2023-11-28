@@ -38,9 +38,9 @@ import com.gregori.mapper.RefreshTokenMapper;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class AuthControllerIntegrationTest {
 	@Autowired
 	private MockMvc mockMvc;
