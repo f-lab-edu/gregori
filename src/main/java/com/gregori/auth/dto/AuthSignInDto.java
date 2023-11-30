@@ -1,6 +1,6 @@
 package com.gregori.auth.dto;
 
-import static com.gregori.common.RegexPatterns.*;
+import static com.gregori.common.RegexPatterns.PASSWORD_REGEX;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 

@@ -1,6 +1,7 @@
 package com.gregori.member.dto;
 
-import static com.gregori.common.RegexPatterns.*;
+import static com.gregori.common.RegexPatterns.NAME_REGEX;
+import static com.gregori.common.RegexPatterns.PASSWORD_REGEX;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
