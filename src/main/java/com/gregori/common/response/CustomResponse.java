@@ -1,6 +1,6 @@
 package com.gregori.common.response;
 
-import com.gregori.common.exception.AppErrorMessage;
+import com.gregori.common.exception.ErrorMessage;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -41,7 +41,7 @@ public class CustomResponse<T> {
 			.build();
 	}
 
-	public static CustomResponse<Object> failure(AppErrorMessage appErrorMessage) {
+	public static CustomResponse<Object> failure(ErrorMessage appErrorMessage) {
 		return CustomResponse.builder()
 			.result(Result.FAILURE)
 			.errorType(appErrorMessage.name())

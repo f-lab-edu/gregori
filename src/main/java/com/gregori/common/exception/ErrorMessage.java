@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum AppErrorMessage {
+public enum ErrorMessage {
 	SYSTEM_ERROR("시스템 에러가 발생했습니다."),
 	UNAUTHORIZED_ERROR("인증되지 않은 사용자입니다."),
 	ACCESS_DENIED_ERROR("접근이 거부되었습니다."),

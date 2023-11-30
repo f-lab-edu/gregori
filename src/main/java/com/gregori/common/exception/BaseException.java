@@ -4,23 +4,23 @@ import lombok.Getter;
 
 @Getter
 public class BaseException extends RuntimeException {
-	private AppErrorMessage appErrorMessage;
+	private ErrorMessage errorMessage;
 
 	public BaseException() {
 	}
 
-	public BaseException(AppErrorMessage appErrorMessage) {
-		super(appErrorMessage.getErrorMessage());
-		this.appErrorMessage = appErrorMessage;
+	public BaseException(ErrorMessage errorMessage) {
+		super(errorMessage.getErrorMessage());
+		this.errorMessage = errorMessage;
 	}
 
-	public BaseException(String description, AppErrorMessage appErrorMessage) {
+	public BaseException(String description, ErrorMessage errorMessage) {
 		super(description);
-		this.appErrorMessage = appErrorMessage;
+		this.errorMessage = errorMessage;
 	}
 
-	public BaseException(String description, Throwable cause, AppErrorMessage appErrorMessage) {
+	public BaseException(String description, Throwable cause, ErrorMessage errorMessage) {
 		super(description, cause);
-		this.appErrorMessage = appErrorMessage;
+		this.errorMessage = errorMessage;
 	}
 }
