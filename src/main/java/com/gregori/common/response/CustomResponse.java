@@ -21,31 +21,31 @@ public class CustomResponse<T> {
 		private final String description;
 	}
 
-	public static <T> CustomResponse<Object> success(T data, String description) {
-		return CustomResponse.builder()
+	public static <T> CustomResponse<T> success(T data, String description) {
+		return CustomResponse.<T>builder()
 			.result(Result.SUCCESS)
 			.data(data)
 			.description(description)
 			.build();
 	}
 
-	public static <T> CustomResponse<Object> success(T data) {
+	public static <T> CustomResponse<T> success(T data) {
 		return success(data, null);
 	}
 
-	public static CustomResponse<Object> failure(String errorType, String description) {
-		return CustomResponse.builder()
+	public static <T> CustomResponse<T> failure(String errorType, String description) {
+		return CustomResponse.<T>builder()
 			.result(Result.FAILURE)
 			.errorType(errorType)
 			.description(description)
 			.build();
 	}
 
-	public static CustomResponse<Object> failure(ErrorMessage appErrorMessage) {
-		return CustomResponse.builder()
+	public static <T> CustomResponse<T> failure(ErrorMessage errorMessage) {
+		return CustomResponse.<T>builder()
 			.result(Result.FAILURE)
-			.errorType(appErrorMessage.name())
-			.description(appErrorMessage.getDescription())
+			.errorType(errorMessage.name())
+			.description(errorMessage.getDescription())
 			.build();
 	}
 }
