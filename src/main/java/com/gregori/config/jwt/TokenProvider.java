@@ -17,8 +17,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.gregori.auth.dto.TokenDto;
 import com.gregori.common.exception.NotFoundException;
-import com.gregori.dto.auth.TokenDto;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;

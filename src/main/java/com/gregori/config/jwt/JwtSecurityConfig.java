@@ -5,7 +5,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.gregori.mapper.RefreshTokenMapper;
+import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 import lombok.RequiredArgsConstructor;
 

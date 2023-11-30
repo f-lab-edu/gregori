@@ -7,10 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.gregori.common.exception.AccessDeniedException;
 import com.gregori.common.exception.UnauthorizedException;
-import com.gregori.domain.auth.RefreshToken;
-import com.gregori.mapper.RefreshTokenMapper;
+import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

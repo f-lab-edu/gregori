@@ -1,0 +1,17 @@
+package com.gregori.member.mapper;
+
+import java.util.Optional;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import com.gregori.member.domain.Member;
+
+@Mapper
+public interface MemberMapper {
+    Long insert(Member member);
+    Long update(Member member);
+    Long deleteAll();
+    Optional<Member> findById(Long memberId);
+    Optional<Member> findByEmail(String email);
+    Optional<Member> findByEmailAndPassword(String email, String password);
+}

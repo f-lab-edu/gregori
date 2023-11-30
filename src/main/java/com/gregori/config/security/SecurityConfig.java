@@ -9,7 +9,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import com.gregori.config.jwt.JwtSecurityConfig;
 import com.gregori.config.jwt.TokenProvider;
-import com.gregori.mapper.RefreshTokenMapper;
+import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 import lombok.RequiredArgsConstructor;
 
