@@ -2,6 +2,8 @@ package com.gregori.service.member;
 
 import com.gregori.dto.member.MemberSignUpDto;
 import com.gregori.domain.member.Member;
+import com.gregori.dto.member.MemberResponseDto;
+import com.gregori.dto.member.MemberUpdateDto;
 import com.gregori.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -18,51 +20,29 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Long signup(MemberSignUpDto memberSignUpDto) {
-        if (!StringUtils.hasText(memberSignUpDto.getName())) {
-            throw new RuntimeException("Empty name");
-        }
-        if (!StringUtils.hasText(memberSignUpDto.getEmail())) {
-            throw new RuntimeException("Empty email");
-        }
-        if (!StringUtils.hasText(memberSignUpDto.getPassword())) {
-            throw new RuntimeException("Empty password");
-        }
-
         memberMapper.findByEmail(memberSignUpDto.getEmail())
             .ifPresent(m -> {
                 throw new RuntimeException("The email already exists.");
             });
 
-        return memberMapper.insert(Member.builder()
-            .name(memberSignUpDto.getName())
-            .email(memberSignUpDto.getEmail())
-            .password(memberSignUpDto.getPassword())
-            .build());
+        return memberMapper.insert(new MemberSignUpDto().toEntity(memberSignUpDto));
     }
 
     @Override
     @Transactional
-    public Long updateMember(Long memberId, Member member) {
-        if (memberId == null) {
-            throw new RuntimeException("Empty id");
-        }
-        if (!StringUtils.hasText(member.getName())) {
-            throw new RuntimeException("Empty name");
-        }
-        if (!StringUtils.hasText(member.getPassword())) {
-            throw new RuntimeException("Empty password");
-        }
+    public Long updateMember(MemberUpdateDto mypageUpdateDto) {
+        Member member = memberMapper.findById(mypageUpdateDto.getId())
+            .orElseThrow(() -> new RuntimeException("Member entity not found"));
+        member.updateMemberInfo(mypageUpdateDto.getName(), mypageUpdateDto.getPassword());
 
-        Member newMember = findMemberById(memberId);
-        newMember.updateMemberInfo(member.getName(), member.getPassword());
-
-        return memberMapper.update(newMember);
+        return memberMapper.update(member);
     }
 
     @Override
     @Transactional
-    public Long deleteMember(Long memberId) {
-        Member member = findMemberById(memberId);
+    public Long deactivateMember(Long memberId) {
+        Member member = memberMapper.findById(memberId)
+            .orElseThrow(() -> new RuntimeException("Member entity not found"));
         member.deactivate();
 
         return memberMapper.update(member);
@@ -70,14 +50,19 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public Member findMemberById(Long memberId) {
-        return memberMapper.findById(memberId)
+    public MemberResponseDto findMemberById(Long memberId) {
+        Member member = memberMapper.findById(memberId)
             .orElseThrow(() -> new RuntimeException("Member entity not found by id"));
+
+        return new MemberResponseDto().toEntity(member);
     }
 
     @Override
-    public Member findMemberByEmail(String memberEmail) {
-        return memberMapper.findByEmail(memberEmail)
+    @Transactional(readOnly = true)
+    public MemberResponseDto findMemberByEmail(String memberEmail) {
+        Member member = memberMapper.findByEmail(memberEmail)
             .orElseThrow(() -> new RuntimeException("Member entity not found by email"));
+
+        return new MemberResponseDto().toEntity(member);
     }
 }
