@@ -15,6 +15,7 @@ CREATE TABLE orders (
     payment_method VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 지불 방법',
     payment_amount BIGINT                NOT NULL                                                                   COMMENT '주문 지불 금액',
     delivery_cost  BIGINT                NOT NULL                                                                   COMMENT '주문 배송비',
+    status         VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 상태',
     created_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 접수 날짜',
     updated_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 수정 날짜',
     FOREIGN KEY (member_id) REFERENCES members(member_id)
