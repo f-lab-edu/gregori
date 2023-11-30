@@ -34,7 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
 		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 			Authentication authentication = tokenProvider.getAuthentication(jwt);
-			refreshTokenMapper.findByRtKey(authentication.getName())
+			refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
 				.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
 			SecurityContextHolder.getContext().setAuthentication(authentication);

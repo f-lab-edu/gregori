@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RefreshToken extends AbstractEntity {
 	private Long id;
-	private String rtKey;
-	private String rtValue;
+	private String refreshTokenKey;
+	private String refreshTokenValue;
 
 	@Builder
-	public RefreshToken(String rtKey, String rtValue) {
-		this.rtKey = rtKey;
-		this.rtValue = rtValue;
+	public RefreshToken(String refreshTokenKey, String refreshTokenValue) {
+		this.refreshTokenKey = refreshTokenKey;
+		this.refreshTokenValue = refreshTokenValue;
 	}
 
-	public void updateValue(String rtValue) {
-		this.rtValue = rtValue;
+	public void updateValue(String refreshTokenValue) {
+		this.refreshTokenValue = refreshTokenValue;
 	}
 }

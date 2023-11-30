@@ -30,7 +30,7 @@ public class AuthServiceImpl implements AuthService {
 		UsernamePasswordAuthenticationToken authenticationToken = authSignInDto.toAuthentication();
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
-		RefreshToken refreshToken = refreshTokenMapper.findByRtKey(authentication.getName()).orElse(null);
+		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName()).orElse(null);
 		if (refreshToken != null) {
 			refreshTokenMapper.delete(refreshToken.getId());
 		}
@@ -61,10 +61,10 @@ public class AuthServiceImpl implements AuthService {
   	}
 
 	private RefreshToken getRefreshToken(TokenRequestDto tokenRequestDto, Authentication authentication) {
-		RefreshToken refreshToken = refreshTokenMapper.findByRtKey(authentication.getName())
+		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
 			.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
-		if (!refreshToken.getRtValue().equals(tokenRequestDto.getRefreshToken())) {
+		if (!refreshToken.getRefreshTokenValue().equals(tokenRequestDto.getRefreshToken())) {
 			throw new UnauthorizedException("토큰의 유저 정보가 일치하지 않습니다.");
 		}
 

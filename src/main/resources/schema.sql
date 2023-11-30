@@ -13,9 +13,9 @@ CREATE TABLE members (
 );
 
 CREATE TABLE refresh_tokens (
-    id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '토큰 인덱스',
-    rt_key     VARCHAR(255)          NOT NULL                                                                   COMMENT '토큰 키',
-    rt_value   VARCHAR(255)          NOT NULL                                                                   COMMENT '토큰 값',
-    created_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '토큰 생성 날짜',
-    updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '토큰 수정 날짜'
+    id                  BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '토큰 인덱스',
+    refresh_token_key   VARCHAR(255)          NOT NULL                                                                   COMMENT '토큰 키',
+    refresh_token_value VARCHAR(255)          NOT NULL                                                                   COMMENT '토큰 값',
+    created_at          TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '토큰 생성 날짜',
+    updated_at          TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '토큰 수정 날짜'
 );

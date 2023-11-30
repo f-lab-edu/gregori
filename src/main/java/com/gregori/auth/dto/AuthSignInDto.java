@@ -29,8 +29,8 @@ public class AuthSignInDto {
 
 	public RefreshToken toEntity(String name, String token) {
 		return RefreshToken.builder()
-			.rtKey(name)
-			.rtValue(token)
+			.refreshTokenKey(name)
+			.refreshTokenValue(token)
 			.build();
 	}
 }

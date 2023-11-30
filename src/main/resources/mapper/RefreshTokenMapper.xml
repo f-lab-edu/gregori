@@ -3,16 +3,16 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gregori.mapper.RefreshTokenMapper">
+<mapper namespace="com.gregori.refresh_token.mapper.RefreshTokenMapper">
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.domain.auth.RefreshToken">
-        INSERT INTO refresh_tokens (rt_key, rt_value)
-        VALUES (#{rtKey}, #{rtValue})
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.refresh_token.domain.RefreshToken">
+        INSERT INTO refresh_tokens (refresh_token_key, refresh_token_value)
+        VALUES (#{refreshTokenKey}, #{refreshTokenValue})
     </insert>
 
     <update id="update">
         UPDATE refresh_tokens
-        SET rt_value = #{rtValue}
+        SET refresh_token_value = #{refreshTokenValue}
         WHERE id = #{id}
     </update>
 
@@ -21,10 +21,10 @@
         WHERE id = #{id}
     </delete>
 
-    <select id="findByRtKey" resultType="com.gregori.domain.auth.RefreshToken" parameterType="String">
-        SELECT id, rt_key, rt_value
+    <select id="findByRefreshTokenKey" resultType="com.gregori.refresh_token.domain.RefreshToken" parameterType="String">
+        SELECT id, refresh_token_key, refresh_token_value
         FROM refresh_tokens
-        WHERE rt_key = #{rtKey}
+        WHERE refresh_token_key = #{refreshTokenKey}
         ORDER BY created_at DESC
         LIMIT 1
     </select>

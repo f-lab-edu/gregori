@@ -29,12 +29,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.auth.dto.TokenDto;
 import com.gregori.config.jwt.TokenProvider;
-import com.gregori.domain.auth.RefreshToken;
-import com.gregori.dto.auth.TokenDto;
-import com.gregori.dto.member.MemberRegisterDto;
-import com.gregori.mapper.MemberMapper;
-import com.gregori.mapper.RefreshTokenMapper;
+import com.gregori.member.dto.MemberRegisterDto;
+import com.gregori.member.mapper.MemberMapper;
+import com.gregori.refresh_token.domain.RefreshToken;
+import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -123,8 +123,8 @@ class AuthControllerIntegrationTest {
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
 		refreshTokenMapper.insert(RefreshToken.builder()
-			.rtKey("1")
-			.rtValue(tokenDto.getRefreshToken())
+			.refreshTokenKey("1")
+			.refreshTokenValue(tokenDto.getRefreshToken())
 			.build());
 
 		Map<String, String> input = new HashMap<>();
