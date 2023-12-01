@@ -19,7 +19,7 @@ public class RefreshToken extends AbstractEntity {
 		this.refreshTokenValue = refreshTokenValue;
 	}
 
-	public void updateValue(String refreshTokenValue) {
+	public void updateRefreshTokenValue(String refreshTokenValue) {
 		this.refreshTokenValue = refreshTokenValue;
 	}
 }

@@ -1,5 +1,6 @@
 package com.gregori.auth.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -29,8 +30,11 @@ public class AuthServiceImpl implements AuthService {
 	public TokenDto signIn(AuthSignInDto authSignInDto) {
 		UsernamePasswordAuthenticationToken authenticationToken = authSignInDto.toAuthentication();
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
+
 		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName()).orElse(null);
+
 		if (refreshToken != null) {
 			refreshTokenMapper.delete(refreshToken.getId());
 		}
@@ -43,7 +47,8 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public Long signOut(TokenRequestDto tokenRequestDto) {
-		RefreshToken refreshToken = getRefreshToken(tokenRequestDto, getAuthentication(tokenRequestDto));
+		Authentication authentication = getAuthentication(tokenRequestDto);
+		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
 
 		return refreshTokenMapper.delete(refreshToken.getId());
 	}
@@ -52,19 +57,21 @@ public class AuthServiceImpl implements AuthService {
 	@Transactional
 	public TokenDto refresh(TokenRequestDto tokenRequestDto) {
 		Authentication authentication = getAuthentication(tokenRequestDto);
+		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
+
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
-		RefreshToken refreshToken = getRefreshToken(tokenRequestDto, authentication);
-		refreshToken.updateValue(tokenDto.getRefreshToken());
+
+		refreshToken.updateRefreshTokenValue(tokenDto.getRefreshToken());
 		refreshTokenMapper.update(refreshToken);
 
 		return tokenDto;
   	}
 
-	private RefreshToken getRefreshToken(TokenRequestDto tokenRequestDto, Authentication authentication) {
+	private RefreshToken getRefreshToken(String requestRefreshToken, Authentication authentication) {
 		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
 			.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
-		if (!refreshToken.getRefreshTokenValue().equals(tokenRequestDto.getRefreshToken())) {
+		if (StringUtils.equals(refreshToken.getRefreshTokenValue(), requestRefreshToken)) {
 			throw new UnauthorizedException("토큰의 유저 정보가 일치하지 않습니다.");
 		}
 
