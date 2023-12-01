@@ -22,8 +22,13 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deleteAll">
+    <update id="deleteById" parameterType="map">
         DELETE FROM members
+        WHERE id IN (
+            <foreach collection="list" item="item" separator=",">
+                #{item}
+            </foreach>
+        )
     </update>
 
     <select id="findById" resultType="com.gregori.member.domain.Member" parameterType="Long">

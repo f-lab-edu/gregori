@@ -6,7 +6,10 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.AfterAll;
@@ -57,18 +60,20 @@ class AuthControllerIntegrationTest {
 	@Autowired
 	private AuthenticationManagerBuilder authenticationManagerBuilder;
 
+	List<Long> memberIds = new ArrayList<>();
+
 	@BeforeAll
 	void beforeAll() {
 		MemberRegisterDto member1 = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
-		memberMapper.insert(member1.toEntity(passwordEncoder));
+		memberIds.add(memberMapper.insert(member1.toEntity(passwordEncoder)));
 
 		MemberRegisterDto member2 = new MemberRegisterDto("이호", "b@b.b", "bb22222@");
-		memberMapper.insert(member2.toEntity(passwordEncoder));
+		memberIds.add(memberMapper.insert(member2.toEntity(passwordEncoder)));
 	}
 
 	@AfterAll
 	void AfterAll() {
-		memberMapper.deleteAll();
+		memberMapper.deleteById(memberIds);
 	}
 
 	@Test
