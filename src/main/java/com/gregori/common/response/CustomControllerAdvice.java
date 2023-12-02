@@ -25,7 +25,7 @@ public class CustomControllerAdvice {
 	@ExceptionHandler(value = BaseException.class)
 	public <T> CustomResponse<T> onException(BaseException e) {
 		log.error("[BaseException] http status: {}, custom status: {}, message: {} ",
-			e.getErrorMessage().getHttpStatus(), e.getErrorMessage().name(), e.getErrorMessage().getDescription());
+			e.getErrorMessage().getHttpStatus(), e.getErrorMessage().name(), e.getMessage());
 
 		return CustomResponse.failure(e.getErrorMessage());
 	}

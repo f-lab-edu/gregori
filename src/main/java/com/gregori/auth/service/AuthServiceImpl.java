@@ -17,7 +17,9 @@ import com.gregori.refresh_token.domain.RefreshToken;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -36,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
 		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName()).orElse(null);
 
 		if (refreshToken != null) {
-			refreshTokenMapper.delete(refreshToken.getId());
+			refreshTokenMapper.deleteById(refreshToken.getId());
 		}
 
 		refreshTokenMapper.insert(authSignInDto.toEntity(authentication.getName(), tokenDto.getRefreshToken()));
@@ -50,7 +52,7 @@ public class AuthServiceImpl implements AuthService {
 		Authentication authentication = getAuthentication(tokenRequestDto);
 		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
 
-		return refreshTokenMapper.delete(refreshToken.getId());
+		return refreshTokenMapper.deleteById(refreshToken.getId());
 	}
 
 	@Override
@@ -71,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
 		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
 			.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
-		if (StringUtils.equals(refreshToken.getRefreshTokenValue(), requestRefreshToken)) {
+		if (!StringUtils.equals(refreshToken.getRefreshTokenValue(), requestRefreshToken)) {
 			throw new UnauthorizedException("토큰의 유저 정보가 일치하지 않습니다.");
 		}
 

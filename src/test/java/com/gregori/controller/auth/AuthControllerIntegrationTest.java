@@ -7,10 +7,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +34,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.auth.dto.TokenDto;
 import com.gregori.config.jwt.TokenProvider;
-import com.gregori.member.dto.MemberRegisterDto;
+import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.refresh_token.domain.RefreshToken;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
@@ -60,20 +60,28 @@ class AuthControllerIntegrationTest {
 	@Autowired
 	private AuthenticationManagerBuilder authenticationManagerBuilder;
 
-	List<Long> memberIds = new ArrayList<>();
+	List<Member> members = new ArrayList<>();
 
 	@BeforeAll
 	void beforeAll() {
-		MemberRegisterDto member1 = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
-		memberIds.add(memberMapper.insert(member1.toEntity(passwordEncoder)));
+		members.add(Member.builder()
+			.email("a@a.a")
+			.name("일호")
+			.password(passwordEncoder.encode("aa11111!"))
+			.build());
+		members.add(Member.builder()
+			.email("b@b.b")
+			.name("이호")
+			.password(passwordEncoder.encode("bb22222@"))
+			.build());
 
-		MemberRegisterDto member2 = new MemberRegisterDto("이호", "b@b.b", "bb22222@");
-		memberIds.add(memberMapper.insert(member2.toEntity(passwordEncoder)));
+		memberMapper.insert(members.get(0));
+		memberMapper.insert(members.get(1));
 	}
 
 	@AfterAll
 	void AfterAll() {
-		memberMapper.deleteById(memberIds);
+		memberMapper.deleteByEmails(members.stream().map(Member::getEmail).collect(Collectors.toList()));
 	}
 
 	@Test
@@ -94,6 +102,7 @@ class AuthControllerIntegrationTest {
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
+			.andExpect(jsonPath("$.httpStatus", is("OK")))
 			.andExpect(jsonPath("$.data", is(notNullValue())))
 			.andExpect(jsonPath("$.data.grantType", is("bearer")))
 			.andExpect(jsonPath("$.data.accessToken", is(notNullValue())))
@@ -108,6 +117,7 @@ class AuthControllerIntegrationTest {
 				fieldWithPath("password").description("회원 비밀번호")
 			), responseFields(
 				fieldWithPath("result").description("요청에 대한 응답 결과"),
+				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
 				fieldWithPath("data").description("요청에 대한 데이터"),
 				fieldWithPath("data.grantType").description("인가 유형"),
 				fieldWithPath("data.accessToken").description("발급된 액세스 토큰"),
@@ -146,6 +156,7 @@ class AuthControllerIntegrationTest {
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
+			.andExpect(jsonPath("$.httpStatus", is("OK")))
 			.andExpect(jsonPath("$.data", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
@@ -156,6 +167,7 @@ class AuthControllerIntegrationTest {
 				fieldWithPath("refreshToken").description("리프레시 토큰")
 			), responseFields(
 				fieldWithPath("result").description("요청에 대한 응답 결과"),
+				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
 				fieldWithPath("data").description("요청에 대한 데이터"),
 				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
 				fieldWithPath("description").description("응답에 대한 설명")

@@ -52,6 +52,7 @@ class MemberControllerIntegrationTest {
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
+			.andExpect(jsonPath("$.httpStatus", is("OK")))
 			.andExpect(jsonPath("$.data", is(notNullValue())))
 			.andExpect(jsonPath("$.data.id", is(notNullValue())))
 			.andExpect(jsonPath("$.data.email", is(input.get("email"))))
@@ -67,6 +68,7 @@ class MemberControllerIntegrationTest {
 				fieldWithPath("password").description("회원 비밀번호")
 			), responseFields(
 				fieldWithPath("result").description("요청에 대한 응답 결과"),
+				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
 				fieldWithPath("data").description("요청에 대한 데이터"),
 				fieldWithPath("data.id").description("가입한 회원 인덱스"),
 				fieldWithPath("data.email").description("가입한 회원 이메일"),

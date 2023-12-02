@@ -10,8 +10,7 @@ import com.gregori.refresh_token.domain.RefreshToken;
 public interface RefreshTokenMapper {
 	Long insert(RefreshToken refreshToken);
 	Long update(RefreshToken refreshToken);
-	Long delete(Long tokenId);
+	Long deleteById(Long tokenId);
 	Optional<RefreshToken> findByRefreshTokenKey(String refreshTokenKey);
 	Optional<RefreshToken> findById(Long tokenId);
 }
-

@@ -22,9 +22,9 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deleteById" parameterType="map">
+    <update id="deleteByEmails" parameterType="map">
         DELETE FROM members
-        WHERE id IN (
+        WHERE email IN (
             <foreach collection="list" item="item" separator=",">
                 #{item}
             </foreach>
