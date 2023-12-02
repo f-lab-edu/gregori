@@ -1,6 +1,10 @@
 package com.gregori.member.controller;
 
-import com.gregori.member.dto.MemberSignUpDto;
+import static com.gregori.common.response.SuccessMessage.REGISTER_SUCCESS;
+
+import com.gregori.common.response.CustomResponse;
+import com.gregori.member.dto.MemberRegisterDto;
+import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.service.MemberService;
 
 import jakarta.validation.Valid;
@@ -15,13 +19,13 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
-
     private final MemberService memberService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody @Valid MemberSignUpDto memberSignUpDto) {
-        memberService.signup(memberSignUpDto);
+    @PostMapping("/register")
+    public ResponseEntity<CustomResponse<MemberResponseDto>> register(@RequestBody @Valid MemberRegisterDto memberRegisterDto) {
+        CustomResponse<MemberResponseDto> response = CustomResponse
+            .success(memberService.register(memberRegisterDto), REGISTER_SUCCESS);
 
-        return ResponseEntity.status(HttpStatus.OK).body("회원 가입에 성공했습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
