@@ -1,12 +1,14 @@
 package com.gregori.common.exception;
 
+import static com.gregori.common.response.ErrorMessage.UNAUTHORIZED_ERROR;
+
 public class UnauthorizedException extends BaseException {
 	public UnauthorizedException() {
-		super(ErrorMessage.UNAUTHORIZED_ERROR);
+		super(UNAUTHORIZED_ERROR);
 	}
 
 	public UnauthorizedException(String description) {
-		super(description, ErrorMessage.UNAUTHORIZED_ERROR);
+		super(description, UNAUTHORIZED_ERROR);
 	}
 
 }

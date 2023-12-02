@@ -1,6 +1,6 @@
 package com.gregori.common.response;
 
-import com.gregori.common.exception.ErrorMessage;
+import org.springframework.http.HttpStatus;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 public class CustomResponse<T> {
 	private Result result;
 	private T data;
+	private HttpStatus httpStatus;
 	private String errorType;
 	private String description;
 
@@ -21,29 +22,19 @@ public class CustomResponse<T> {
 		private final String description;
 	}
 
-	public static <T> CustomResponse<T> success(T data, String description) {
+	public static <T> CustomResponse<T> success(T data, SuccessMessage successMessage) {
 		return CustomResponse.<T>builder()
 			.result(Result.SUCCESS)
+			.httpStatus(successMessage.getHttpStatus())
 			.data(data)
-			.description(description)
-			.build();
-	}
-
-	public static <T> CustomResponse<T> success(T data) {
-		return success(data, null);
-	}
-
-	public static <T> CustomResponse<T> failure(String errorType, String description) {
-		return CustomResponse.<T>builder()
-			.result(Result.FAILURE)
-			.errorType(errorType)
-			.description(description)
+			.description(successMessage.getDescription())
 			.build();
 	}
 
 	public static <T> CustomResponse<T> failure(ErrorMessage errorMessage) {
 		return CustomResponse.<T>builder()
 			.result(Result.FAILURE)
+			.httpStatus(errorMessage.getHttpStatus())
 			.errorType(errorMessage.name())
 			.description(errorMessage.getDescription())
 			.build();

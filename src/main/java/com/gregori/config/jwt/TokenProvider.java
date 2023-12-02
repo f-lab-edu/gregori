@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -91,7 +92,13 @@ public class TokenProvider {
 		try {
 			return Jwts.parser().verifyWith(key).build().parseSignedClaims(accessToken).getPayload();
 		} catch (ExpiredJwtException e) {
+			log.warn("[ExpiredJwtException] http status: {}, message: {} ", HttpStatus.UNAUTHORIZED, e.getMessage());
+
 			return e.getClaims();
+		} catch (Exception e) {
+			log.warn("[Exception] http status: {}, message: {} ", HttpStatus.UNAUTHORIZED, e.getMessage());
+
+			return null;
 		}
 	}
 
@@ -101,13 +108,13 @@ public class TokenProvider {
 
 			return true;
 		} catch (SecurityException | MalformedJwtException e) {
-			log.info("잘못된 JWT 서명입니다.");
+			log.warn("[SecurityException | MalformedJwtException] http status: {}, message: {} ", HttpStatus.UNAUTHORIZED, e.getMessage());
 		} catch (ExpiredJwtException e) {
-			log.info("만료된 JWT 토큰입니다.");
+			log.warn("[ExpiredJwtException] http status: {}, message: {} ", HttpStatus.UNAUTHORIZED, e.getMessage());
 		} catch (UnsupportedJwtException e) {
-			log.info("지원되지 않는 JWT 토큰입니다.");
+			log.warn("[UnsupportedJwtException] http status: {}, message: {} ", HttpStatus.UNAUTHORIZED, e.getMessage());
 		} catch (IllegalArgumentException e) {
-			log.info("잘못된 JWT 토큰입니다.");
+			log.warn("[IllegalArgumentException] http status: {}, message: {} ", HttpStatus.UNAUTHORIZED, e.getMessage());
 		}
 		return false;
 	}

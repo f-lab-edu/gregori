@@ -1,5 +1,7 @@
 package com.gregori.common.exception;
 
+import com.gregori.common.response.ErrorMessage;
+
 import lombok.Getter;
 
 @Getter
@@ -10,7 +12,7 @@ public class BaseException extends RuntimeException {
 	}
 
 	public BaseException(ErrorMessage errorMessage) {
-		super(errorMessage.getErrorMessage());
+		super(errorMessage.getDescription());
 		this.errorMessage = errorMessage;
 	}
 

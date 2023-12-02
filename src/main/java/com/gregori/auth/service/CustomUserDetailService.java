@@ -1,6 +1,7 @@
 package com.gregori.auth.service;
 
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,8 +33,10 @@ public class CustomUserDetailService implements UserDetailsService {
 
 	private UserDetails createUserDetails(Member member) {
 		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getAuthority().toString());
+		Set<GrantedAuthority> authorities = new HashSet<>();
+		authorities.add(grantedAuthority);
 
 		return new User(String.valueOf(member.getId()),
-			member.getPassword(), Collections.singleton(grantedAuthority));
+			member.getPassword(), authorities);
 	}
 }

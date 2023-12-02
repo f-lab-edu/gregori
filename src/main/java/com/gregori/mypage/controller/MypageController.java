@@ -1,5 +1,8 @@
 package com.gregori.mypage.controller;
 
+import static com.gregori.common.response.SuccessMessage.UPDATE_MEMBER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.DEACTIVATE_MEMBER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.FIND_MEMBER_SUCCESS;
 import static java.lang.Long.parseLong;
 
 import org.springframework.http.HttpStatus;
@@ -34,7 +37,7 @@ public class MypageController {
 		authorizationCheck(mypageUpdateDto.getId());
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.updateMember(mypageUpdateDto), "회원 수정에 성공했습니다.");
+			.success(memberService.updateMember(mypageUpdateDto), UPDATE_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -44,7 +47,7 @@ public class MypageController {
 		authorizationCheck(memberId);
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.deactivateMember(memberId), "회원 탈퇴에 성공했습니다.");
+			.success(memberService.deactivateMember(memberId), DEACTIVATE_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -54,7 +57,7 @@ public class MypageController {
 		authorizationCheck(memberId);
 
 		CustomResponse<MemberResponseDto> response = CustomResponse
-			.success(memberService.findMemberById(memberId), "회원 정보를 가져왔습니다.");
+			.success(memberService.findMemberById(memberId), FIND_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

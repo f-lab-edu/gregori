@@ -13,7 +13,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MemberUpdateDto {
-
 	@NotNull
 	private Long id;
 

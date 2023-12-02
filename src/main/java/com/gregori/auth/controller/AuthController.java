@@ -1,5 +1,8 @@
 package com.gregori.auth.controller;
 
+import static com.gregori.common.response.SuccessMessage.SIGNIN_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.SIGNOUT_SUCCESS;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,14 +26,17 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<Object> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
-		CustomResponse<Object> response = CustomResponse.success(authService.signIn(authSignInDto), "로그인에 성공했습니다.");
+		CustomResponse<Object> response = CustomResponse
+			.success(authService.signIn(authSignInDto), SIGNIN_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@PostMapping("/signout")
 	public ResponseEntity<Object> signOut(@RequestBody TokenRequestDto tokenRequestDto) {
-		CustomResponse<Object> response = CustomResponse.success(authService.signOut(tokenRequestDto), "로그아웃에 성공했습니다.");
+		CustomResponse<Object> response = CustomResponse
+			.success(authService.signOut(tokenRequestDto), SIGNOUT_SUCCESS);
+
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }
