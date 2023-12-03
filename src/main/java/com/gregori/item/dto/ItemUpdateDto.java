@@ -1,18 +1,22 @@
 package com.gregori.item.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class ItemUpdateDto {
+	@NotNull
 	private Long id;
-	private String name;
-	private Long price;
-	private Long inventory;
 
-	public ItemUpdateDto(Long id, String name, Long price, Long inventory) {
-		this.id = id;
-		this.name = name;
-		this.price = price;
-		this.inventory = inventory;
-	}
+	@NotBlank
+	private String name;
+
+	@NotNull
+	private Long price;
+
+	@NotNull
+	private Long inventory;
 }

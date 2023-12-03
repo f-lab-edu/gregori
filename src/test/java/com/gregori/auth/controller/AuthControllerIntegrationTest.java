@@ -1,4 +1,4 @@
-package com.gregori.controller.auth;
+package com.gregori.auth.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
