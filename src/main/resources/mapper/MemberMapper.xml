@@ -6,9 +6,15 @@
 <mapper namespace="com.gregori.member.mapper.MemberMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.member.domain.Member">
-        INSERT INTO members (name, email, password, status)
-        VALUES (#{name}, #{email}, #{password}, #{status})
+        INSERT INTO members (name, email, password, status, authority)
+        VALUES (#{name}, #{email}, #{password}, #{status}, #{authority})
     </insert>
+
+    <select id="findByEmailAndPassword" resultType="com.gregori.member.domain.Member" parameterType="com.gregori.member.domain.Member">
+        SELECT id, name, email, password, status
+        FROM members
+        WHERE email = #{email} AND password = #{password}
+    </select>
 
     <update id="update">
         UPDATE members
@@ -16,14 +22,23 @@
         WHERE id = #{id}
     </update>
 
+    <update id="deleteByEmails" parameterType="map">
+        DELETE FROM members
+        WHERE email IN (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </update>
+
     <select id="findById" resultType="com.gregori.member.domain.Member" parameterType="Long">
-        SELECT id, name, email, password, status, created_at, updated_at
+        SELECT id, name, email, password, status, authority, created_at, updated_at
         FROM members
         WHERE id = #{id}
     </select>
 
     <select id="findByEmail" resultType="com.gregori.member.domain.Member" parameterType="String">
-        SELECT id, name, email, password, status
+        SELECT id, name, email, password, status, authority, created_at, updated_at
         FROM members
         WHERE email = #{email}
     </select>
