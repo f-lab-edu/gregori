@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gregori.mapper.MemberMapper">
+<mapper namespace="com.gregori.member.mapper.MemberMapper">
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.domain.member.Member">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.member.domain.Member">
         INSERT INTO members (name, email, password, status)
         VALUES (#{name}, #{email}, #{password}, #{status})
     </insert>
@@ -16,13 +16,13 @@
         WHERE id = #{id}
     </update>
 
-    <select id="findById" resultType="com.gregori.domain.member.Member" parameterType="Long">
+    <select id="findById" resultType="com.gregori.member.domain.Member" parameterType="Long">
         SELECT id, name, email, password, status, created_at, updated_at
         FROM members
         WHERE id = #{id}
     </select>
 
-    <select id="findByEmail" resultType="com.gregori.domain.member.Member" parameterType="String">
+    <select id="findByEmail" resultType="com.gregori.member.domain.Member" parameterType="String">
         SELECT id, name, email, password, status
         FROM members
         WHERE email = #{email}

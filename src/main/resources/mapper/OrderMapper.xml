@@ -3,14 +3,14 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gregori.mapper.OrderMapper">
+<mapper namespace="com.gregori.order.mapper.OrderMapper">
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.domain.order.Order">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.order.domain.Order">
         INSERT INTO orders (member_id, order_no, payment_method, payment_amount, delivery_cost)
         VALUES (#{memberid}, #{orderNo}, #{paymentMethod}, #{paymentAmount}, #{deliveryCost})
     </insert>
 
-    <select id="findById" resultType="com.gregori.domain.order.Order" parameterType="Long">
+    <select id="findById" resultType="com.gregori.order.domain.Order" parameterType="Long">
         SELECT id, member_id, order_no, payment_method, payment_amount, delivery_cost
         FROM orders
         WHERE id = #{id}
