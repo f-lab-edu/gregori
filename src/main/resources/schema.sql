@@ -1,8 +1,8 @@
-DROP TABLE IF EXISTS members;
-DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS order_items CASCADE;
+DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS items;
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS members;
 
 CREATE TABLE members (
      id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '회원 인덱스',
@@ -43,19 +43,19 @@ CREATE TABLE orders (
     status         VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 상태',
     created_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 접수 날짜',
     updated_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 수정 날짜',
-    FOREIGN KEY (member_id) REFERENCES members(id)
+    CONSTRAINT member_id FOREIGN KEY (member_id) REFERENCES members(id)
 );
 
-CREATE TABLE order_items
-(
-    id          BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '주문 상품 인덱스',
-    order_id    BIGINT                NOT NULL COMMENT '주문 인덱스',
-    order_count BIGINT                NOT NULL COMMENT '주문 상품 개수',
-    item_id     BIGINT                NOT NULL COMMENT '상품 인덱스',
-    item_name   VARCHAR(255)          NOT NULL COMMENT '주문 상품 이름',
-    item_price  BIGINT                NOT NULL COMMENT '주문 상품 가격',
-    status      VARCHAR(255)          NOT NULL COMMENT '주문 상품 상태',
-    created_at  TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '주문 상품 생성 날짜',
-    FOREIGN KEY (order_id) REFERENCES orders (id),
-    FOREIGN KEY (item_id) REFERENCES items (id)
+CREATE TABLE order_items (
+    id          BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                          COMMENT '주문 상품 인덱스',
+    order_id    BIGINT                NOT NULL                                                                      COMMENT '주문 인덱스',
+    order_count BIGINT                NOT NULL                                                                      COMMENT '주문 상품 개수',
+    item_id     BIGINT                NOT NULL                                                                      COMMENT '상품 인덱스',
+    item_name   VARCHAR(255)          NOT NULL                                                                      COMMENT '주문 상품 이름',
+    item_price  BIGINT                NOT NULL                                                                      COMMENT '주문 상품 가격',
+    status      VARCHAR(255)          NOT NULL                                                                      COMMENT '주문 상품 상태',
+    created_at  TIMESTAMP             NOT NULL                DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 상품 생성 날짜',
+    updated_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 상품 수정 날짜',
+    CONSTRAINT order_id FOREIGN KEY (order_id) REFERENCES orders(id),
+    CONSTRAINT item_id FOREIGN KEY (item_id) REFERENCES items(id)
 );
