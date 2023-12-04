@@ -13,7 +13,8 @@ public enum SuccessMessage {
 	SIGNOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공했습니다."),
 	UPDATE_MEMBER_SUCCESS(HttpStatus.OK, "회원 수정에 성공했습니다."),
 	DEACTIVATE_MEMBER_SUCCESS(HttpStatus.OK, "회원 수정에 성공했습니다."),
-	FIND_MEMBER_SUCCESS(HttpStatus.OK, "회원 정보 찾기에 성공했습니다.");
+	FIND_MEMBER_SUCCESS(HttpStatus.OK, "회원 정보 찾기에 성공했습니다."),
+	FIND_ITEM_SUCCESS(HttpStatus.OK, "상품 찾기에 성공했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String description;

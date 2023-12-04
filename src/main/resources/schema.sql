@@ -1,17 +1,18 @@
 DROP TABLE IF EXISTS members;
 DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS order_items;
 
 CREATE TABLE members (
-    id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '회원 인덱스',
-    name       VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 이름',
-    email      VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 이메일',
-    password   VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 비밀번호',
-    status     VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 상태',
-    authority  VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 권한',
-    created_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '회원 가입 날짜',
-    updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '회원 수정 날짜'
+     id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '회원 인덱스',
+     name       VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 이름',
+     email      VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 이메일',
+     password   VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 비밀번호',
+     status     VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 상태',
+     authority  VARCHAR(255)          NOT NULL                                                                   COMMENT '회원 권한',
+     created_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '회원 가입 날짜',
+     updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '회원 수정 날짜'
 );
 
 CREATE TABLE refresh_tokens (
@@ -20,6 +21,16 @@ CREATE TABLE refresh_tokens (
     refresh_token_value VARCHAR(255)          NOT NULL                                                                   COMMENT '토큰 값',
     created_at          TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '토큰 생성 날짜',
     updated_at          TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '토큰 수정 날짜'
+);
+
+CREATE TABLE items (
+    id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '상품 인덱스',
+    name       VARCHAR(255)          NOT NULL                                                                   COMMENT '상품 이름',
+    price      BIGINT                NOT NULL                                                                   COMMENT '상품 가격',
+    inventory  BIGINT                NOT NULL                                                                   COMMENT '상품 재고',
+    status     VARCHAR(255)          NOT NULL                                                                   COMMENT '상품 상태',
+    created_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '상품 생성 날짜',
+    updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜'
 );
 
 CREATE TABLE orders (
@@ -32,18 +43,19 @@ CREATE TABLE orders (
     status         VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 상태',
     created_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 접수 날짜',
     updated_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 수정 날짜',
-    FOREIGN KEY (member_id) REFERENCES members(member_id)
+    FOREIGN KEY (member_id) REFERENCES members(id)
 );
 
-CREATE TABLE order_items (
-     id          BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '주문 상품 인덱스',
-     order_id    BIGINT                NOT NULL COMMENT '주문 인덱스',
-     order_count BIGINT                NOT NULL COMMENT '주문 상품 개수',
-     item_id     BIGINT                NOT NULL COMMENT '상품 인덱스',
-     item_name   VARCHAR(255)          NOT NULL COMMENT '주문 상품 이름',
-     item_price  BIGINT                NOT NULL COMMENT '주문 상품 가격',
-     status      VARCHAR(255)          NOT NULL COMMENT '주문 상품 상태',
-     created_at  TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '주문 상품 생성 날짜',
-     FOREIGN KEY (order_id) REFERENCES order_items (order_id),
-     FOREIGN KEY (item_id) REFERENCES items (item_id)
+CREATE TABLE order_items
+(
+    id          BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY COMMENT '주문 상품 인덱스',
+    order_id    BIGINT                NOT NULL COMMENT '주문 인덱스',
+    order_count BIGINT                NOT NULL COMMENT '주문 상품 개수',
+    item_id     BIGINT                NOT NULL COMMENT '상품 인덱스',
+    item_name   VARCHAR(255)          NOT NULL COMMENT '주문 상품 이름',
+    item_price  BIGINT                NOT NULL COMMENT '주문 상품 가격',
+    status      VARCHAR(255)          NOT NULL COMMENT '주문 상품 상태',
+    created_at  TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '주문 상품 생성 날짜',
+    FOREIGN KEY (order_id) REFERENCES orders (id),
+    FOREIGN KEY (item_id) REFERENCES items (id)
 );
