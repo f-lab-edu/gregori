@@ -34,7 +34,7 @@ class MemberControllerIntegrationTest {
 	private ObjectMapper objectMapper;
 
 	@Test
-	@DisplayName("회원가입 테스트")
+	@DisplayName("클라이언트의 요청에 따라 신규 회원을 등록한다.")
 	void register() throws Exception {
 		// given
 		Map<String, String> input = new HashMap<>();

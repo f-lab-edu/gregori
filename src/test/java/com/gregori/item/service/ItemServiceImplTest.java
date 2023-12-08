@@ -40,7 +40,7 @@ class ItemServiceImplTest {
  	}
 
 	@Test
-	@DisplayName("새로운 아이템을 저장하고 id를 반환한다.")
+	@DisplayName("새로운 상품을 저장하고 id를 반환한다.")
 	void saveItem() {
 		// given
 		ItemCreateDto itemCreateDto = new ItemCreateDto("아이템1", 100L, 1L);
@@ -58,7 +58,7 @@ class ItemServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("테이블에 저장된 아이템을 수정하고 id를 반환한다.")
+	@DisplayName("DB에 저장된 상품을 수정하고 id를 반환한다.")
 	void updateItem() {
 		// given
 		Item item = Item.builder()
@@ -83,7 +83,7 @@ class ItemServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("테이블에 저장된 아이템의 상태를 변경하고 id를 반환한다.")
+	@DisplayName("DB에 저장된 상품의 상태를 변경하고 id를 반환한다.")
 	void updateItemStatus() {
 		// given
 		Item item = Item.builder()
@@ -104,7 +104,7 @@ class ItemServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("아이템 id로 테이블에 저장된 아이템을 조회해서 반환한다.")
+	@DisplayName("상품의 id로 DB에 저장된 상품을 조회해서 반환한다.")
 	void getItem() {
 		// given
 		Item item = Item.builder()
@@ -127,7 +127,7 @@ class ItemServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("아이템의 id 목록으로 테이블에 저장된 아이템을 전부 조회해서 반환한다.")
+	@DisplayName("상품 id 목록으로 DB에 저장된 상품을 전부 조회해서 반환한다.")
 	void getItems() {
 		// given
 		Item item1 = Item.builder()

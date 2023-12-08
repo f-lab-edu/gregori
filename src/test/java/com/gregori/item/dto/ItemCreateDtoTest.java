@@ -80,7 +80,7 @@ class ItemCreateDtoTest {
 	}
 
 	@Test
-	@DisplayName("입력값이 올바르면 ItemInsertDto 객체 생성에 성공한다.")
+	@DisplayName("올바른 입력값이면 ItemCreateDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
 		// given
 		ItemCreateDto dto = new ItemCreateDto("name", 1L, 1L);

@@ -47,7 +47,7 @@ class ItemUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("price 필드가 비어 있으면 에러 발생")
+	@DisplayName("price 필드가 비어 있으면 에러가 발생한다.")
 	void nullPriceInputFailsTest() {
 		// given
 		ItemUpdateDto dto = new ItemUpdateDto(1L, "name", null, 1L);
@@ -60,7 +60,7 @@ class ItemUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("inventory 필드가 비어 있으면 에러 발생")
+	@DisplayName("inventory 필드가 비어 있으면 에러가 발생한다.")
 	void nullInventoryInputFailsTest() {
 		// given
 		ItemUpdateDto dto = new ItemUpdateDto(1L, "name", 1L, null);
@@ -73,7 +73,7 @@ class ItemUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("유효한 input이면 성공")
+	@DisplayName("입력값이 올바르면 ItemUpdateDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
 		// given
 		ItemUpdateDto dto = new ItemUpdateDto(1L, "name", 1L, 1L);
