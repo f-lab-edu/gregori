@@ -32,7 +32,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Item 테이블에 새로운 아이템을 추가한다.")
+	@DisplayName("Items 테이블에 새로운 상품을 추가한다.")
 	void insert() {
 		//given
 		Item item = Item.builder()
@@ -52,7 +52,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Item 테이블의 아이템을 수정한다.")
+	@DisplayName("Items 테이블의 상품을 수정한다.")
 	void update() {
 		// given
 		Item item = Item.builder()
@@ -77,7 +77,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 Item 테이블의 아이템을 전부 삭제한다.")
+	@DisplayName("Id 목록과 일치하는 Items 테이블의 상품을 전부 삭제한다.")
 	void deleteByIds() {
 		 // given
 		Item item = Item.builder()
@@ -98,7 +98,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Item 테이블에서 id가 일치하는 아이템을 조회한다.")
+	@DisplayName("Items 테이블에서 id가 일치하는 상품을 조회한다.")
 	void findById() {
 		// given
 		Item item = Item.builder()
@@ -124,7 +124,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Item 테이블에서 id 목록과 일치하는 아이템을 전부 조회한다.")
+	@DisplayName("Items 테이블에서 id 목록과 일치하는 상품을 전부 조회한다.")
 	void findAllById() {
 		// given
 		Item item1 = Item.builder()

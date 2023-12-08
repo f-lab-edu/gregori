@@ -81,11 +81,11 @@ class AuthControllerIntegrationTest {
 
 	@AfterAll
 	void AfterAll() {
-		memberMapper.deleteByEmails(members.stream().map(Member::getEmail).collect(Collectors.toList()));
+		memberMapper.deleteByEmails(members.stream().map(Member::getEmail).toList());
 	}
 
 	@Test
-	@DisplayName("로그인 테스트")
+	@DisplayName("클라이언트의 요청에 따라 로그인 로직을 실행하고 토큰을 반환한다.")
 	void signIn() throws Exception {
 		// given
 		Map<String, String> input = new HashMap<>();
@@ -130,7 +130,7 @@ class AuthControllerIntegrationTest {
 	}
 
 	@Test
-	@DisplayName("로그아웃 테스트")
+	@DisplayName("클라이언트의 요청에 따라 로그아웃 로직을 실행한다.")
 	void signOut() throws Exception {
 		// given
 		UsernamePasswordAuthenticationToken authenticationToken =

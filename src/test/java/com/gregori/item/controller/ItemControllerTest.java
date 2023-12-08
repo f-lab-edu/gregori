@@ -62,7 +62,7 @@ class ItemControllerTest {
 	}
 
 	@Test
-	@DisplayName("테이블에 저장된 아이템을 조회할 수 있다.")
+	@DisplayName("클라이언트의 요청에 따라 테이블에 저장된 상품을 조회한다.")
 	void getItem() throws Exception {
 		// when
 		ResultActions actions = mockMvc.perform(

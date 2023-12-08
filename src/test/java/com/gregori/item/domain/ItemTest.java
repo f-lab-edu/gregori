@@ -81,7 +81,7 @@ class ItemTest {
 	}
 
 	@Test
-	@DisplayName("Item 객체의 필드를 getter드 메서드로 조회한다.")
+	@DisplayName("Item 객체의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
 		// given
 		Item item = new Item("name", 1L, 10L);
