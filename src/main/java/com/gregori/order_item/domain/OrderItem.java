@@ -1,14 +1,15 @@
-package com.gregori.order.domain;
+package com.gregori.order_item.domain;
 
 import com.gregori.common.AbstractEntity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class OrderItems extends AbstractEntity {
+public class OrderItem extends AbstractEntity {
 	private Long id;
 	private Long orderId;
 	private Long orderCount;
@@ -25,7 +26,8 @@ public class OrderItems extends AbstractEntity {
 		private final String description;
 	}
 
-	public OrderItems(Long orderId, Long orderCount, Long itemId, String itemName, Long itemPrice) {
+	@Builder
+	public OrderItem(Long orderId, Long orderCount, Long itemId, String itemName, Long itemPrice) {
 		this.orderId = orderId;
 		this.orderCount = orderCount;
 		this.itemId = itemId;
