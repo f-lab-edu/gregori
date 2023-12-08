@@ -23,7 +23,7 @@ class OrderItemRequestDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("OrderItem 객체 build 테스트")
+	@DisplayName("OrderItem 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
 		// given
 		OrderItemRequestDto dto = new OrderItemRequestDto(1L, 1L);
@@ -37,7 +37,7 @@ class OrderItemRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("orderItem 필드가 비어 있으면 에러 발생")
+	@DisplayName("orderItem 필드가 비어 있으면 에러가 발생한다.")
 	void nullOrderCountInputFailsTest() {
 		// given
 		OrderItemRequestDto dto = new OrderItemRequestDto(null, 1L);
@@ -50,7 +50,7 @@ class OrderItemRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("itemId 필드가 비어 있으면 에러 발생")
+	@DisplayName("itemId 필드가 비어 있으면 에러가 발생한다.")
 	void nullItemIdInputFailsTest() {
 		// given
 		OrderItemRequestDto dto = new OrderItemRequestDto(1L, null);
@@ -63,7 +63,7 @@ class OrderItemRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("유효한 input이면 성공")
+	@DisplayName("입력값이 올바르면 OrderItemRequestDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
 		// given
 		OrderItemRequestDto dto = new OrderItemRequestDto(1L, 1L);

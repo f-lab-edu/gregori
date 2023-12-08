@@ -91,12 +91,12 @@ class OrderItemMapperTest {
 	void afterAll() {
 		orderItemMapper.deleteByIds(orderItemIds);
 		orderMapper.deleteByIds(List.of(orderId));
-		itemMapper.deleteByIds(items.stream().map(Item::getId).toList());
+		itemMapper.deleteById(items.stream().map(Item::getId).toList());
 		memberMapper.deleteByEmails(List.of("a@a.a"));
 	}
 
 	@Test
-	@DisplayName("OrderItem 삽입 테스트")
+	@DisplayName("OrderItems 테이블에 새로운 주문 상품을 삽입한다.")
 	void insert() {
 		// given
 		OrderItem orderItem = OrderItem.builder()
@@ -119,7 +119,7 @@ class OrderItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderItems 삭제 테스트")
+	@DisplayName("OrderItems 테이블에서 id가 일치하는 주문을 전부 삭제한다.")
 	void deleteByIds() {
 		// given
 		OrderItem orderItem = OrderItem.builder()
@@ -142,7 +142,7 @@ class OrderItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderId로 OrderItems를 찾아서 반환하는 테스트")
+	@DisplayName("OrderItems 테이블에서 orderId가 일치하는 주문 상품을 조회한다.")
 	void findByOrderId() {
 		// given
 		OrderItem orderItem1 = OrderItem.builder()
@@ -176,7 +176,7 @@ class OrderItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderItems 찾기 테스트")
+	@DisplayName("OrderItems 테이블에서 id가 일치하는 주문을 전부 조회한다.")
 	void findByIds() {
 		// given
 		OrderItem orderItem1 = OrderItem.builder()

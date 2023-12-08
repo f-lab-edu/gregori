@@ -22,7 +22,7 @@ class OrderRequestDtoTest {
 	private final List<OrderItemRequestDto> orderItems = List.of(new OrderItemRequestDto(1L, 1L));
 
 	@Test
-	@DisplayName("OrderItem 객체 build 테스트")
+	@DisplayName("OrderItem 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderItems);
@@ -35,7 +35,7 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("memberId 필드가 비어 있으면 에러 발생")
+	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
 	void nullMemberIdInputFailsTest() {
 		// given
 		OrderRequestDto dto = new OrderRequestDto(null, "method", 1L, 1L, orderItems);
@@ -48,7 +48,7 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("paymentMethod 필드가 비어 있거나 빈 문자열이면 에러 발생")
+	@DisplayName("paymentMethod 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void blankPaymentMethodInputFailsTest() {
 		// given
 		OrderRequestDto dto1 = new OrderRequestDto(1L, null, 1L, 1L, orderItems);
@@ -67,7 +67,7 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("PaymentAmount 필드가 비어 있으면 에러 발생")
+	@DisplayName("PaymentAmount 필드가 비어 있으면 에러가 발생한다.")
 	void nullPaymentAmountInputFailsTest() {
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", null, 1L, orderItems);
@@ -80,7 +80,7 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("deliveryCost 필드가 비어 있으면 에러 발생")
+	@DisplayName("deliveryCost 필드가 비어 있으면 에러가 발생한다.")
 	void nullDeliveryCostInputFailsTest() {
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, null, orderItems);
@@ -93,7 +93,7 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("orderItems 필드가 비어 있으면 에러 발생")
+	@DisplayName("orderItems 필드가 비어 있으면 에러가 발생한다.")
 	void nullOrderItemsInputFailsTest() {
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, null);
@@ -106,7 +106,7 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("유효한 input이면 성공")
+	@DisplayName("입력값이 올바르면 OrderRequestDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderItems);

@@ -27,7 +27,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderResponseDto createOrder(OrderRequestDto orderRequestDto) {
+	public OrderResponseDto saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
 		Order order = orderRequestDto.toEntity();
 		orderMapper.insert(order);
 		List<OrderItemResponseDto> orderItems = orderRequestDto.getOrderItems()
@@ -47,7 +47,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderResponseDto findOrderById(Long orderId) {
+	public OrderResponseDto getOrder(Long orderId) throws NotFoundException {
 		Order order = orderMapper.findById(orderId)
 			.orElseThrow(NotFoundException::new);
 		List<OrderItem> orderItems = orderItemMapper.findByOrderId(order.getId());

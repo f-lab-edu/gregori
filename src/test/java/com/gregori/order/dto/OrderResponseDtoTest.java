@@ -25,7 +25,7 @@ class OrderResponseDtoTest {
 			.build());
 
 	@Test
-	@DisplayName("OrderResponseDto의 build 테스트")
+	@DisplayName("Order와 OrderItems를 파라미터로 받아 OrderResponseDto 객체를 builder 패턴으로 생성한다.")
 	void toEntityTest() {
 		// given
 		Order order = Order.builder()
@@ -49,7 +49,7 @@ class OrderResponseDtoTest {
 	}
 
 	@Test
-	@DisplayName("OrderResponseDto의 getter 테스트")
+	@DisplayName("OrderResponseDto 객체의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
 		// given
 		OrderResponseDto dto = new OrderResponseDto(1L, 1L, "orderNo", "paymentMethod", 1L, 1L, ORDER_COMPLETED, orderItems);

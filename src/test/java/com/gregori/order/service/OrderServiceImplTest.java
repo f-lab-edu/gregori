@@ -91,19 +91,19 @@ class OrderServiceImplTest {
 	void afterAll() {
 		orderItemMapper.deleteByIds(orderItemIds);
 		orderMapper.deleteByIds(orderIds);
-		itemMapper.deleteByIds(items.stream().map(Item::getId).toList());
+		itemMapper.deleteById(items.stream().map(Item::getId).toList());
 		memberMapper.deleteByEmails(List.of(member.getEmail()));
 	}
 
 	@Test
-	@DisplayName("Order 삽입 서비스 테스트")
+	@DisplayName("새로운 주문과 주문 상품을 DB에 저장하고 주문 정보를 반환한다.")
 	void createOrder() {
 		// given
 		List<OrderItemRequestDto> orderItemsRequest = List.of(new OrderItemRequestDto(1L, items.get(0).getId()));
 		OrderRequestDto orderRequestDto = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderItemsRequest);
 
 		// when
-		OrderResponseDto result = orderService.createOrder(orderRequestDto);
+		OrderResponseDto result = orderService.saveOrder(orderRequestDto);
 		Order order = orderMapper.findById(result.getId()).orElseThrow(NotFoundException::new);
 		List<OrderItem> orderItems = orderItemMapper.findByOrderId(order.getId());
 
@@ -121,7 +121,7 @@ class OrderServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("Id로 Order 찾기")
+	@DisplayName("orderId로 DB에 저장된 주문과 주문 상품을 조회해서 반환한다.")
 	void findOrderById() {
 		// given
 		Order order = Order.builder()
@@ -144,7 +144,7 @@ class OrderServiceImplTest {
 		orderItemIds.add(orderItem.getId());
 
 		// when
-		OrderResponseDto result = orderService.findOrderById(order.getId());
+		OrderResponseDto result = orderService.getOrder(order.getId());
 
 		// then
 		assertEquals(result.getId(), order.getId());

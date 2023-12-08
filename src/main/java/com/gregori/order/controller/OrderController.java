@@ -29,15 +29,15 @@ public class OrderController {
 	@PostMapping
 	public ResponseEntity<CustomResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
 		CustomResponse<OrderResponseDto> response = CustomResponse
-			.success(orderService.createOrder(orderRequestDto), CREATE_ORDER_SUCCESS);
+			.success(orderService.saveOrder(orderRequestDto), CREATE_ORDER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{orderId}")
-	public ResponseEntity<CustomResponse<OrderResponseDto>> findOrderById(@PathVariable Long orderId) {
+	public ResponseEntity<CustomResponse<OrderResponseDto>> getOrder(@PathVariable Long orderId) {
 		CustomResponse<OrderResponseDto> response = CustomResponse
-			.success(orderService.findOrderById(orderId), FIND_ORDER_SUCCESS);
+			.success(orderService.getOrder(orderId), FIND_ORDER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

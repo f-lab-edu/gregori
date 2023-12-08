@@ -55,7 +55,7 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Order 삽입 테스트")
+	@DisplayName("Orders 테이블에 새로운 주문을 삽입한다.")
 	void insert() {
 		// given
 		Order order = Order.builder()
@@ -77,7 +77,7 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Orders 삭제 테스트")
+	@DisplayName("Orders 테이블에서 id가 일치하는 주문을 삭제한다.")
 	void deleteByIds() {
 		// given
 		Order order = Order.builder()
@@ -99,7 +99,7 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Order 아이템 찾기 테스트")
+	@DisplayName("Orders 테이블에서 id가 일치하는 주문을 조회한다.")
 	void findById() {
 		// given
 		Order order = Order.builder()

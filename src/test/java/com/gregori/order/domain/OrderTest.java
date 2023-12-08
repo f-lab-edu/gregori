@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderTest {
 	@Test
-	@DisplayName("주문 번호를 생성하는 메서드")
+	@DisplayName("15자리 이상의 주문 번호를 생성한다.")
 	void orderNoGenerator() {
 		// given
 		Order order = Order.builder()
@@ -27,7 +27,7 @@ class OrderTest {
 	}
 
 	@Test
-	@DisplayName("주문 상태 주문 완료 메서드")
+	@DisplayName("Order 객체의 상태를 'ORDER_COMPLETED'로 변경한다.")
 	void orderCompleted() {
 		// given
 		Order order = Order.builder()
@@ -45,7 +45,7 @@ class OrderTest {
 	}
 
 	@Test
-	@DisplayName("주문 상태 주문 취소 메서드")
+	@DisplayName("Order 객체의 상태를 'ORDER_CANCELLED'로 변경한다.")
 	void orderCancelled() {
 		// given
 		Order order = Order.builder()
@@ -63,7 +63,7 @@ class OrderTest {
 	}
 
 	@Test
-	@DisplayName("Order 도메인의 builer와 getter 테스트")
+	@DisplayName("Order 객체를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
 	void builderAndGetterTest() {
 		// given
 		Order order = Order.builder()

@@ -110,7 +110,7 @@ class OrderControllerTest {
 			orderMapper.deleteByIds(orderIds);
 		}
 		if (!items.isEmpty()) {
-			itemMapper.deleteByIds(items.stream().map(Item::getId).toList());
+			itemMapper.deleteById(items.stream().map(Item::getId).toList());
 		}
 		if(member != null) {
 			memberMapper.deleteByEmails(List.of(member.getEmail()));
@@ -118,7 +118,7 @@ class OrderControllerTest {
 	}
 
 	@Test
-	@DisplayName("주문 생성 테스트")
+	@DisplayName("클라이언트의 요청에 따라 주문을 새로 생성한다.")
 	void createOrder() throws Exception {
 		// given
 		List<OrderItemRequestDto> orderItemsRequest = List.of(new OrderItemRequestDto(1L, items.get(0).getId()));
@@ -174,8 +174,8 @@ class OrderControllerTest {
 	}
 
 	@Test
-	@DisplayName("주문 찾기 테스트")
-	void findOrderById() throws Exception {
+	@DisplayName("클라이언트의 요청에 따라 주문을 조회한다.")
+	void getOrder() throws Exception {
 		// given
 		Order order = Order.builder()
 			.memberId(member.getId())
