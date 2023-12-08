@@ -9,12 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.gregori.common.response.CustomResponse;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.service.OrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import static com.gregori.common.response.SuccessMessage.CREATE_ORDER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.FIND_ORDER_SUCCESS;
 
 @Controller
 @RequiredArgsConstructor
@@ -23,17 +27,18 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping
-	public ResponseEntity<String> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
-		orderService.createOrder(orderRequestDto);
+	public ResponseEntity<CustomResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
+		CustomResponse<OrderResponseDto> response = CustomResponse
+			.success(orderService.createOrder(orderRequestDto), CREATE_ORDER_SUCCESS);
 
-		return ResponseEntity.status(HttpStatus.OK).body("주문을 성공했습니다.");
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@GetMapping("/{orderId}")
+	public ResponseEntity<CustomResponse<OrderResponseDto>> findOrderById(@PathVariable Long orderId) {
+		CustomResponse<OrderResponseDto> response = CustomResponse
+			.success(orderService.findOrderById(orderId), FIND_ORDER_SUCCESS);
 
-	@GetMapping
-	public ResponseEntity<OrderResponseDto> findOrderById(@PathVariable Long orderId) {
-		OrderResponseDto orderResponseDto = orderService.findOrderById(orderId);
-
-		return ResponseEntity.status(HttpStatus.OK).body(orderResponseDto);
+		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

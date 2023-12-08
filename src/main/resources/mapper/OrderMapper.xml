@@ -6,12 +6,21 @@
 <mapper namespace="com.gregori.order.mapper.OrderMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.order.domain.Order">
-        INSERT INTO orders (member_id, order_no, payment_method, payment_amount, delivery_cost)
-        VALUES (#{memberid}, #{orderNo}, #{paymentMethod}, #{paymentAmount}, #{deliveryCost})
+        INSERT INTO orders (member_id, order_no, payment_method, payment_amount, delivery_cost, status)
+        VALUES (#{memberId}, #{orderNo}, #{paymentMethod}, #{paymentAmount}, #{deliveryCost}, #{status})
     </insert>
 
+    <update id="deleteByIds" parameterType="map">
+        DELETE FROM orders
+        WHERE id IN (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </update>
+
     <select id="findById" resultType="com.gregori.order.domain.Order" parameterType="Long">
-        SELECT id, member_id, order_no, payment_method, payment_amount, delivery_cost
+        SELECT id, member_id, order_no, payment_method, payment_amount, delivery_cost, status
         FROM orders
         WHERE id = #{id}
     </select>

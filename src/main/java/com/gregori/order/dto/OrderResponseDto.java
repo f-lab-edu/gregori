@@ -1,13 +1,19 @@
 package com.gregori.order.dto;
 
-import com.gregori.order.domain.Order;
+import java.util.List;
 
+import com.gregori.order.domain.Order;
+import com.gregori.order_item.dto.OrderItemResponseDto;
+
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderResponseDto {
 	private Long id;
 	private Long memberId;
@@ -16,20 +22,9 @@ public class OrderResponseDto {
 	private Long paymentAmount;
 	private Long deliveryCost;
 	private Order.Status status;
+	private List<OrderItemResponseDto> orderItems;
 
-	@Builder
-	public OrderResponseDto(Long id, Long memberId, String orderNo, String paymentMethod, Long paymentAmount,
-		Long deliveryCost, Order.Status status) {
-		this.id = id;
-		this.memberId = memberId;
-		this.orderNo = orderNo;
-		this.paymentMethod = paymentMethod;
-		this.paymentAmount = paymentAmount;
-		this.deliveryCost = deliveryCost;
-		this.status = status;
-	}
-
-	public OrderResponseDto toEntity(Order order) {
+	public OrderResponseDto toEntity(Order order, List<OrderItemResponseDto> orderItems) {
 		return OrderResponseDto.builder()
 			.id(order.getId())
 			.memberId(order.getMemberId())
@@ -38,6 +33,7 @@ public class OrderResponseDto {
 			.paymentAmount(order.getPaymentAmount())
 			.deliveryCost(order.getDeliveryCost())
 			.status(order.getStatus())
+			.orderItems(orderItems)
 			.build();
 	}
 }

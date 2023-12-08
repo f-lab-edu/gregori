@@ -45,9 +45,8 @@ public class Order extends AbstractEntity {
 
 		Random random = new Random();
 		int randomNumber = random.nextInt(9000) + 1000;
-		String orderNo = "ORD_" + datetime + memberId + randomNumber;
 
-		return orderNo;
+		return "ORD_" + datetime + memberId + randomNumber;
 	}
 
 	public void orderCompleted() {
