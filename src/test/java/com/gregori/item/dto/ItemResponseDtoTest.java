@@ -10,7 +10,7 @@ import com.gregori.item.domain.Item;
 
 class ItemResponseDtoTest {
 	@Test
-	@DisplayName("ItemResponseDto의 build 테스트")
+	@DisplayName("Item을 파라미터로 받아 builder 패턴으로 ItemResponseDto 객체를 생성한다.")
 	void toEntityTest() {
 		// given
 		Item item = new Item("name", 1L, 1L);
@@ -25,7 +25,7 @@ class ItemResponseDtoTest {
 	}
 
 	@Test
-	@DisplayName("ItemResponseDto의 getter 테스트")
+	@DisplayName("ItemResponseDto 객체의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
 		// given
 		ItemResponseDto dto = new ItemResponseDto(1L, "name", 1L, 10L, PRE_SALE);

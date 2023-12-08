@@ -43,21 +43,21 @@ public class MypageController {
 	}
 
 	@DeleteMapping("/{memberId}")
-	public ResponseEntity<CustomResponse<Long>> deactivateMember(@PathVariable Long memberId) {
+	public ResponseEntity<CustomResponse<Long>> deleteMember(@PathVariable Long memberId) {
 		authorizationCheck(memberId);
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.deactivateMember(memberId), DEACTIVATE_MEMBER_SUCCESS);
+			.success(memberService.deleteMember(memberId), DEACTIVATE_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{memberId}")
-	public ResponseEntity<CustomResponse<MemberResponseDto>> findMemberById(@PathVariable Long memberId) {
+	public ResponseEntity<CustomResponse<MemberResponseDto>> getMember(@PathVariable Long memberId) {
 		authorizationCheck(memberId);
 
 		CustomResponse<MemberResponseDto> response = CustomResponse
-			.success(memberService.findMemberById(memberId), FIND_MEMBER_SUCCESS);
+			.success(memberService.getMember(memberId), FIND_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

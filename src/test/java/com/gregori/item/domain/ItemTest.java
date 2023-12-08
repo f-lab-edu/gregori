@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 class ItemTest {
 
 	@Test
-	@DisplayName("아이템 수정 메서드 테스트")
+	@DisplayName("Item 객체의 필드를 수정한다.")
 	void updateItemInfo() {
 		// given
 		Item item = Item.builder()
@@ -28,7 +28,7 @@ class ItemTest {
 	}
 
 	@Test
-	@DisplayName("아이템 상태 판매준비 메서드")
+	@DisplayName("Item 객체의 상태를 'PRE_SALE'로 변경한다.")
 	void preSale() {
 		// given
 		Item item = Item.builder()
@@ -47,7 +47,7 @@ class ItemTest {
 	}
 
 	@Test
-	@DisplayName("아이템 상태 판매중 메서드")
+	@DisplayName("Item 객체의 상태를 'ON_SALE'로 변경한다.")
 	void onSale() {
 		// given
 		Item item = Item.builder()
@@ -64,7 +64,7 @@ class ItemTest {
 	}
 
 	@Test
-	@DisplayName("아이템 상태 판매종료 메서드")
+	@DisplayName("Item 객체의 상태를 'END_OF_SALE'로 변경한다.")
 	void endOfSale() {
 		// given
 		Item item = Item.builder()
@@ -74,14 +74,14 @@ class ItemTest {
 			.build();
 
 		// when
-		item.preSale();
+		item.endOfSale();
 
 		// then
-		assertEquals(item.getStatus().toString(), "PRE_SALE");
+		assertEquals(item.getStatus().toString(), "END_OF_SALE");
 	}
 
 	@Test
-	@DisplayName("Item 도메인의 getter 테스트")
+	@DisplayName("Item 객체의 필드를 getter드 메서드로 조회한다.")
 	void getterTest() {
 		// given
 		Item item = new Item("name", 1L, 10L);
@@ -97,7 +97,7 @@ class ItemTest {
 	}
 
 	@Test
-	@DisplayName("Item 도메인의 builder 테스트")
+	@DisplayName("Item 객체를 builder 패턴으로 생성한다.")
 	void builder() {
 		// given
 		Item item = Item.builder()

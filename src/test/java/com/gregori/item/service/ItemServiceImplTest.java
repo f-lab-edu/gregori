@@ -1,5 +1,6 @@
 package com.gregori.item.service;
 
+import static com.gregori.item.domain.Item.Status.ON_SALE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.item.domain.Item;
-import com.gregori.item.dto.ItemInsertDto;
+import com.gregori.item.dto.ItemCreateDto;
 import com.gregori.item.dto.ItemResponseDto;
 import com.gregori.item.dto.ItemUpdateDto;
 import com.gregori.item.mapper.ItemMapper;
@@ -33,19 +34,19 @@ class ItemServiceImplTest {
 	@AfterEach
 	void afterEach() {
 		if (!itemIds.isEmpty()) {
-			itemMapper.deleteByIds(itemIds);
+			itemMapper.deleteById(itemIds);
 			itemIds.clear();
 		}
  	}
 
 	@Test
-	@DisplayName("Item 삽입 서비스 테스트")
-	void insertItem() {
+	@DisplayName("새로운 아이템을 저장하고 id를 반환한다.")
+	void saveItem() {
 		// given
-		ItemInsertDto itemInsertDto = new ItemInsertDto("아이템1", 100L, 1L);
+		ItemCreateDto itemCreateDto = new ItemCreateDto("아이템1", 100L, 1L);
 
 		// when
-		Long result = itemService.insertItem(itemInsertDto);
+		Long result = itemService.saveItem(itemCreateDto);
 		Item item = itemMapper.findById(result).orElseThrow(NotFoundException::new);
 		itemIds.add(item.getId());
 
@@ -57,6 +58,7 @@ class ItemServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("테이블에 저장된 아이템을 수정하고 id를 반환한다.")
 	void updateItem() {
 		// given
 		Item item = Item.builder()
@@ -81,28 +83,29 @@ class ItemServiceImplTest {
 	}
 
 	@Test
-	void preSaleItem() {
+	@DisplayName("테이블에 저장된 아이템의 상태를 변경하고 id를 반환한다.")
+	void updateItemStatus() {
 		// given
 		Item item = Item.builder()
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
 			.build();
-		item.onSale();
 		itemMapper.insert(item);
 		itemIds.add(item.getId());
 
 		// when
-		Long result = itemService.preSaleItem(item.getId());
+		Long result = itemService.updateItemStatus(ON_SALE, item.getId());
 		Item findItem = itemMapper.findById(result).orElseThrow(NotFoundException::new);
 
 		// then
 		assertEquals(result, findItem.getId());
-		assertEquals(findItem.getStatus().toString(), "PRE_SALE");
+		assertEquals(findItem.getStatus(), ON_SALE);
 	}
 
 	@Test
-	void onSaleItem() {
+	@DisplayName("아이템 id로 테이블에 저장된 아이템을 조회해서 반환한다.")
+	void getItem() {
 		// given
 		Item item = Item.builder()
 			.name("아이템1")
@@ -113,47 +116,7 @@ class ItemServiceImplTest {
 		itemIds.add(item.getId());
 
 		// when
-		Long result = itemService.onSaleItem(item.getId());
-		Item findItem = itemMapper.findById(result).orElseThrow(NotFoundException::new);
-
-		// then
-		assertEquals(result, findItem.getId());
-		assertEquals(findItem.getStatus().toString(), "ON_SALE");
-	}
-
-	@Test
-	void endOfSaleItem() {
-		// given
-		Item item = Item.builder()
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		itemMapper.insert(item);
-		itemIds.add(item.getId());
-
-		// when
-		Long result = itemService.endOfSaleItem(item.getId());
-		Item findItem = itemMapper.findById(result).orElseThrow(NotFoundException::new);
-
-		// then
-		assertEquals(result, findItem.getId());
-		assertEquals(findItem.getStatus().toString(), "END_OF_SALE");
-	}
-
-	@Test
-	void findItemById() {
-		// given
-		Item item = Item.builder()
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		itemMapper.insert(item);
-		itemIds.add(item.getId());
-
-		// when
-		ItemResponseDto result = itemService.findItemById(item.getId());
+		ItemResponseDto result = itemService.getItem(item.getId());
 
 		// then
 		assertEquals(result.getId(), item.getId());
@@ -164,7 +127,8 @@ class ItemServiceImplTest {
 	}
 
 	@Test
-	void findAllItemById() {
+	@DisplayName("아이템의 id 목록으로 테이블에 저장된 아이템을 전부 조회해서 반환한다.")
+	void getItems() {
 		// given
 		Item item1 = Item.builder()
 			.name("아이템1")
@@ -184,7 +148,7 @@ class ItemServiceImplTest {
 
 		// when
 		List<ItemResponseDto> result = itemService
-			.findAllItemById(List.of(item1.getId(), item2.getId()));
+			.getItems(List.of(item1.getId(), item2.getId()));
 
 		// then
 		assertEquals(result.get(0).getId(), item1.getId());

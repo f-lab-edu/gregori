@@ -16,7 +16,7 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deleteByIds" parameterType="map">
+    <update id="deleteById" parameterType="map">
         DELETE FROM items
         WHERE id IN (
         <foreach collection="list" item="item" separator=",">
@@ -31,7 +31,7 @@
         WHERE id = #{id}
     </select>
 
-    <select id="findAllById" resultType="com.gregori.item.domain.Item" parameterType="List">
+    <select id="findByIds" resultType="com.gregori.item.domain.Item" parameterType="List">
         SELECT id, name, price, inventory, status
         FROM items
         WHERE id IN

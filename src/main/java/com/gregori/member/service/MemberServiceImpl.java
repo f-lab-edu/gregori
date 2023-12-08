@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDto register(@Valid MemberRegisterDto memberRegisterDto) {
+    public MemberResponseDto register(@Valid MemberRegisterDto memberRegisterDto) throws DuplicateException {
         memberMapper.findByEmail(memberRegisterDto.getEmail())
             .ifPresent(m -> {
                 throw new DuplicateException();
@@ -37,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long updateMember(MemberUpdateDto mypageUpdateDto) {
+    public Long updateMember(MemberUpdateDto mypageUpdateDto) throws NotFoundException {
         Member member = memberMapper.findById(mypageUpdateDto.getId())
             .orElseThrow(NotFoundException::new);
         member.updateMemberInfo(mypageUpdateDto.getName(), mypageUpdateDto.getPassword());
@@ -47,7 +47,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long deactivateMember(Long memberId) {
+    public Long deleteMember(Long memberId) throws NotFoundException {
         Member member = memberMapper.findById(memberId)
             .orElseThrow(NotFoundException::new);
         member.deactivate();
@@ -57,7 +57,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberResponseDto findMemberById(Long memberId) {
+    public MemberResponseDto getMember(Long memberId) throws NotFoundException {
         Member member = memberMapper.findById(memberId)
             .orElseThrow(NotFoundException::new);
 

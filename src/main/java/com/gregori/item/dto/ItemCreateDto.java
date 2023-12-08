@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ItemInsertDto {
+public class ItemCreateDto {
 	@NotBlank
 	private String name;
 

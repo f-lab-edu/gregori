@@ -15,7 +15,7 @@ class ItemUpdateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("id 필드가 비어 있으면 에러 발생")
+	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
 	void nullIdInputFailsTest() {
 		// given
 		ItemUpdateDto dto = new ItemUpdateDto(null, "name", 1L, 1L);
@@ -28,7 +28,7 @@ class ItemUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러 발생")
+	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void blankNameInputFailsTest() {
 		// given
 		ItemUpdateDto dto1 = new ItemUpdateDto(1L, null, 1L, 1L);
