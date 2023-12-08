@@ -17,15 +17,15 @@ import jakarta.validation.ValidatorFactory;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class ItemInsertDtoTest {
+class ItemCreateDtoTest {
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("Item 객체 build 테스트")
+	@DisplayName("Item 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
 		// given
-		ItemInsertDto dto = new ItemInsertDto("name", 1L, 1L);
+		ItemCreateDto dto = new ItemCreateDto("name", 1L, 1L);
 
 		// when
 		Item item = dto.toEntity();
@@ -35,12 +35,12 @@ class ItemInsertDtoTest {
 	}
 
 	@Test
-	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러 발생")
+	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void blankNameInputFailsTest() {
 		// given
-		ItemInsertDto dto1 = new ItemInsertDto(null, 1L, 1L);
-		ItemInsertDto dto2 = new ItemInsertDto("", 1L, 1L);
-		ItemInsertDto dto3 = new ItemInsertDto(" ", 1L, 1L);
+		ItemCreateDto dto1 = new ItemCreateDto(null, 1L, 1L);
+		ItemCreateDto dto2 = new ItemCreateDto("", 1L, 1L);
+		ItemCreateDto dto3 = new ItemCreateDto(" ", 1L, 1L);
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -54,10 +54,10 @@ class ItemInsertDtoTest {
 	}
 
 	@Test
-	@DisplayName("price 필드가 비어 있으면 에러 발생")
+	@DisplayName("price 필드가 비어 있으면 에러가 발생한다.")
 	void nullPriceInputFailsTest() {
 		// given
-		ItemInsertDto dto = new ItemInsertDto("name", null, 1L);
+		ItemCreateDto dto = new ItemCreateDto("name", null, 1L);
 
 		// when
 		var result = validator.validate(dto);
@@ -67,10 +67,10 @@ class ItemInsertDtoTest {
 	}
 
 	@Test
-	@DisplayName("inventory 필드가 비어 있으면 에러 발생")
+	@DisplayName("inventory 필드가 비어 있으면 에러가 발생한다.")
 	void nullInventoryInputFailsTest() {
 		// given
-		ItemInsertDto dto = new ItemInsertDto("name", 1L, null);
+		ItemCreateDto dto = new ItemCreateDto("name", 1L, null);
 
 		// when
 		var result = validator.validate(dto);
@@ -80,10 +80,10 @@ class ItemInsertDtoTest {
 	}
 
 	@Test
-	@DisplayName("유효한 input이면 성공")
+	@DisplayName("입력값이 올바르면 ItemInsertDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
 		// given
-		ItemInsertDto dto = new ItemInsertDto("name", 1L, 1L);
+		ItemCreateDto dto = new ItemCreateDto("name", 1L, 1L);
 
 		//when
 		var result = validator.validate(dto);

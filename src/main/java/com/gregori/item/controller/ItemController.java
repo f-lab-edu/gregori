@@ -17,14 +17,14 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/items")
+@RequestMapping("/item")
 public class ItemController {
 	private final ItemService itemService;
 
 	@GetMapping("/{itemId}")
-	public ResponseEntity<CustomResponse<ItemResponseDto>> findItemById(@PathVariable Long itemId) {
+	public ResponseEntity<CustomResponse<ItemResponseDto>> getItem(@PathVariable Long itemId) {
 		CustomResponse<ItemResponseDto> response = CustomResponse
-			.success(itemService.findItemById(itemId), FIND_ITEM_SUCCESS);
+			.success(itemService.getItem(itemId), FIND_ITEM_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

@@ -58,15 +58,15 @@ class ItemControllerTest {
 
 	@AfterAll
 	void AfterAll() {
-		itemMapper.deleteByIds(itemIds);
+		itemMapper.deleteById(itemIds);
 	}
 
 	@Test
-	@DisplayName("아이템 찾기 테스트")
-	void findItemById() throws Exception {
+	@DisplayName("테이블에 저장된 아이템을 조회할 수 있다.")
+	void getItem() throws Exception {
 		// when
 		ResultActions actions = mockMvc.perform(
-			RestDocumentationRequestBuilders.get("/items/1")
+			RestDocumentationRequestBuilders.get("/item/1")
 				.contentType(MediaType.APPLICATION_JSON)
 		);
 

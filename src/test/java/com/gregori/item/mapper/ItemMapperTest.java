@@ -26,13 +26,13 @@ class ItemMapperTest {
  	@AfterEach
 	void afterEach() {
 		if (!itemIds.isEmpty()) {
-			itemMapper.deleteByIds(itemIds);
+			itemMapper.deleteById(itemIds);
 			itemIds.clear();
 		}
 	}
 
 	@Test
-	@DisplayName("Item 삽입 테스트")
+	@DisplayName("Item 테이블에 새로운 아이템을 추가한다.")
 	void insert() {
 		//given
 		Item item = Item.builder()
@@ -52,7 +52,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Item 수정 테스트")
+	@DisplayName("Item 테이블의 아이템을 수정한다.")
 	void update() {
 		// given
 		Item item = Item.builder()
@@ -77,7 +77,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 삭제 테스트")
+	@DisplayName("Id 목록과 일치하는 Item 테이블의 아이템을 전부 삭제한다.")
 	void deleteByIds() {
 		 // given
 		Item item = Item.builder()
@@ -90,7 +90,7 @@ class ItemMapperTest {
 		itemIds.add(item.getId());
 
 		// when
-		itemMapper.deleteByIds(List.of(item.getId()));
+		itemMapper.deleteById(List.of(item.getId()));
 		Item result = itemMapper.findById(item.getId()).orElse(null);
 
 		// then
@@ -98,7 +98,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Item 찾기 테스트")
+	@DisplayName("Item 테이블에서 id가 일치하는 아이템을 조회한다.")
 	void findById() {
 		// given
 		Item item = Item.builder()
@@ -124,7 +124,7 @@ class ItemMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 찾기 테스트")
+	@DisplayName("Item 테이블에서 id 목록과 일치하는 아이템을 전부 조회한다.")
 	void findAllById() {
 		// given
 		Item item1 = Item.builder()
@@ -144,7 +144,7 @@ class ItemMapperTest {
 		itemIds.add(item2.getId());
 
 		// when
-		List<Item> result = itemMapper.findAllById(itemIds);
+		List<Item> result = itemMapper.findByIds(itemIds);
 
 		// then
 		assertEquals(result.get(0).getId(), item1.getId());
