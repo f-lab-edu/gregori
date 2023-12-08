@@ -1,4 +1,4 @@
-package com.gregori.controller.member;
+package com.gregori.member.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
