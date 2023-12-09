@@ -1,14 +1,5 @@
 package com.gregori.item.controller;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +19,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
@@ -42,7 +39,10 @@ class ItemControllerTest {
 
 	@AfterEach
 	void AfterEach() {
-		itemMapper.deleteById(itemIds);
+		if (!itemIds.isEmpty()) {
+			itemMapper.deleteById(itemIds);
+			itemIds.clear();
+		}
 	}
 
 	@Test
@@ -75,20 +75,5 @@ class ItemControllerTest {
 			.andExpect(jsonPath("$.data.status", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
-
-		actions.andDo(document("items-findItemById",
-			responseFields(
-				fieldWithPath("result").description("요청에 대한 응답 결과"),
-				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
-				fieldWithPath("data").description("요청에 대한 데이터"),
-				fieldWithPath("data.id").description("요청에 대한 아이템 아이디"),
-				fieldWithPath("data.name").description("요청에 대한 아이템 이름"),
-				fieldWithPath("data.price").description("요청에 대한 아이템 가격"),
-				fieldWithPath("data.inventory").description("요청에 대한 아이템 재고"),
-				fieldWithPath("data.status").description("요청에 대한 아이템 상태"),
-				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
-				fieldWithPath("description").description("응답에 대한 설명")
-			)
-		));
 	}
 }

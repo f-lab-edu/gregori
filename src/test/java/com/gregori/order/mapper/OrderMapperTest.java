@@ -3,11 +3,10 @@ package com.gregori.order.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderMapperTest {
 	@Autowired
 	private MemberMapper memberMapper;
@@ -34,24 +32,29 @@ class OrderMapperTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	Long memberId = 0L;
+	Member member;
 	List<Long> orderIds = new ArrayList<>();
 
-	@BeforeAll
-	void beforeAll() {
-		Member member = Member.builder()
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
 			.password(passwordEncoder.encode("aa11111!"))
 			.build();
 		memberMapper.insert(member);
-		memberId = member.getId();
 	}
 
-	@AfterAll
-	void afterAll() {
-		orderMapper.deleteByIds(orderIds);
-		memberMapper.deleteByEmails(List.of("a@a.a"));
+	@AfterEach
+	void afterEach() {
+		if (!orderIds.isEmpty()) {
+			orderMapper.deleteByIds(orderIds);
+			orderIds.clear();
+		}
+		if(member != null) {
+			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			member = null;
+		}
 	}
 
 	@Test
@@ -59,7 +62,7 @@ class OrderMapperTest {
 	void insert() {
 		// given
 		Order order = Order.builder()
-			.memberId(memberId)
+			.memberId(member.getId())
 			.paymentMethod("카드")
 			.paymentAmount(1000L)
 			.deliveryCost(2500L)
@@ -81,7 +84,7 @@ class OrderMapperTest {
 	void deleteByIds() {
 		// given
 		Order order = Order.builder()
-			.memberId(memberId)
+			.memberId(member.getId())
 			.paymentMethod("카드")
 			.paymentAmount(1000L)
 			.deliveryCost(2500L)
@@ -103,7 +106,7 @@ class OrderMapperTest {
 	void findById() {
 		// given
 		Order order = Order.builder()
-			.memberId(memberId)
+			.memberId(member.getId())
 			.paymentMethod("카드")
 			.paymentAmount(1000L)
 			.deliveryCost(2500L)

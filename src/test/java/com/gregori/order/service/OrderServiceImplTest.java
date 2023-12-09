@@ -3,12 +3,10 @@ package com.gregori.order.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -31,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderServiceImplTest {
 	@Autowired
 	private MemberMapper memberMapper;
@@ -56,8 +53,8 @@ class OrderServiceImplTest {
 	List<Long> orderIds = new ArrayList<>();
 	List<Long> orderItemIds = new ArrayList<>();
 
-	@BeforeAll
-	void beforeAll() {
+	@BeforeEach
+	void beforeEach() {
 		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
@@ -84,15 +81,22 @@ class OrderServiceImplTest {
 
 	@AfterEach
 	void afterEach() {
-		orderItemMapper.deleteByIds(orderItemIds);
-	}
-
-	@AfterAll
-	void afterAll() {
-		orderItemMapper.deleteByIds(orderItemIds);
-		orderMapper.deleteByIds(orderIds);
-		itemMapper.deleteById(items.stream().map(Item::getId).toList());
-		memberMapper.deleteByEmails(List.of(member.getEmail()));
+		if (!orderItemIds.isEmpty()) {
+			orderItemMapper.deleteByIds(orderItemIds);
+			orderItemIds.clear();
+		}
+		if (!orderIds.isEmpty()) {
+			orderMapper.deleteByIds(orderIds);
+			orderIds.clear();
+		}
+		if (!items.isEmpty()) {
+			itemMapper.deleteById(items.stream().map(Item::getId).toList());
+			items.clear();
+		}
+		if(member != null) {
+			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			member = null;
+		}
 	}
 
 	@Test

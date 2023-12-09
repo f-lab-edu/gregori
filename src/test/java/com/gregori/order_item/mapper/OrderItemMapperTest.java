@@ -3,12 +3,10 @@ package com.gregori.order_item.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class OrderItemMapperTest {
 	@Autowired
 	private MemberMapper memberMapper;
@@ -43,13 +40,14 @@ class OrderItemMapperTest {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	Long orderId = 0L;
+	Member member;
+	Order order;
 	List<Item> items = new ArrayList<>();
 	List<Long> orderItemIds = new ArrayList<>();
 
-	@BeforeAll
-	void beforeAll() {
-		Member member = Member.builder()
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
 			.password(passwordEncoder.encode("aa11111!"))
@@ -72,27 +70,33 @@ class OrderItemMapperTest {
 		items.add(item1);
 		items.add(item2);
 
-		Order order = Order.builder()
+		order = Order.builder()
 			.memberId(member.getId())
 			.paymentMethod("카드")
 			.paymentAmount(1000L)
 			.deliveryCost(2500L)
 			.build();
 		orderMapper.insert(order);
-		orderId = order.getId();
 	}
 
 	@AfterEach
 	void afterEach() {
-		orderItemMapper.deleteByIds(orderItemIds);
-	}
-
-	@AfterAll
-	void afterAll() {
-		orderItemMapper.deleteByIds(orderItemIds);
-		orderMapper.deleteByIds(List.of(orderId));
-		itemMapper.deleteById(items.stream().map(Item::getId).toList());
-		memberMapper.deleteByEmails(List.of("a@a.a"));
+		if (!orderItemIds.isEmpty()) {
+			orderItemMapper.deleteByIds(orderItemIds);
+			orderItemIds.clear();
+		}
+		if (order != null) {
+			orderMapper.deleteByIds(List.of(order.getId()));
+			order = null;
+		}
+		if (!items.isEmpty()) {
+			itemMapper.deleteById(items.stream().map(Item::getId).toList());
+			items.clear();
+		}
+		if(member != null) {
+			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			member = null;
+		}
 	}
 
 	@Test
@@ -100,7 +104,7 @@ class OrderItemMapperTest {
 	void insert() {
 		// given
 		OrderItem orderItem = OrderItem.builder()
-			.orderId(orderId)
+			.orderId(order.getId())
 			.orderCount(2L)
 			.itemId(items.get(0).getId())
 			.itemName(items.get(0).getName())
@@ -123,7 +127,7 @@ class OrderItemMapperTest {
 	void deleteByIds() {
 		// given
 		OrderItem orderItem = OrderItem.builder()
-			.orderId(orderId)
+			.orderId(order.getId())
 			.orderCount(2L)
 			.itemId(items.get(0).getId())
 			.itemName(items.get(0).getName())
@@ -146,14 +150,14 @@ class OrderItemMapperTest {
 	void findByOrderId() {
 		// given
 		OrderItem orderItem1 = OrderItem.builder()
-			.orderId(orderId)
+			.orderId(order.getId())
 			.orderCount(2L)
 			.itemId(items.get(0).getId())
 			.itemName(items.get(0).getName())
 			.itemPrice(items.get(0).getPrice())
 			.build();
 		OrderItem orderItem2 = OrderItem.builder()
-			.orderId(orderId)
+			.orderId(order.getId())
 			.orderCount(2L)
 			.itemId(items.get(1).getId())
 			.itemName(items.get(1).getName())
@@ -166,7 +170,7 @@ class OrderItemMapperTest {
 		orderItemIds.add(orderItem2.getId());
 
 		// when
-		List<OrderItem> result = orderItemMapper.findByOrderId(orderId);
+		List<OrderItem> result = orderItemMapper.findByOrderId(order.getId());
 
 		// then
 		assertEquals(result.get(0).getId(), orderItem1.getId());
@@ -180,14 +184,14 @@ class OrderItemMapperTest {
 	void findByIds() {
 		// given
 		OrderItem orderItem1 = OrderItem.builder()
-			.orderId(orderId)
+			.orderId(order.getId())
 			.orderCount(2L)
 			.itemId(items.get(0).getId())
 			.itemName(items.get(0).getName())
 			.itemPrice(items.get(0).getPrice())
 			.build();
 		OrderItem orderItem2 = OrderItem.builder()
-			.orderId(orderId)
+			.orderId(order.getId())
 			.orderCount(2L)
 			.itemId(items.get(1).getId())
 			.itemName(items.get(1).getName())

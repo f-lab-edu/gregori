@@ -103,15 +103,19 @@ class OrderControllerTest {
 	void afterEach() {
 		if (!orderItemIds.isEmpty()) {
 			orderItemMapper.deleteByIds(orderItemIds);
+			orderItemIds.clear();
 		}
 		if (!orderIds.isEmpty()) {
 			orderMapper.deleteByIds(orderIds);
+			orderIds.clear();
 		}
 		if (!items.isEmpty()) {
 			itemMapper.deleteById(items.stream().map(Item::getId).toList());
+			items.clear();
 		}
 		if(member != null) {
 			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			member = null;
 		}
 	}
 
@@ -129,6 +133,12 @@ class OrderControllerTest {
 				.content(objectMapper.writeValueAsString(input))
 		);
 
+		CustomResponse<OrderResponseDto> result = objectMapper.readValue(
+			actions.andReturn().getResponse().getContentAsString(),
+			new TypeReference<>(){});
+		orderIds.add(result.getData().getId());
+		orderItemIds.add(result.getData().getOrderItems().get(0).getId());
+
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
@@ -144,13 +154,6 @@ class OrderControllerTest {
 			.andExpect(jsonPath("$.data.orderItems", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
-
-		CustomResponse<OrderResponseDto> result = objectMapper.readValue(
-			actions.andReturn().getResponse().getContentAsString(),
-			new TypeReference<>(){});
-
-		orderIds.add(result.getData().getId());
-		orderItemIds.add(result.getData().getOrderItems().get(0).getId());
 	}
 
 	@Test
