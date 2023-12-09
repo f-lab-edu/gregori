@@ -10,7 +10,7 @@ GREGORI는 인형 옷을 전문으로 판매하는 이커머스 서비스입니�
 실무에서 자주 발생하는 문제를 재현하고 해결해봤습니다.
 
 ## DB ERD
-https://dbdiagram.io/d/Gregori-primary-652f20c7ffbf5169f0e5e8e3
+https://dbdiagram.io/d/Gregori-second-657450e256d8064ca0b20e2f
 
 ## 화면 설계
 https://www.figma.com/file/LF7MenxyEeurA3ij6AKXJM/flab-gregori-primary?type=design&node-id=0%3A1&mode=design&t=joMBzo50VTd6iF6z-1
