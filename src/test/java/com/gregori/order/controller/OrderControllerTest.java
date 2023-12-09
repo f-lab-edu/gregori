@@ -1,16 +1,12 @@
 package com.gregori.order.controller;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -22,30 +18,32 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.common.response.CustomResponse;
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.dto.OrderRequestDto;
+import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.mapper.OrderMapper;
 import com.gregori.order_item.domain.OrderItem;
 import com.gregori.order_item.dto.OrderItemRequestDto;
 import com.gregori.order_item.mapper.OrderItemMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@Slf4j
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class OrderControllerTest {
@@ -75,8 +73,8 @@ class OrderControllerTest {
 	List<Long> orderIds = new ArrayList<>();
 	List<Long> orderItemIds = new ArrayList<>();
 
-	@BeforeAll
-	void beforeAll() {
+	@BeforeEach
+	void beforeEach() {
 		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
@@ -101,8 +99,8 @@ class OrderControllerTest {
 		items.add(item2);
 	}
 
-	@AfterAll
-	void afterAll() {
+	@AfterEach
+	void afterEach() {
 		if (!orderItemIds.isEmpty()) {
 			orderItemMapper.deleteByIds(orderItemIds);
 		}
@@ -147,30 +145,12 @@ class OrderControllerTest {
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
 
-		actions.andDo(document("order-createOrder",
-			responseFields(
-				fieldWithPath("result").description("요청에 대한 응답 결과"),
-				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
-				fieldWithPath("data").description("요청에 대한 데이터"),
-				fieldWithPath("data.id").description("요청에 대한 주문 아이디"),
-				fieldWithPath("data.memberId").description("요청에 대한 주문의 회원 아이디"),
-				fieldWithPath("data.orderNo").description("요청에 대한 주문 번호"),
-				fieldWithPath("data.paymentMethod").description("요청에 대한 주문 지불 방법"),
-				fieldWithPath("data.paymentAmount").description("요청에 대한 주문 지불 금액"),
-				fieldWithPath("data.deliveryCost").description("요청에 대한 주문 배송비"),
-				fieldWithPath("data.status").description("요청에 대한 주문 상태"),
-				fieldWithPath("data.orderItems").description("요청에 대한 주문 상품 목록"),
-				fieldWithPath("data.orderItems[0].id").description("주문 상품의 아이디"),
-				fieldWithPath("data.orderItems[0].orderId").description("주문 상품의 주문 번호"),
-				fieldWithPath("data.orderItems[0].orderCount").description("주문 상품의 주문 개수"),
-				fieldWithPath("data.orderItems[0].itemId").description("주문 상품의 상품 아이디"),
-				fieldWithPath("data.orderItems[0].itemName").description("주문 상품의 상품 이름"),
-				fieldWithPath("data.orderItems[0].itemPrice").description("주문 상품의 상품 가격"),
-				fieldWithPath("data.orderItems[0].status").description("주문 상품의 상태"),
-				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
-				fieldWithPath("description").description("응답에 대한 설명")
-			)
-		));
+		CustomResponse<OrderResponseDto> result = objectMapper.readValue(
+			actions.andReturn().getResponse().getContentAsString(),
+			new TypeReference<>(){});
+
+		orderIds.add(result.getData().getId());
+		orderItemIds.add(result.getData().getOrderItems().get(0).getId());
 	}
 
 	@Test
@@ -217,30 +197,5 @@ class OrderControllerTest {
 			.andExpect(jsonPath("$.data.orderItems", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
-
-		actions.andDo(document("order-findOrderById",
-			responseFields(
-				fieldWithPath("result").description("요청에 대한 응답 결과"),
-				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
-				fieldWithPath("data").description("요청에 대한 데이터"),
-				fieldWithPath("data.id").description("요청에 대한 주문 아이디"),
-				fieldWithPath("data.memberId").description("요청에 대한 주문의 회원 아이디"),
-				fieldWithPath("data.orderNo").description("요청에 대한 주문 번호"),
-				fieldWithPath("data.paymentMethod").description("요청에 대한 주문 지불 방법"),
-				fieldWithPath("data.paymentAmount").description("요청에 대한 주문 지불 금액"),
-				fieldWithPath("data.deliveryCost").description("요청에 대한 주문 배송비"),
-				fieldWithPath("data.status").description("요청에 대한 주문 상태"),
-				fieldWithPath("data.orderItems").description("요청에 대한 주문 상품 목록"),
-				fieldWithPath("data.orderItems[0].id").description("주문 상품의 아이디"),
-				fieldWithPath("data.orderItems[0].orderId").description("주문 상품의 주문 번호"),
-				fieldWithPath("data.orderItems[0].orderCount").description("주문 상품의 주문 개수"),
-				fieldWithPath("data.orderItems[0].itemId").description("주문 상품의 상품 아이디"),
-				fieldWithPath("data.orderItems[0].itemName").description("주문 상품의 상품 이름"),
-				fieldWithPath("data.orderItems[0].itemPrice").description("주문 상품의 상품 가격"),
-				fieldWithPath("data.orderItems[0].status").description("주문 상품의 상태"),
-				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
-				fieldWithPath("description").description("응답에 대한 설명")
-			)
-		));
 	}
 }

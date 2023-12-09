@@ -1,22 +1,20 @@
 package com.gregori.item.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,14 +25,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
-import com.gregori.member.mapper.MemberMapper;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class ItemControllerTest {
@@ -45,8 +40,15 @@ class ItemControllerTest {
 
 	List<Long> itemIds = new ArrayList<>();
 
-	@BeforeAll
-	void beforeAll() {
+	@AfterEach
+	void AfterEach() {
+		itemMapper.deleteById(itemIds);
+	}
+
+	@Test
+	@DisplayName("클라이언트의 요청에 따라 테이블에 저장된 상품을 조회한다.")
+	void getItem() throws Exception {
+		// given
 		Item item = Item.builder()
 			.name("아이템1")
 			.price(100L)
@@ -54,16 +56,7 @@ class ItemControllerTest {
 			.build();
 		itemMapper.insert(item);
 		itemIds.add(item.getId());
-	}
 
-	@AfterAll
-	void AfterAll() {
-		itemMapper.deleteById(itemIds);
-	}
-
-	@Test
-	@DisplayName("클라이언트의 요청에 따라 테이블에 저장된 상품을 조회한다.")
-	void getItem() throws Exception {
 		// when
 		ResultActions actions = mockMvc.perform(
 			RestDocumentationRequestBuilders.get("/item/1")
