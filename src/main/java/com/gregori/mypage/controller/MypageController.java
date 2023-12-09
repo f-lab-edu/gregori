@@ -1,8 +1,8 @@
 package com.gregori.mypage.controller;
 
+import static com.gregori.common.response.SuccessMessage.DELETE_MEMBER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.GET_MEMBER_SUCCESS;
 import static com.gregori.common.response.SuccessMessage.UPDATE_MEMBER_SUCCESS;
-import static com.gregori.common.response.SuccessMessage.DEACTIVATE_MEMBER_SUCCESS;
-import static com.gregori.common.response.SuccessMessage.FIND_MEMBER_SUCCESS;
 import static java.lang.Long.parseLong;
 
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class MypageController {
 		authorizationCheck(memberId);
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.deleteMember(memberId), DEACTIVATE_MEMBER_SUCCESS);
+			.success(memberService.deleteMember(memberId), DELETE_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -57,7 +57,7 @@ public class MypageController {
 		authorizationCheck(memberId);
 
 		CustomResponse<MemberResponseDto> response = CustomResponse
-			.success(memberService.getMember(memberId), FIND_MEMBER_SUCCESS);
+			.success(memberService.getMember(memberId), GET_MEMBER_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
