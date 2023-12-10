@@ -1,6 +1,5 @@
 package com.gregori.member.domain;
 
-import com.gregori.auth.domain.Authority;
 import com.gregori.common.AbstractEntity;
 
 import lombok.Builder;
@@ -16,7 +15,6 @@ public class Member extends AbstractEntity {
     private String email;
     private String password;
     private Status status;
-    private Authority authority;
 
     @Getter
     @RequiredArgsConstructor
@@ -31,7 +29,6 @@ public class Member extends AbstractEntity {
         this.email = email;
         this.password = password;
         this.status = Status.ACTIVATE;
-        this.authority = Authority.MEMBER;
     }
 
     public void updateMemberInfo(String name, String password) {

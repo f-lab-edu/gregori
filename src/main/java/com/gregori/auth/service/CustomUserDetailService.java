@@ -18,6 +18,8 @@ import com.gregori.member.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.gregori.auth.domain.Authority.MEMBER;
+
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
@@ -32,11 +34,10 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	private UserDetails createUserDetails(Member member) {
-		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getAuthority().toString());
+		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(MEMBER.toString());
 		Set<GrantedAuthority> authorities = new HashSet<>();
 		authorities.add(grantedAuthority);
 
-		return new User(String.valueOf(member.getId()),
-			member.getPassword(), authorities);
+		return new User(String.valueOf(member.getId()), member.getPassword(), authorities);
 	}
 }
