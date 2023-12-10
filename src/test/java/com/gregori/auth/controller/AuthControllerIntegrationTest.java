@@ -1,22 +1,14 @@
 package com.gregori.auth.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,15 +25,21 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.auth.dto.TokenDto;
+import com.gregori.common.exception.NotFoundException;
 import com.gregori.config.jwt.TokenProvider;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.refresh_token.domain.RefreshToken;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @ActiveProfiles("test")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class AuthControllerIntegrationTest {
@@ -60,28 +58,40 @@ class AuthControllerIntegrationTest {
 	@Autowired
 	private AuthenticationManagerBuilder authenticationManagerBuilder;
 
+	RefreshToken refreshToken;
 	List<Member> members = new ArrayList<>();
 
-	@BeforeAll
-	void beforeAll() {
-		members.add(Member.builder()
+	@BeforeEach
+	void beforeEach() {
+		Member member1 = Member.builder()
 			.email("a@a.a")
 			.name("일호")
 			.password(passwordEncoder.encode("aa11111!"))
-			.build());
-		members.add(Member.builder()
+			.build();
+		Member member2 = Member.builder()
 			.email("b@b.b")
 			.name("이호")
 			.password(passwordEncoder.encode("bb22222@"))
-			.build());
+			.build();
 
-		memberMapper.insert(members.get(0));
-		memberMapper.insert(members.get(1));
+		memberMapper.insert(member1);
+		memberMapper.insert(member2);
+
+		members.add(member1);
+		members.add(member2);
 	}
 
-	@AfterAll
-	void AfterAll() {
-		memberMapper.deleteByEmails(members.stream().map(Member::getEmail).toList());
+	@AfterEach
+	void AfterEach() {
+		if (refreshToken != null) {
+			refreshTokenMapper.deleteById(refreshToken.getId());
+			refreshToken = null;
+		}
+
+		if (!members.isEmpty()) {
+			memberMapper.deleteByEmails(members.stream().map(Member::getEmail).toList());
+			members.clear();
+		}
 	}
 
 	@Test
@@ -99,6 +109,9 @@ class AuthControllerIntegrationTest {
 				.content(objectMapper.writeValueAsString(input))
 		);
 
+		refreshToken = refreshTokenMapper.findByRefreshTokenKey(members.get(0).getId().toString())
+			.orElseThrow(NotFoundException::new);
+
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
@@ -110,23 +123,6 @@ class AuthControllerIntegrationTest {
 			.andExpect(jsonPath("$.data.accessTokenExpiresIn", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
-
-		actions.andDo(document("auth-signin",
-			requestFields(
-				fieldWithPath("email").description("회원 이메일"),
-				fieldWithPath("password").description("회원 비밀번호")
-			), responseFields(
-				fieldWithPath("result").description("요청에 대한 응답 결과"),
-				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
-				fieldWithPath("data").description("요청에 대한 데이터"),
-				fieldWithPath("data.grantType").description("인가 유형"),
-				fieldWithPath("data.accessToken").description("발급된 액세스 토큰"),
-				fieldWithPath("data.refreshToken").description("발급된 리프레시 토큰"),
-				fieldWithPath("data.accessTokenExpiresIn").description("액세스 토큰 만료 시간"),
-				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
-				fieldWithPath("description").description("응답에 대한 설명")
-			)
-		));
 	}
 
 	@Test
@@ -137,10 +133,11 @@ class AuthControllerIntegrationTest {
 			new UsernamePasswordAuthenticationToken("a@a.a", "aa11111!");
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
-		refreshTokenMapper.insert(RefreshToken.builder()
-			.refreshTokenKey("1")
+		refreshToken = RefreshToken.builder()
+			.refreshTokenKey(members.get(0).getId().toString())
 			.refreshTokenValue(tokenDto.getRefreshToken())
-			.build());
+			.build();
+		refreshTokenMapper.insert(refreshToken);
 
 		Map<String, String> input = new HashMap<>();
 		input.put("accessToken", tokenDto.getAccessToken());
@@ -160,18 +157,5 @@ class AuthControllerIntegrationTest {
 			.andExpect(jsonPath("$.data", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
-
-		actions.andDo(document("auth-signin",
-			requestFields(
-				fieldWithPath("accessToken").description("액세스 토큰"),
-				fieldWithPath("refreshToken").description("리프레시 토큰")
-			), responseFields(
-				fieldWithPath("result").description("요청에 대한 응답 결과"),
-				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
-				fieldWithPath("data").description("요청에 대한 데이터"),
-				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
-				fieldWithPath("description").description("응답에 대한 설명")
-			)
-		));
 	}
 }
