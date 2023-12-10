@@ -4,13 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,15 +24,38 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ActiveProfiles("test")
 class SellerMapperTest {
 	@Autowired
+	private MemberMapper memberMapper;
+
+	@Autowired
 	private SellerMapper sellerMapper;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	Member member;
 	List<Long> sellerIds = new ArrayList<>();
+
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
+			.email("a@a.a")
+			.name("일호")
+			.password(passwordEncoder.encode("aa11111!"))
+			.build();
+		memberMapper.insert(member);
+	}
+
 
 	@AfterEach
 	void afterEach() {
 		if (!sellerIds.isEmpty()) {
 			sellerMapper.deleteByIds(sellerIds);
 			sellerIds.clear();
+		}
+
+		if (member != null) {
+			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			member = null;
 		}
 	}
 
@@ -37,10 +64,8 @@ class SellerMapperTest {
 	void insert() {
 		// given
 		Seller seller = Seller.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.businessNo("123-45-67890")
+			.memberId(member.getId())
+			.businessNo("111-11-11111")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -51,7 +76,7 @@ class SellerMapperTest {
 
 		// then
 		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getName(), seller.getName());
+		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
 	}
 
 	@Test
@@ -59,10 +84,8 @@ class SellerMapperTest {
 	void update() {
 		// given
 		Seller seller = Seller.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.businessNo("123-45-67890")
+			.memberId(member.getId())
+			.businessNo("111-11-11111")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -70,14 +93,13 @@ class SellerMapperTest {
 		sellerIds.add(seller.getId());
 
 		// when
-		seller.updateSellerInfo("김이호", "bb22222@", "김이호 상점");
+		seller.updateSellerInfo("222-22-22222", "김이호 상점");
 		sellerMapper.update(seller);
 		Seller result = sellerMapper.findById(seller.getId()).orElseThrow(NotFoundException::new);
 
 		// then
 		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getName(), seller.getName());
-		assertEquals(result.getPassword(), seller.getPassword());
+		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
 		assertEquals(result.getBusinessName(), seller.getBusinessName());
 	}
 
@@ -86,10 +108,8 @@ class SellerMapperTest {
 	void deleteByIds() {
 		// given
 		Seller seller = Seller.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.businessNo("123-45-67890")
+			.memberId(member.getId())
+			.businessNo("111-11-11111")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -105,13 +125,11 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Sellers 테이블에서 id가 일치하는 상품을 조회한다.")
+	@DisplayName("Sellers 테이블에서 id가 일치하는 셀러를 조회한다.")
 	void findById() {
 		// given
 		Seller seller = Seller.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
+			.memberId(member.getId())
 			.businessNo("123-45-67890")
 			.businessName("김일호 상점1")
 			.build();
@@ -124,11 +142,7 @@ class SellerMapperTest {
 
 		// then
 		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getName(), seller.getName());
-		assertEquals(result.getEmail(), seller.getEmail());
-		assertEquals(result.getPassword(), seller.getPassword());
 		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
 		assertEquals(result.getBusinessName(), seller.getBusinessName());
-		assertEquals(result.getStatus(), seller.getStatus());
 	}
 }
