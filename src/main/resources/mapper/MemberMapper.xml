@@ -19,9 +19,9 @@
     <update id="deleteByEmails" parameterType="map">
         DELETE FROM members
         WHERE email IN (
-            <foreach collection="list" item="item" separator=",">
-                #{item}
-            </foreach>
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
         )
     </update>
 

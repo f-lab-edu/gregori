@@ -1,7 +1,5 @@
 package com.gregori.item.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,9 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.item.domain.Item;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 @ActiveProfiles("test")
