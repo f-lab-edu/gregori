@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gregori.seller.mapper.SellerMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.seller.domain.Seller">
+        INSERT INTO sellers (name, email, password, business_no, business_name, status)
+        VALUES (#{name}, #{email}, #{password}, #{businessNo}, #{businessName}, #{status})
+    </insert>
+
+    <update id="update">
+        UPDATE sellers
+        SET name = #{name}, password = #{password}, business_name = #{businessName}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="deleteByIds" parameterType="map">
+        DELETE FROM sellers
+        WHERE id IN (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </update>
+
+    <select id="findById" resultType="com.gregori.seller.domain.Seller" parameterType="Long">
+        SELECT id, name, email, password, business_no, business_name, status, created_at, updated_at
+        FROM sellers
+        WHERE id = #{id}
+    </select>
+</mapper>

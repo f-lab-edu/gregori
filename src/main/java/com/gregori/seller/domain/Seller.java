@@ -4,9 +4,11 @@ import com.gregori.common.AbstractEntity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class Seller extends AbstractEntity {
 	private Long id;
 	private String name;
