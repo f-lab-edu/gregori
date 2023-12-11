@@ -29,4 +29,10 @@
         FROM sellers
         WHERE id = #{id}
     </select>
+
+    <select id="findByMemberId" resultType="com.gregori.seller.domain.Seller" parameterType="Long">
+        SELECT id, member_id, business_no, business_name, status, created_at, updated_at
+        FROM sellers
+        WHERE member_id = #{memberId}
+    </select>
 </mapper>
