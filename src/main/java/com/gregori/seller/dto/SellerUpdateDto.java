@@ -12,7 +12,10 @@ import static com.gregori.common.RegexPatterns.BUSINESS_NO_REGEX;
 
 @Getter
 @AllArgsConstructor
-public class SellerRequestDto {
+public class SellerUpdateDto {
+	@NotNull
+	private Long id;
+
 	@NotNull
 	private Long memberId;
 
