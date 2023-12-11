@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.gregori.common.exception.NotFoundException;
@@ -19,31 +21,67 @@ import com.gregori.item.dto.ItemCreateDto;
 import com.gregori.item.dto.ItemResponseDto;
 import com.gregori.item.dto.ItemUpdateDto;
 import com.gregori.item.mapper.ItemMapper;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 @SpringBootTest
 @ActiveProfiles("test")
 class ItemServiceImplTest {
 	@Autowired
-	private ItemService itemService;
+	private MemberMapper memberMapper;
+
+	@Autowired
+	private SellerMapper sellerMapper;
 
 	@Autowired
 	private ItemMapper itemMapper;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private ItemService itemService;
+
+	Member member;
+	Seller seller;
 	List<Long> itemIds = new ArrayList<>();
+
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
+			.email("a@a.a")
+			.name("일호")
+			.password(passwordEncoder.encode("aa11111!"))
+			.build();
+		memberMapper.insert(member);
+
+		seller = Seller.builder()
+			.memberId(member.getId())
+			.businessNo("111-11-11111")
+			.businessName("일호 상점")
+			.build();
+		sellerMapper.insert(seller);
+	}
 
 	@AfterEach
 	void afterEach() {
 		if (!itemIds.isEmpty()) {
-			itemMapper.deleteById(itemIds);
+			itemMapper.deleteByIds(itemIds);
 			itemIds.clear();
 		}
- 	}
+		if (seller != null) {
+			sellerMapper.deleteByIds(List.of(seller.getId()));
+			seller = null;
+		}
+	}
 
 	@Test
 	@DisplayName("새로운 상품을 저장하고 id를 반환한다.")
 	void saveItem() {
 		// given
-		ItemCreateDto itemCreateDto = new ItemCreateDto("아이템1", 100L, 1L);
+		ItemCreateDto itemCreateDto = new ItemCreateDto(seller.getId(), "아이템1", 100L, 1L);
 
 		// when
 		Long result = itemService.saveItem(itemCreateDto);
@@ -62,6 +100,7 @@ class ItemServiceImplTest {
 	void updateItem() {
 		// given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -87,6 +126,7 @@ class ItemServiceImplTest {
 	void updateItemStatus() {
 		// given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -108,6 +148,7 @@ class ItemServiceImplTest {
 	void getItem() {
 		// given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -131,11 +172,13 @@ class ItemServiceImplTest {
 	void getItems() {
 		// given
 		Item item1 = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
 			.build();
 		Item item2 = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템2")
 			.price(200L)
 			.inventory(2L)

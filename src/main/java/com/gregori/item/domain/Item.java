@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @NoArgsConstructor
 public class Item extends AbstractEntity {
 	private Long id;
+	private Long sellerId;
 	private String name;
 	private Long price;
 	private Long inventory;
@@ -24,7 +25,8 @@ public class Item extends AbstractEntity {
 	}
 
 	@Builder
-	public Item(String name, Long price, Long inventory) {
+	public Item(Long sellerId, String name, Long price, Long inventory) {
+		this.sellerId = sellerId;
 		this.name = name;
 		this.price = price;
 		this.inventory = inventory;

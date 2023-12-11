@@ -38,9 +38,9 @@ class MemberControllerIntegrationTest {
 	void register() throws Exception {
 		// given
 		Map<String, String> input = new HashMap<>();
-		input.put("name", "일호");
-		input.put("email", "a@a.a");
-		input.put("password", "aa11111!");
+		input.put("name", "백호");
+		input.put("email", "z@z.z");
+		input.put("password", "zz11111!");
 
 		// when
 		ResultActions actions = mockMvc.perform(

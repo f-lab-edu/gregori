@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.item.domain.Item;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -20,15 +27,47 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ActiveProfiles("test")
 class ItemMapperTest {
 	@Autowired
+	private MemberMapper memberMapper;
+
+	@Autowired
+	private SellerMapper sellerMapper;
+
+	@Autowired
 	private ItemMapper itemMapper;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	Member member;
+	Seller seller;
 	List<Long> itemIds = new ArrayList<>();
 
- 	@AfterEach
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
+			.email("a@a.a")
+			.name("일호")
+			.password(passwordEncoder.encode("aa11111!"))
+			.build();
+		memberMapper.insert(member);
+
+		seller = Seller.builder()
+			.memberId(member.getId())
+			.businessNo("111-11-11111")
+			.businessName("일호 상점")
+			.build();
+		sellerMapper.insert(seller);
+	}
+
+	@AfterEach
 	void afterEach() {
 		if (!itemIds.isEmpty()) {
-			itemMapper.deleteById(itemIds);
+			itemMapper.deleteByIds(itemIds);
 			itemIds.clear();
+		}
+		if (seller != null) {
+			sellerMapper.deleteByIds(List.of(seller.getId()));
+			seller = null;
 		}
 	}
 
@@ -37,6 +76,7 @@ class ItemMapperTest {
 	void insert() {
 		//given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -49,6 +89,7 @@ class ItemMapperTest {
 
 		// then
 		assertEquals(result.getId(), item.getId());
+		assertEquals(result.getSellerId(), item.getSellerId());
 		assertEquals(result.getName(), item.getName());
 	}
 
@@ -57,6 +98,7 @@ class ItemMapperTest {
 	void update() {
 		// given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -72,6 +114,7 @@ class ItemMapperTest {
 
 		// then
 		assertEquals(result.getId(), item.getId());
+		assertEquals(result.getSellerId(), item.getSellerId());
 		assertEquals(result.getName(), "아이템 수정");
 		assertEquals(result.getPrice(), 999L);
 		assertEquals(result.getInventory(), 9L);
@@ -82,6 +125,7 @@ class ItemMapperTest {
 	void deleteByIds() {
 		 // given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -91,7 +135,7 @@ class ItemMapperTest {
 		itemIds.add(item.getId());
 
 		// when
-		itemMapper.deleteById(List.of(item.getId()));
+		itemMapper.deleteByIds(List.of(item.getId()));
 		Item result = itemMapper.findById(item.getId()).orElse(null);
 
 		// then
@@ -103,6 +147,7 @@ class ItemMapperTest {
 	void findById() {
 		// given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -116,6 +161,7 @@ class ItemMapperTest {
 
 		// then
 		assertEquals(result.getId(), item.getId());
+		assertEquals(result.getSellerId(), item.getSellerId());
 		assertEquals(result.getName(), item.getName());
 		assertEquals(result.getPrice(), item.getPrice());
 		assertEquals(result.getInventory(), item.getInventory());
@@ -129,11 +175,13 @@ class ItemMapperTest {
 	void findAllById() {
 		// given
 		Item item1 = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
 			.build();
 		Item item2 = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템2")
 			.price(200L)
 			.inventory(2L)
@@ -153,4 +201,33 @@ class ItemMapperTest {
 		assertEquals(result.get(1).getId(), item2.getId());
 		assertEquals(result.get(1).getName(), item2.getName());
 	}
+
+	@Test
+	@DisplayName("Items 테이블에서 sellerId가 일치하는 상품 목록을 조회한다.")
+	void findBySellerId() {
+		// given
+		Item item = Item.builder()
+			.sellerId(seller.getId())
+			.name("아이템1")
+			.price(100L)
+			.inventory(1L)
+			.build();
+
+		itemMapper.insert(item);
+		itemIds.add(item.getId());
+
+		// when
+		Item result = itemMapper.findById(item.getId()).orElseThrow(NotFoundException::new);
+
+		// then
+		assertEquals(result.getId(), item.getId());
+		assertEquals(result.getSellerId(), item.getSellerId());
+		assertEquals(result.getName(), item.getName());
+		assertEquals(result.getPrice(), item.getPrice());
+		assertEquals(result.getInventory(), item.getInventory());
+		assertEquals(result.getStatus(), item.getStatus());
+		assertEquals(result.getCreatedAt(), item.getCreatedAt());
+		assertEquals(result.getUpdatedAt(), item.getUpdatedAt());
+	}
+
 }

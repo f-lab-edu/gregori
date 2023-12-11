@@ -1,5 +1,8 @@
 package com.gregori.item.domain;
 
+import static com.gregori.item.domain.Item.Status.END_OF_SALE;
+import static com.gregori.item.domain.Item.Status.ON_SALE;
+import static com.gregori.item.domain.Item.Status.PRE_SALE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -13,6 +16,7 @@ class ItemTest {
 	void updateItemInfo() {
 		// given
 		Item item = Item.builder()
+			.sellerId(1L)
 			.name("name")
 			.price(1L)
 			.inventory(10L)
@@ -32,18 +36,20 @@ class ItemTest {
 	void preSale() {
 		// given
 		Item item = Item.builder()
+			.sellerId(1L)
 			.name("name")
 			.price(1L)
 			.inventory(10L)
 			.build();
-
 		item.onSale();
+		Item.Status status = item.getStatus();
 
 		// when
 		item.preSale();
 
 		// then
-		assertEquals(item.getStatus().toString(), "PRE_SALE");
+		assertEquals(status, ON_SALE);
+		assertEquals(item.getStatus(), PRE_SALE);
 	}
 
 	@Test
@@ -51,16 +57,19 @@ class ItemTest {
 	void onSale() {
 		// given
 		Item item = Item.builder()
+			.sellerId(1L)
 			.name("name")
 			.price(1L)
 			.inventory(10L)
 			.build();
+		Item.Status status = item.getStatus();
 
 		// when
 		item.onSale();
 
 		// then
-		assertEquals(item.getStatus().toString(), "ON_SALE");
+		assertEquals(status, PRE_SALE);
+		assertEquals(item.getStatus(), ON_SALE);
 	}
 
 	@Test
@@ -68,26 +77,29 @@ class ItemTest {
 	void endOfSale() {
 		// given
 		Item item = Item.builder()
+			.sellerId(1L)
 			.name("name")
 			.price(1L)
 			.inventory(10L)
 			.build();
-
+		Item.Status status = item.getStatus();
 		// when
 		item.endOfSale();
 
 		// then
-		assertEquals(item.getStatus().toString(), "END_OF_SALE");
+		assertEquals(status, PRE_SALE);
+		assertEquals(item.getStatus(), END_OF_SALE);
 	}
 
 	@Test
 	@DisplayName("Item 객체의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
 		// given
-		Item item = new Item("name", 1L, 10L);
+		Item item = new Item(1L, "name", 1L, 10L);
 
 		// then
 		assertNull(item.getId());
+		assertEquals(item.getSellerId(), 1L);
 		assertEquals(item.getName(), "name");
 		assertEquals(item.getPrice(), 1L);
 		assertEquals(item.getInventory(), 10L);

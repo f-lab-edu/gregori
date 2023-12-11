@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
@@ -32,16 +38,53 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ItemControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private MemberMapper memberMapper;
+
+	@Autowired
+	private SellerMapper sellerMapper;
+
 	@Autowired
 	private ItemMapper itemMapper;
 
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	Member member;
+	Seller seller;
 	List<Long> itemIds = new ArrayList<>();
 
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
+			.email("a@a.a")
+			.name("일호")
+			.password(passwordEncoder.encode("aa11111!"))
+			.build();
+		memberMapper.insert(member);
+
+		seller = Seller.builder()
+			.memberId(member.getId())
+			.businessNo("111-11-11111")
+			.businessName("일호 상점")
+			.build();
+		sellerMapper.insert(seller);
+	}
+
 	@AfterEach
-	void AfterEach() {
+	void afterEach() {
 		if (!itemIds.isEmpty()) {
-			itemMapper.deleteById(itemIds);
+			itemMapper.deleteByIds(itemIds);
 			itemIds.clear();
+		}
+		if (seller != null) {
+			sellerMapper.deleteByIds(List.of(seller.getId()));
+			seller = null;
+		}
+		if(member != null) {
+			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			member = null;
 		}
 	}
 
@@ -50,6 +93,7 @@ class ItemControllerTest {
 	void getItem() throws Exception {
 		// given
 		Item item = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
@@ -68,7 +112,8 @@ class ItemControllerTest {
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
 			.andExpect(jsonPath("$.httpStatus", is("OK")))
 			.andExpect(jsonPath("$.data", is(notNullValue())))
-			.andExpect(jsonPath("$.data.id", is(1)))
+			.andExpect(jsonPath("$.data.id", is(notNullValue())))
+			.andExpect(jsonPath("$.data.sellerId", is(notNullValue())))
 			.andExpect(jsonPath("$.data.name", is(notNullValue())))
 			.andExpect(jsonPath("$.data.price", is(notNullValue())))
 			.andExpect(jsonPath("$.data.inventory", is(notNullValue())))

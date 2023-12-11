@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS order_items CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
-DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS sellers CASCADE;
 DROP TABLE IF EXISTS members;
@@ -44,7 +44,7 @@ CREATE TABLE items (
     status     VARCHAR(255)          NOT NULL                                                                   COMMENT '상품 상태',
     created_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '상품 생성 날짜',
     updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜',
-    CONSTRAINT items_seller_id FOREIGN KEY (seller_id) REFERENCES orders(id)
+    CONSTRAINT items_seller_id FOREIGN KEY (seller_id) REFERENCES sellers(id)
 );
 
 CREATE TABLE orders (
