@@ -6,6 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import lombok.NoArgsConstructor;
 
+import static com.gregori.seller.domain.Seller.Status.CLOSED;
+import static com.gregori.seller.domain.Seller.Status.OPERATING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -31,6 +33,41 @@ class SellerTest {
 	}
 
 	@Test
+	@DisplayName("Seller 객체의 Status를 'OPERATING'로 변경한다.")
+	void statusTest() {
+		// given
+		Seller seller = Seller.builder()
+			.businessNo("123-45-67890")
+			.businessName("business name")
+			.build();
+		seller.closed();
+		Seller.Status status = seller.getStatus();
+
+		// when
+		seller.operating();
+
+		// then
+		assertEquals(status, CLOSED);
+		assertEquals(seller.getStatus(), OPERATING);
+	}
+
+	@Test
+	@DisplayName("Seller 객체의 Status를 'CLOSED'로 변경한다.")
+	void closed() {
+		// given
+		Seller seller = Seller.builder()
+			.businessNo("123-45-67890")
+			.businessName("business name")
+			.build();
+
+		// when
+		seller.closed();
+
+		// then
+		assertEquals(seller.getStatus(), CLOSED);
+	}
+
+	@Test
 	@DisplayName("Seller 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
 	void getterTest() {
 		// given
@@ -45,6 +82,7 @@ class SellerTest {
 		assertEquals(seller.getMemberId(), 1L);
 		assertEquals(seller.getBusinessNo(), "123-45-67890");
 		assertEquals(seller.getBusinessName(), "business name");
+		assertEquals(seller.getStatus(), OPERATING);
 		assertNull(seller.getCreatedAt());
 		assertNull(seller.getUpdatedAt());
 	}

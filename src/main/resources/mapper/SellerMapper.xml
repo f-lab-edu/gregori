@@ -5,13 +5,13 @@
 
 <mapper namespace="com.gregori.seller.mapper.SellerMapper">
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.seller.domain.Seller">
-        INSERT INTO sellers (member_id, business_no, business_name)
-        VALUES (#{memberId}, #{businessNo}, #{businessName})
+        INSERT INTO sellers (member_id, business_no, business_name, status)
+        VALUES (#{memberId}, #{businessNo}, #{businessName}, #{status})
     </insert>
 
     <update id="update">
         UPDATE sellers
-        SET business_no = #{businessNo}, business_name = #{businessName}
+        SET business_no = #{businessNo}, business_name = #{businessName}, status = #{status}
         WHERE id = #{id}
     </update>
 
@@ -25,7 +25,7 @@
     </update>
 
     <select id="findById" resultType="com.gregori.seller.domain.Seller" parameterType="Long">
-        SELECT id, member_id, business_no, business_name, created_at, updated_at
+        SELECT id, member_id, business_no, business_name, status, created_at, updated_at
         FROM sellers
         WHERE id = #{id}
     </select>
