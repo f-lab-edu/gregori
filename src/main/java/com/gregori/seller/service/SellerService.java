@@ -11,5 +11,5 @@ public interface SellerService {
 	Long updateSeller(SellerUpdateDto sellerUpdateDto);
 	Long deleteSeller(Long sellerId);
 	List<SellerResponseDto> getSellers(Long memberId);
-	SellerResponseDto getSeller(Long memberId);
+	SellerResponseDto getSeller(Long sellerId);
 }

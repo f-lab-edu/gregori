@@ -125,6 +125,26 @@ class SellerMapperTest {
 	}
 
 	@Test
+	@DisplayName("Sellers 테이블에서 memberId가 일치하는 셀러를 조회한다.")
+	void findByMemberId() {
+		// given
+		Seller seller = Seller.builder()
+			.memberId(member.getId())
+			.businessNo("123-45-67890")
+			.businessName("김일호 상점1")
+			.build();
+
+		sellerMapper.insert(seller);
+		sellerIds.add(seller.getId());
+
+		// when
+		List<Seller> result = sellerMapper.findByMemberId(seller.getMemberId());
+
+		// then
+		assertEquals(result.size(), 1);
+	}
+
+	@Test
 	@DisplayName("Sellers 테이블에서 id가 일치하는 셀러를 조회한다.")
 	void findById() {
 		// given
