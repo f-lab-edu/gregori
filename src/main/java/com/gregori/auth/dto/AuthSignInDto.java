@@ -15,11 +15,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AuthSignInDto {
-	@NotEmpty(message = "email은 필수값입니다.")
+	@NotEmpty
 	@Email(message = "email 형식과 일치해야 합니다.")
 	private String email;
 
-	@NotEmpty(message = "password는 필수값입니다.")
+	@NotEmpty
 	@Pattern(regexp = PASSWORD_REGEX, message = "password 형식이 일치해야 합니다.")
 	private String password;
 

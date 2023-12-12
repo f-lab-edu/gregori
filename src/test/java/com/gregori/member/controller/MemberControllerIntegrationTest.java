@@ -1,11 +1,5 @@
 package com.gregori.member.controller;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +16,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -60,23 +60,5 @@ class MemberControllerIntegrationTest {
 			.andExpect(jsonPath("$.data.status", is("ACTIVATE")))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
-
-		actions.andDo(document("member-register",
-			requestFields(
-				fieldWithPath("name").description("회원 이름"),
-				fieldWithPath("email").description("회원 이메일"),
-				fieldWithPath("password").description("회원 비밀번호")
-			), responseFields(
-				fieldWithPath("result").description("요청에 대한 응답 결과"),
-				fieldWithPath("httpStatus").description("요청에 대한 http 상태"),
-				fieldWithPath("data").description("요청에 대한 데이터"),
-				fieldWithPath("data.id").description("가입한 회원 인덱스"),
-				fieldWithPath("data.email").description("가입한 회원 이메일"),
-				fieldWithPath("data.name").description("가입한 회원 이름"),
-				fieldWithPath("data.status").description("가입한 회원 상태"),
-				fieldWithPath("errorType").description("에러가 발생한 경우 에러 타입"),
-				fieldWithPath("description").description("응답에 대한 설명")
-			)
-		));
 	}
 }
