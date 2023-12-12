@@ -36,7 +36,7 @@ CREATE TABLE items (
 CREATE TABLE orders (
     id             BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '주문 인덱스',
     member_id      BIGINT                NOT NULL                                                                   COMMENT '회원 인덱스',
-    order_no       VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 번호',
+    order_number       VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 번호',
     payment_method VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 지불 방법',
     payment_amount BIGINT                NOT NULL                                                                   COMMENT '주문 지불 금액',
     delivery_cost  BIGINT                NOT NULL                                                                   COMMENT '주문 배송비',

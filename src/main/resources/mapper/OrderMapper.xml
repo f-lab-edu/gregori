@@ -6,8 +6,8 @@
 <mapper namespace="com.gregori.order.mapper.OrderMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.order.domain.Order">
-        INSERT INTO orders (member_id, order_no, payment_method, payment_amount, delivery_cost, status)
-        VALUES (#{memberId}, #{orderNo}, #{paymentMethod}, #{paymentAmount}, #{deliveryCost}, #{status})
+        INSERT INTO orders (member_id, order_number, payment_method, payment_amount, delivery_cost, status)
+        VALUES (#{memberId}, #{orderNumber}, #{paymentMethod}, #{paymentAmount}, #{deliveryCost}, #{status})
     </insert>
 
     <update id="deleteByIds" parameterType="map">
@@ -20,7 +20,7 @@
     </update>
 
     <select id="findById" resultType="com.gregori.order.domain.Order" parameterType="Long">
-        SELECT id, member_id, order_no, payment_method, payment_amount, delivery_cost, status
+        SELECT id, member_id, order_number, payment_method, payment_amount, delivery_cost, status
         FROM orders
         WHERE id = #{id}
     </select>

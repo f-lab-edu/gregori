@@ -57,7 +57,7 @@ class OrderResponseDtoTest {
 		// then
 		assertEquals(dto.getId(), 1L);
 		assertEquals(dto.getMemberId(), 1L);
-		assertEquals(dto.getOrderNo(), "orderNo");
+		assertEquals(dto.getOrderNumber(), "orderNo");
 		assertEquals(dto.getPaymentMethod(), "paymentMethod");
 		assertEquals(dto.getPaymentAmount(), 1L);
 		assertEquals(dto.getDeliveryCost(), 1L);
