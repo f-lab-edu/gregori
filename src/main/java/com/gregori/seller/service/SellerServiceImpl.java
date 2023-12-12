@@ -85,8 +85,8 @@ public class SellerServiceImpl implements SellerService {
 		return new SellerResponseDto().toEntity(seller);
 	}
 
-	public boolean businessNumberValidationCheck(String businessNo) {
-		String tenNumber = businessNo.replace("-", "");
+	public boolean businessNumberValidationCheck(String businessNumber) {
+		String tenNumber = businessNumber.replace("-", "");
 		if (tenNumber.length() != 10) {
 			throw new ValidationException();
 		}

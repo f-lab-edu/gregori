@@ -59,8 +59,8 @@ class SellerUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("businessNo 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankBusinessNoInputFailsTest() {
+	@DisplayName("businessNumber 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
+	void blankBusinessNumberInputFailsTest() {
 		// given
 		SellerUpdateDto dto1 = new SellerUpdateDto(1L,1L, null, "name");
 		SellerUpdateDto dto2 = new SellerUpdateDto(1L,1L, "", "name");
@@ -78,8 +78,8 @@ class SellerUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("businessNo 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedBusinessNoInputFailsTest() {
+	@DisplayName("businessNumber 필드의 패턴이 불일치하면 에러가 발생한다.")
+	void mismatchedBusinessNumberInputFailsTest() {
 		// given
 		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "00-00-00", "name");
 

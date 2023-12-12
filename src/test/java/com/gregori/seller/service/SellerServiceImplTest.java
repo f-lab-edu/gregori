@@ -182,7 +182,7 @@ class SellerServiceImplTest {
 
 	@Test
 	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
-	void invalidBusinessNoInputFailsTest() {
+	void invalidBusinessNumberInputFailsTest() {
 		// given
 		String businessNumber1 = "111-11-111";
 		String businessNumber2 = "111-11-111111";
@@ -210,8 +210,8 @@ class SellerServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
-	void validBusinessNoInputSucceedsTest() {
+	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하면 true를 반환한다.")
+	void validBusinessNumberInputSucceedsTest() {
 		// given
 		String businessNumber = "123-45-67891";
 
