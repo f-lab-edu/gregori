@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
 import com.gregori.seller.domain.Seller;
@@ -15,9 +16,11 @@ import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.item.domain.Item.Status.ON_SALE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService {
@@ -25,7 +28,11 @@ public class SellerServiceImpl implements SellerService {
 	private final ItemMapper itemMapper;
 
 	@Override
-	public Long saveSeller(SellerRegisterDto sellerRegisterDto) {
+	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
+		if (!businessNoValidationCheck(sellerRegisterDto.getBusinessNo())) {
+			throw new ValidationException();
+		}
+
 		Seller seller = sellerRegisterDto.toEntity();
 		sellerMapper.insert(seller);
 
@@ -33,7 +40,11 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
-	public Long updateSeller(SellerUpdateDto sellerUpdateDto) {
+	public Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
+		if (!businessNoValidationCheck(sellerUpdateDto.getBusinessNo())) {
+			throw new ValidationException();
+		}
+
 		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
 		seller.updateSellerInfo(sellerUpdateDto.getBusinessNo(), sellerUpdateDto.getBusinessName());
 		sellerMapper.update(seller);
@@ -69,5 +80,26 @@ public class SellerServiceImpl implements SellerService {
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 
 		return new SellerResponseDto().toEntity(seller);
+	}
+
+	public boolean businessNoValidationCheck(String businessNo) {
+		String tenNumber = businessNo.replace("-", "");
+		if (tenNumber.length() != 10) {
+			throw new ValidationException();
+		}
+
+		String nineNumber = tenNumber.substring(0, 9);
+		int lastNumber = Integer.parseInt(tenNumber.substring(9, 10));
+		int[] multipliers = {1, 3, 7, 1, 3, 7, 1, 3, 5};
+		int sum = 0;
+		for (int i = 0; i <= 8; i++) {
+			int number = Character.getNumericValue(nineNumber.charAt(i));
+			sum += number*multipliers[i];
+		}
+		sum += (Integer.parseInt(nineNumber.substring(8, 9))*5) / 10;
+		sum = sum % 10;
+		int errorCheckingNumber = 10 - sum;
+
+		return lastNumber == errorCheckingNumber;
 	}
 }

@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.ValidationException;
+import com.gregori.item.service.ItemServiceImpl;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
@@ -21,6 +23,9 @@ import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
 import static com.gregori.seller.domain.Seller.Status.CLOSED;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
@@ -34,6 +39,9 @@ class SellerServiceImplTest {
 
 	@Autowired
 	private SellerService sellerService;
+
+	@Autowired
+	private SellerServiceImpl sellerServiceImpl;
 
 	Member member;
 	List<Long> sellerIds = new ArrayList<>();
@@ -65,7 +73,7 @@ class SellerServiceImplTest {
 	@DisplayName("새로운 셀러를 DB에 저장하고 id를 반환한다.")
 	void saveSeller() {
 		// given
-		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "111-11-11111", "일호 상점");
+		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "123-45-67891", "일호 상점");
 
 		// when
 		Long result = sellerService.saveSeller(sellerRegisterDto);
@@ -74,7 +82,7 @@ class SellerServiceImplTest {
 
 		// then
 		assertEquals(result, seller.getId());
-		assertEquals(seller.getBusinessNo(), "111-11-11111");
+		assertEquals(seller.getBusinessNo(), "123-45-67891");
 		assertEquals(seller.getBusinessName(), "일호 상점");
 	}
 
@@ -90,7 +98,7 @@ class SellerServiceImplTest {
 		sellerMapper.insert(seller);
 		sellerIds.add(seller.getId());
 
-		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(seller.getId(), seller.getMemberId(), "222-22-22222", "이호 상점");
+		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(seller.getId(), seller.getMemberId(), "123-45-67891", "이호 상점");
 
 		// when
 		Long result = sellerService.updateSeller(sellerUpdateDto);
@@ -172,5 +180,47 @@ class SellerServiceImplTest {
 		assertEquals(result.getId(), seller.getId());
 		assertEquals(result.getMemberId(), seller.getMemberId());
 		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
+	}
+
+	@Test
+	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
+	void invalidBusinessNoInputFailsTest() {
+		// given
+		String businessNo1 = "111-11-111";
+		String businessNo2 = "111-11-111111";
+
+		String businessNo3 = "000-45-67891";
+		String businessNo4 = "123-00-67891";
+		String businessNo5 = "123-45-00000";
+		String businessNo6 = "123-45-99999";
+
+		// when
+		Throwable result1 = catchThrowable(() -> sellerServiceImpl.businessNoValidationCheck(businessNo1));
+		Throwable result2 = catchThrowable(() -> sellerServiceImpl.businessNoValidationCheck(businessNo2));
+		Boolean result3 = sellerServiceImpl.businessNoValidationCheck(businessNo3);
+		Boolean result4 = sellerServiceImpl.businessNoValidationCheck(businessNo4);
+		Boolean result5 = sellerServiceImpl.businessNoValidationCheck(businessNo5);
+		Boolean result6 = sellerServiceImpl.businessNoValidationCheck(businessNo6);
+
+		// then
+		then(result1).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
+		then(result2).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
+		assertEquals(result3, false);
+		assertEquals(result4, false);
+		assertEquals(result5, false);
+		assertEquals(result6, false);
+	}
+
+	@Test
+	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
+	void validBusinessNoInputSucceedsTest() {
+		// given
+		String businessNo = "123-45-67891";
+
+		// when
+		Boolean result = sellerServiceImpl.businessNoValidationCheck(businessNo);
+
+		// then
+		assertEquals(result, true);
 	}
 }
