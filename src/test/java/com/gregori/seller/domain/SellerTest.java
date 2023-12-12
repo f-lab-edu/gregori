@@ -2,17 +2,12 @@ package com.gregori.seller.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import lombok.NoArgsConstructor;
 
 import static com.gregori.seller.domain.Seller.Status.CLOSED;
 import static com.gregori.seller.domain.Seller.Status.OPERATING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-@NoArgsConstructor
 class SellerTest {
 	@Test
 	@DisplayName("Seller 객체의 필드를 수정한다.")

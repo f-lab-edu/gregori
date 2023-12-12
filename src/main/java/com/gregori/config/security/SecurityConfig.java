@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-	private final String[] allowedURL = { "/", "/member/register", "/auth/**", "/items", "/order" };
+	private final String[] allowedURL = { "/", "/member/register", "/auth/**", "/items", "/order", "/seller/register" };
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenMapper refreshTokenMapper;
 

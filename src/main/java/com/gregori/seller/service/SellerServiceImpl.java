@@ -3,6 +3,7 @@ package com.gregori.seller.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
@@ -40,6 +41,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
+	@Transactional
 	public Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
 		if (!businessNoValidationCheck(sellerUpdateDto.getBusinessNo())) {
 			throw new ValidationException();
@@ -53,6 +55,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
+	@Transactional
 	public Long deleteSeller(Long sellerId) {
 		List<Item> items = itemMapper.findBySellerId(sellerId);
 		for (Item item: items) {
