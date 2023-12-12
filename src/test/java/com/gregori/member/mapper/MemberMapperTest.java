@@ -130,7 +130,6 @@ class MemberMapperTest {
 			.email("a@a.a")
 			.password("aa11111!")
 			.build();
-
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
 

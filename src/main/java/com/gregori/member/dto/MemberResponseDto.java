@@ -15,14 +15,14 @@ public class MemberResponseDto {
 	private Long id;
 	private String email;
 	private String name;
-	private String status;
+	private Member.Status status;
 
 	public MemberResponseDto toEntity(Member member) {
 		return MemberResponseDto.builder()
 			.id(member.getId())
 			.name(member.getName())
 			.email(member.getEmail())
-			.status(member.getStatus().toString())
+			.status(member.getStatus())
 			.build();
 	}
 }
