@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class Seller extends AbstractEntity {
 	private Long id;
 	private Long memberId;
-	private String businessNo;
+	private String businessNumber;
 	private String businessName;
 	private Status status;
 
@@ -24,15 +24,15 @@ public class Seller extends AbstractEntity {
 	}
 
 	@Builder
-	public Seller(Long memberId, String businessNo, String businessName) {
+	public Seller(Long memberId, String businessNumber, String businessName) {
 		this.memberId = memberId;
-		this.businessNo = businessNo;
+		this.businessNumber = businessNumber;
 		this.businessName = businessName;
 		this.status = Status.OPERATING;
 	}
 
-	public void updateSellerInfo(String businessNo, String businessName) {
-		this.businessNo = businessNo;
+	public void updateSellerInfo(String businessNumber, String businessName) {
+		this.businessNumber = businessNumber;
 		this.businessName = businessName;
 	}
 

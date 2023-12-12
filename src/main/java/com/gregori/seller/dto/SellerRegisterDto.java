@@ -18,7 +18,7 @@ public class SellerRegisterDto {
 
 	@NotBlank
 	@Pattern(regexp = BUSINESS_NO_REGEX, message = "사업자 등록번호의 형식이 올바르지 않습니다.")
-	private String businessNo;
+	private String businessNumber;
 
 	@NotBlank
 	private String businessName;
@@ -26,7 +26,7 @@ public class SellerRegisterDto {
 	public Seller toEntity() {
 		return Seller.builder()
 			.memberId(memberId)
-			.businessNo(businessNo)
+			.businessNumber(businessNumber)
 			.businessName(businessName)
 			.build();
 	}

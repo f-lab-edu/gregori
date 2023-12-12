@@ -65,7 +65,7 @@ class SellerMapperTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -76,7 +76,7 @@ class SellerMapperTest {
 
 		// then
 		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
+		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
 	}
 
 	@Test
@@ -85,7 +85,7 @@ class SellerMapperTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -99,7 +99,7 @@ class SellerMapperTest {
 
 		// then
 		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
+		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
 		assertEquals(result.getBusinessName(), seller.getBusinessName());
 	}
 
@@ -109,7 +109,7 @@ class SellerMapperTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -130,7 +130,7 @@ class SellerMapperTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("123-45-67890")
+			.businessNumber("123-45-67890")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -150,7 +150,7 @@ class SellerMapperTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("123-45-67890")
+			.businessNumber("123-45-67890")
 			.businessName("김일호 상점1")
 			.build();
 
@@ -162,7 +162,7 @@ class SellerMapperTest {
 
 		// then
 		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
+		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
 		assertEquals(result.getBusinessName(), seller.getBusinessName());
 	}
 }

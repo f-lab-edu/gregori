@@ -18,7 +18,7 @@ class SellerResponseDtoTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(1L)
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("일호 상점")
 			.build();
 
@@ -28,7 +28,7 @@ class SellerResponseDtoTest {
 		// then
 		assertEquals(seller.getId(), dto.getId());
 		assertEquals(seller.getMemberId(), dto.getMemberId());
-		assertEquals(seller.getBusinessNo(), dto.getBusinessNo());
+		assertEquals(seller.getBusinessNumber(), dto.getBusinessNumber());
 		assertEquals(seller.getBusinessName(), dto.getBusinessName());
 	}
 
@@ -41,7 +41,7 @@ class SellerResponseDtoTest {
 		// then
 		assertEquals(dto.getId(), 1L);
 		assertEquals(dto.getMemberId(), 1L);
-		assertEquals(dto.getBusinessNo(), "111-11-11111");
+		assertEquals(dto.getBusinessNumber(), "111-11-11111");
 		assertEquals(dto.getBusinessName(), "일호 상점");
 	}
 }

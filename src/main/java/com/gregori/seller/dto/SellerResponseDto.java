@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 public class SellerResponseDto {
 	private Long id;
 	private Long memberId;
-	private String businessNo;
+	private String businessNumber;
 	private String businessName;
 
 	public SellerResponseDto toEntity(Seller seller) {
 		return SellerResponseDto.builder()
 			.id(seller.getId())
 			.memberId(seller.getMemberId())
-			.businessNo(seller.getBusinessNo())
+			.businessNumber(seller.getBusinessNumber())
 			.businessName(seller.getBusinessName())
 			.build();
 	}

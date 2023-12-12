@@ -30,7 +30,7 @@ public class SellerServiceImpl implements SellerService {
 
 	@Override
 	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
-		if (!businessNoValidationCheck(sellerRegisterDto.getBusinessNo())) {
+		if (!businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber())) {
 			throw new ValidationException();
 		}
 
@@ -43,12 +43,12 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
-		if (!businessNoValidationCheck(sellerUpdateDto.getBusinessNo())) {
+		if (!businessNumberValidationCheck(sellerUpdateDto.getBusinessNumber())) {
 			throw new ValidationException();
 		}
 
 		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
-		seller.updateSellerInfo(sellerUpdateDto.getBusinessNo(), sellerUpdateDto.getBusinessName());
+		seller.updateSellerInfo(sellerUpdateDto.getBusinessNumber(), sellerUpdateDto.getBusinessName());
 		sellerMapper.update(seller);
 
 		return seller.getId();
@@ -85,7 +85,7 @@ public class SellerServiceImpl implements SellerService {
 		return new SellerResponseDto().toEntity(seller);
 	}
 
-	public boolean businessNoValidationCheck(String businessNo) {
+	public boolean businessNumberValidationCheck(String businessNo) {
 		String tenNumber = businessNo.replace("-", "");
 		if (tenNumber.length() != 10) {
 			throw new ValidationException();

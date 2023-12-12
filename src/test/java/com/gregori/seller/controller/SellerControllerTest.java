@@ -83,7 +83,7 @@ class SellerControllerTest {
 		// given
 		Map<String, String> input = new HashMap<>();
 		input.put("memberId", member.getId().toString());
-		input.put("businessNo", "123-45-67891");
+		input.put("businessNumber", "123-45-67891");
 		input.put("businessName", "일호 상점");
 
 		// when

@@ -62,7 +62,7 @@ class OrderItemMapperTest {
 
 		seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("일호 상점")
 			.build();
 		sellerMapper.insert(seller);

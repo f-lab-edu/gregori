@@ -15,7 +15,7 @@ class SellerTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(1L)
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("business name")
 			.build();
 
@@ -23,7 +23,7 @@ class SellerTest {
 		seller.updateSellerInfo("222-22-22222", "business name update");
 
 		// then
-		assertEquals(seller.getBusinessNo(), "222-22-22222");
+		assertEquals(seller.getBusinessNumber(), "222-22-22222");
 		assertEquals(seller.getBusinessName(), "business name update");
 	}
 
@@ -32,7 +32,7 @@ class SellerTest {
 	void statusTest() {
 		// given
 		Seller seller = Seller.builder()
-			.businessNo("123-45-67890")
+			.businessNumber("123-45-67890")
 			.businessName("business name")
 			.build();
 		seller.closed();
@@ -51,7 +51,7 @@ class SellerTest {
 	void closed() {
 		// given
 		Seller seller = Seller.builder()
-			.businessNo("123-45-67890")
+			.businessNumber("123-45-67890")
 			.businessName("business name")
 			.build();
 
@@ -68,14 +68,14 @@ class SellerTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(1L)
-			.businessNo("123-45-67890")
+			.businessNumber("123-45-67890")
 			.businessName("business name")
 			.build();
 
 		// then
 		assertNull(seller.getId());
 		assertEquals(seller.getMemberId(), 1L);
-		assertEquals(seller.getBusinessNo(), "123-45-67890");
+		assertEquals(seller.getBusinessNumber(), "123-45-67890");
 		assertEquals(seller.getBusinessName(), "business name");
 		assertEquals(seller.getStatus(), OPERATING);
 		assertNull(seller.getCreatedAt());

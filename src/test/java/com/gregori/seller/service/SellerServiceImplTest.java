@@ -80,7 +80,7 @@ class SellerServiceImplTest {
 
 		// then
 		assertEquals(result, seller.getId());
-		assertEquals(seller.getBusinessNo(), "123-45-67891");
+		assertEquals(seller.getBusinessNumber(), "123-45-67891");
 		assertEquals(seller.getBusinessName(), "일호 상점");
 	}
 
@@ -90,7 +90,7 @@ class SellerServiceImplTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("일호 상점")
 			.build();
 		sellerMapper.insert(seller);
@@ -104,7 +104,7 @@ class SellerServiceImplTest {
 
 		// then
 		assertEquals(result, findSeller.getId());
-		assertEquals(sellerUpdateDto.getBusinessNo(), findSeller.getBusinessNo());
+		assertEquals(sellerUpdateDto.getBusinessNumber(), findSeller.getBusinessNumber());
 		assertEquals(sellerUpdateDto.getBusinessName(), findSeller.getBusinessName());
 	}
 
@@ -114,7 +114,7 @@ class SellerServiceImplTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("일호 상점")
 			.build();
 		sellerMapper.insert(seller);
@@ -136,12 +136,12 @@ class SellerServiceImplTest {
 		// given
 		Seller seller1 = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("일호 상점")
 			.build();
 		Seller seller2 = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("222-22-22222")
+			.businessNumber("222-22-22222")
 			.businessName("이호 상점")
 			.build();
 
@@ -165,7 +165,7 @@ class SellerServiceImplTest {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNo("111-11-11111")
+			.businessNumber("111-11-11111")
 			.businessName("일호 상점")
 			.build();
 		sellerMapper.insert(seller);
@@ -177,28 +177,28 @@ class SellerServiceImplTest {
 		// then
 		assertEquals(result.getId(), seller.getId());
 		assertEquals(result.getMemberId(), seller.getMemberId());
-		assertEquals(result.getBusinessNo(), seller.getBusinessNo());
+		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
 	}
 
 	@Test
 	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
 	void invalidBusinessNoInputFailsTest() {
 		// given
-		String businessNo1 = "111-11-111";
-		String businessNo2 = "111-11-111111";
+		String businessNumber1 = "111-11-111";
+		String businessNumber2 = "111-11-111111";
 
-		String businessNo3 = "000-45-67891";
-		String businessNo4 = "123-00-67891";
-		String businessNo5 = "123-45-00000";
-		String businessNo6 = "123-45-99999";
+		String businessNumber3 = "000-45-67891";
+		String businessNumber4 = "123-00-67891";
+		String businessNumber5 = "123-45-00000";
+		String businessNumber6 = "123-45-99999";
 
 		// when
-		Throwable result1 = catchThrowable(() -> sellerServiceImpl.businessNoValidationCheck(businessNo1));
-		Throwable result2 = catchThrowable(() -> sellerServiceImpl.businessNoValidationCheck(businessNo2));
-		Boolean result3 = sellerServiceImpl.businessNoValidationCheck(businessNo3);
-		Boolean result4 = sellerServiceImpl.businessNoValidationCheck(businessNo4);
-		Boolean result5 = sellerServiceImpl.businessNoValidationCheck(businessNo5);
-		Boolean result6 = sellerServiceImpl.businessNoValidationCheck(businessNo6);
+		Throwable result1 = catchThrowable(() -> sellerServiceImpl.businessNumberValidationCheck(businessNumber1));
+		Throwable result2 = catchThrowable(() -> sellerServiceImpl.businessNumberValidationCheck(businessNumber2));
+		Boolean result3 = sellerServiceImpl.businessNumberValidationCheck(businessNumber3);
+		Boolean result4 = sellerServiceImpl.businessNumberValidationCheck(businessNumber4);
+		Boolean result5 = sellerServiceImpl.businessNumberValidationCheck(businessNumber5);
+		Boolean result6 = sellerServiceImpl.businessNumberValidationCheck(businessNumber6);
 
 		// then
 		then(result1).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
@@ -213,10 +213,10 @@ class SellerServiceImplTest {
 	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
 	void validBusinessNoInputSucceedsTest() {
 		// given
-		String businessNo = "123-45-67891";
+		String businessNumber = "123-45-67891";
 
 		// when
-		Boolean result = sellerServiceImpl.businessNoValidationCheck(businessNo);
+		Boolean result = sellerServiceImpl.businessNumberValidationCheck(businessNumber);
 
 		// then
 		assertEquals(result, true);
