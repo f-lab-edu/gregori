@@ -21,8 +21,10 @@ public class OrderItem extends AbstractEntity {
 	@Getter
 	@RequiredArgsConstructor
 	public enum Status {
-		PAYMENT_COMPLETED("결제 완료"), SHIPMENT_PREPARATION("배송 준비중"),
-		SHIPPED("배송중"), DELIVERED("배송 완료");
+		PAYMENT_COMPLETED("결제 완료"),
+		SHIPMENT_PREPARATION("배송 준비중"),
+		SHIPPED("배송중"),
+		DELIVERED("배송 완료");
 		private final String description;
 	}
 

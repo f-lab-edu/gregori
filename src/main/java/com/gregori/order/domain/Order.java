@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class Order extends AbstractEntity {
 	private Long id;
 	private Long memberId;
-	private String orderNo;
+	private String orderNumber;
 	private String paymentMethod;
 	private Long paymentAmount;
 	private Long deliveryCost;
@@ -32,14 +32,14 @@ public class Order extends AbstractEntity {
 	@Builder
 	public Order(Long memberId, String paymentMethod, Long paymentAmount, Long deliveryCost) {
 		this.memberId = memberId;
-		this.orderNo = orderNoGenerator();
+		this.orderNumber = orderNumberGenerator();
 		this.paymentMethod = paymentMethod;
 		this.paymentAmount = paymentAmount;
 		this.deliveryCost = deliveryCost;
 		this.status = Status.ORDER_COMPLETED;
 	}
 
-	private String orderNoGenerator() {
+	private String orderNumberGenerator() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		String datetime = LocalDateTime.now().format(formatter);
 

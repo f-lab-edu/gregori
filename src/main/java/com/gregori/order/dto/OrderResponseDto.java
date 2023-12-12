@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class OrderResponseDto {
 	private Long id;
 	private Long memberId;
-	private String orderNo;
+	private String orderNumber;
 	private String paymentMethod;
 	private Long paymentAmount;
 	private Long deliveryCost;
@@ -28,7 +28,7 @@ public class OrderResponseDto {
 		return OrderResponseDto.builder()
 			.id(order.getId())
 			.memberId(order.getMemberId())
-			.orderNo(order.getOrderNo())
+			.orderNumber(order.getOrderNumber())
 			.paymentMethod(order.getPaymentMethod())
 			.paymentAmount(order.getPaymentAmount())
 			.deliveryCost(order.getDeliveryCost())
