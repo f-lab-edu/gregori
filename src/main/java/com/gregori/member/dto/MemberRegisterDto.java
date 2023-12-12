@@ -18,15 +18,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberRegisterDto {
-	@NotEmpty(message = "name은 필수값입니다.")
+	@NotEmpty
 	@Pattern(regexp = NAME_REGEX, message = "name 형식이 일치해야 합니다.")
 	private String name;
 
-	@NotEmpty(message = "email은 필수값입니다.")
+	@NotEmpty
 	@Email(message = "email 형식과 일치해야 합니다.")
 	private String email;
 
-	@NotEmpty(message = "password는 필수값입니다.")
+	@NotEmpty
 	@Pattern(regexp = PASSWORD_REGEX, message = "password 형식이 일치해야 합니다.")
 	private String password;
 

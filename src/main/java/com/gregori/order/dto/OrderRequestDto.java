@@ -17,16 +17,16 @@ public class OrderRequestDto {
 	@NotNull
 	private Long memberId;
 
-	@NotBlank(message = "지불 방법은 필수값입니다.")
+	@NotBlank
 	private String paymentMethod;
 
-	@NotNull(message = "지불 금액은 필수값입니다.")
+	@NotNull
 	private Long paymentAmount;
 
-	@NotNull(message = "배송 방법은 필수값입니다.")
+	@NotNull
 	private Long deliveryCost;
 
-	@NotNull(message = "주문 상품은 필수값입니다.")
+	@NotNull
 	private List<OrderItemRequestDto> orderItems;
 
 	public Order toEntity() {
