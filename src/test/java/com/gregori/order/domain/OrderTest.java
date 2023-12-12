@@ -21,9 +21,9 @@ class OrderTest {
 			.build();
 
 		// then
-		assertNotNull(order.getOrderNo());
-		assertTrue(order.getOrderNo().startsWith("ORD_"));
-		assertTrue(order.getOrderNo().length() > 15);
+		assertNotNull(order.getOrderNumber());
+		assertTrue(order.getOrderNumber().startsWith("ORD_"));
+		assertTrue(order.getOrderNumber().length() > 15);
 	}
 
 	@Test
