@@ -13,7 +13,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
-import com.gregori.item.service.ItemServiceImpl;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
@@ -23,7 +22,6 @@ import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
 import static com.gregori.seller.domain.Seller.Status.CLOSED;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -9,15 +9,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum
 SuccessMessage {
-	REGISTER_SUCCESS(HttpStatus.OK, "회원 가입에 성공했습니다."),
-	SIGNIN_SUCCESS(HttpStatus.OK, "로그인에 성공했습니다."),
-	SIGNOUT_SUCCESS(HttpStatus.OK, "로그아웃에 성공했습니다."),
-	UPDATE_MEMBER_SUCCESS(HttpStatus.OK, "회원 수정에 성공했습니다."),
-	DELETE_MEMBER_SUCCESS(HttpStatus.OK, "회원 탈퇴에 성공했습니다."),
-	GET_MEMBER_SUCCESS(HttpStatus.OK, "회원 정보 찾기에 성공했습니다."),
-	GET_ITEM_SUCCESS(HttpStatus.OK, "상품 찾기에 성공했습니다."),
-	CREATE_ORDER_SUCCESS(HttpStatus.OK, "주문에 성공했습니다."),
-	GET_ORDER_SUCCESS(HttpStatus.OK, "주문 찾기에 성공했습니다.");
+	REGISTER_SUCCESS(HttpStatus.OK, "가입을 성공했습니다."),
+	SIGNIN_SUCCESS(HttpStatus.OK, "로그인을 성공했습니다."),
+	SIGNOUT_SUCCESS(HttpStatus.OK, "로그아웃을 성공했습니다."),
+	CREATE_SUCCESS(HttpStatus.OK, "생성을 성공했습니다"),
+	UPDATE_SUCCESS(HttpStatus.OK, "수정를 성공했습니다."),
+	DELETE_SUCCESS(HttpStatus.OK, "삭제를 성공했습니다."),
+	GET_SUCCESS(HttpStatus.OK, "단건 조회를 성공했습니다."),
+	GET_LIST_SUCCESS(HttpStatus.OK, "목록 조회를 성공했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String description;

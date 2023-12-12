@@ -17,8 +17,8 @@ import com.gregori.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import static com.gregori.common.response.SuccessMessage.CREATE_ORDER_SUCCESS;
-import static com.gregori.common.response.SuccessMessage.GET_ORDER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.CREATE_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.GET_SUCCESS;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,7 +29,7 @@ public class OrderController {
 	@PostMapping
 	public ResponseEntity<CustomResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
 		CustomResponse<OrderResponseDto> response = CustomResponse
-			.success(orderService.saveOrder(orderRequestDto), CREATE_ORDER_SUCCESS);
+			.success(orderService.saveOrder(orderRequestDto), CREATE_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -37,7 +37,7 @@ public class OrderController {
 	@GetMapping("/{orderId}")
 	public ResponseEntity<CustomResponse<OrderResponseDto>> getOrder(@PathVariable Long orderId) {
 		CustomResponse<OrderResponseDto> response = CustomResponse
-			.success(orderService.getOrder(orderId), GET_ORDER_SUCCESS);
+			.success(orderService.getOrder(orderId), GET_SUCCESS);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
