@@ -1,6 +1,7 @@
 package com.gregori.seller.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +11,10 @@ import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
+import com.gregori.order.domain.Order;
+import com.gregori.order.mapper.OrderMapper;
+import com.gregori.order_item.domain.OrderItem;
+import com.gregori.order_item.mapper.OrderItemMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerResponseDto;
@@ -20,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.item.domain.Item.Status.ON_SALE;
+import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
+import static com.gregori.order_item.domain.OrderItem.Status.DELIVERED;
 
 @Slf4j
 @Service
@@ -27,6 +34,8 @@ import static com.gregori.item.domain.Item.Status.ON_SALE;
 public class SellerServiceImpl implements SellerService {
 	private final SellerMapper sellerMapper;
 	private final ItemMapper itemMapper;
+	private final OrderItemMapper orderItemMapper;
+	private final OrderMapper orderMapper;
 
 	@Override
 	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
@@ -63,6 +72,27 @@ public class SellerServiceImpl implements SellerService {
 				throw new BusinessRuleViolationException("판매 중인 상품이 있으면 폐업 신청이 불가합니다.");
 			}
 		}
+
+		/*
+		예외 처리를 어떻게 할 것인지
+		- 스트림의 안 쪽에서 처리해야 할 것인지
+		- 바깥 쪽에서 처리해야 할 것인지
+
+		DB를 스트림 내부에서 불러오는게 맞는지 고민해보기
+		*/
+		List<OrderItem> completedOrderItems = items.stream()
+			.map(Item::getId)
+			.flatMap(itemId -> orderItemMapper.findByItemId(itemId).stream())
+			.filter(orderItem -> {
+				Order order = orderMapper.findById(orderItem.getOrderId()).orElse(null);
+
+				if(order != null && order.getStatus() == ORDER_COMPLETED && orderItem.getStatus() != DELIVERED) {
+					throw new BusinessRuleViolationException("주문이 완료되었으나 배송이 완료되지 않은 상품이 있어 폐업 신청이 불가합니다.");
+				}
+
+				return true;
+			})
+			.toList();
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 		seller.closed();

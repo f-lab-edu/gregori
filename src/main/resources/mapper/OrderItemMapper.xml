@@ -19,6 +19,12 @@
         )
     </update>
 
+    <select id="findByItemId" resultType="com.gregori.order_item.domain.OrderItem" parameterType="Long">
+        SELECT id, order_id, order_count, item_id, item_name, item_price, status
+        FROM order_items
+        WHERE itemId = #{itemId}
+    </select>
+
     <select id="findByOrderId" resultType="com.gregori.order_item.domain.OrderItem" parameterType="Long">
         SELECT id, order_id, order_count, item_id, item_name, item_price, status
         FROM order_items
@@ -29,7 +35,7 @@
         SELECT id, order_id, order_count, item_id, item_name, item_price, status
         FROM order_items
         WHERE id IN
-        <foreach collection="itemIds" item="id" open="(" separator="," close=")">
+        <foreach collection="list" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
     </select>
