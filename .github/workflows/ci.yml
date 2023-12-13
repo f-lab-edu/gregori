@@ -49,7 +49,7 @@ jobs:
           min-coverage-changed-files: 60
 
       - name: Generate JaCoCo Badge
-        id: jacoco
+        id: jacoco-badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
           generate-branches-badge: true
