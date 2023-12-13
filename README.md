@@ -1,3 +1,6 @@
+![coverage](.github/badges/jacoco.svg)
+![branches coverage](.github/badges/branches.svg)
+
 ## GREGORI란?
 GREGORI는 인형 옷을 전문으로 판매하는 이커머스 서비스입니다.
 
