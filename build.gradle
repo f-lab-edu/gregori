@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.5'
     id 'io.spring.dependency-management' version '1.1.3'
+    id 'jacoco'
 }
 
 group = 'com'
@@ -43,4 +44,58 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.9"
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "**/auth/service/CustomerUserDetailService.class",
+                    "**/common/*",
+                    "**/config/*",
+                    "**/GregoriApplication.class"
+            ])
+        }))
+    }
+
+    reports {
+        xml.required = true
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.8
+            }
+        }
+
+        rule {
+            enabled = true
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'TOTALCOUNT'
+                maximum = 0.3
+            }
+
+            excludes = [
+                    "**/auth/service/CustomerUserDetailService.class",
+                    "**/common/*",
+                    "**/config/*",
+                    "**/GregoriApplication.class"
+            ]
+        }
+    }
 }
