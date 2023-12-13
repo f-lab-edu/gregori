@@ -77,24 +77,18 @@ jacocoTestReport {
 jacocoTestCoverageVerification {
     violationRules {
         rule {
-            limit {
-                minimum = 0.8
-            }
-        }
-
-        rule {
             element = 'CLASS'
 
             limit {
                 counter = "BRANCH"
                 value = "COVEREDRATIO"
-                minimum = 0.2
+                minimum = 0.6
             }
 
             limit {
                 counter = 'LINE'
-                value = 'TOTALCOUNT'
-                maximum = 200
+                value = 'COVEREDRATIO'
+                maximum = 0.6
             }
 
             excludes = [
