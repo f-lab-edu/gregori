@@ -69,7 +69,7 @@ jacocoTestReport {
 
     reports {
         xml.required = true
-        csv.required = false
+        csv.required = true
         html.required = false
     }
 }
