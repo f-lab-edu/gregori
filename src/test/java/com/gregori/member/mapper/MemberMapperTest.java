@@ -33,12 +33,12 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("Members 테이블에 새로운 셀러를 추가한다.")
+	@DisplayName("Members 테이블에 새로운 회원을 추가한다.")
 	void insert() {
 		// given
 		Member member = Member.builder()
 			.name("김일호")
-			.email("a@a.a")
+			.email("z@z.z")
 			.password("aa11111!")
 			.build();
 
@@ -77,7 +77,7 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 Member 테이블의 셀러를 전부 삭제한다.")
+	@DisplayName("Id 목록과 일치하는 Member 테이블의 회원을 전부 삭제한다.")
 	void deleteByIds() {
 		// given
 		Member member = Member.builder()
@@ -98,7 +98,7 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("Members 테이블에서 id가 일치하는 셀러를 조회한다.")
+	@DisplayName("Members 테이블에서 id가 일치하는 회원을 조회한다.")
 	void findById() {
 		// given
 		Member member = Member.builder()
@@ -122,12 +122,12 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("Members 테이블에서 email이 일치하는 셀러를 조회한다.")
+	@DisplayName("Members 테이블에서 email이 일치하는 회원을 조회한다.")
 	void findByEmail() {
 		// given
 		Member member = Member.builder()
 			.name("김일호")
-			.email("a@a.a")
+			.email("z@z.z")
 			.password("aa11111!")
 			.build();
 		memberMapper.insert(member);

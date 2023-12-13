@@ -45,7 +45,7 @@ class MemberServiceImplTest {
 	@DisplayName("새로운 회원을 DB에 저장하고 id를 반환한다.")
 	 void saveMember() {
 		// given
-		MemberRegisterDto memberRegisterDto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
+		MemberRegisterDto memberRegisterDto = new MemberRegisterDto("일호", "z@z.z", "aa11111!");
 
 		// when
 		MemberResponseDto result = memberService.register(memberRegisterDto);
@@ -55,7 +55,7 @@ class MemberServiceImplTest {
 		// then
 		assertEquals(result.getId(), member.getId());
 		assertEquals(member.getName(), "일호");
-		assertEquals(member.getEmail(), "a@a.a");
+		assertEquals(member.getEmail(), "z@z.z");
 	}
 
 	@Test
