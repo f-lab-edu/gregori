@@ -64,12 +64,12 @@ class AuthControllerIntegrationTest {
 	@BeforeEach
 	void beforeEach() {
 		Member member1 = Member.builder()
-			.email("a@a.a")
+			.email("y@y.y")
 			.name("일호")
 			.password(passwordEncoder.encode("aa11111!"))
 			.build();
 		Member member2 = Member.builder()
-			.email("b@b.b")
+			.email("z@z.z")
 			.name("이호")
 			.password(passwordEncoder.encode("bb22222@"))
 			.build();
@@ -99,7 +99,7 @@ class AuthControllerIntegrationTest {
 	void signIn() throws Exception {
 		// given
 		Map<String, String> input = new HashMap<>();
-		input.put("email", "a@a.a");
+		input.put("email", "y@y.y");
 		input.put("password", "aa11111!");
 
 		// when
@@ -130,7 +130,7 @@ class AuthControllerIntegrationTest {
 	void signOut() throws Exception {
 		// given
 		UsernamePasswordAuthenticationToken authenticationToken =
-			new UsernamePasswordAuthenticationToken("a@a.a", "aa11111!");
+			new UsernamePasswordAuthenticationToken("y@y.y", "aa11111!");
 		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
 		refreshToken = RefreshToken.builder()
