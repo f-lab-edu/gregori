@@ -43,9 +43,12 @@ jobs:
         id: jacoco
         uses: madrapps/jacoco-report@v1.6.1
         with:
-          paths: |
-            ${{ github.workspace }}/**/build/reports/jacoco/prodNormalDebugCoverage/prodNormalDebugCoverage.xml,
-            ${{ github.workspace }}/**/build/reports/jacoco/**/debugCoverage.xml
+          paths: ${{ github.workspace }}/**/build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.GITHUB_TOKEN }}
-          min-coverage-overall: 40
-          min-coverage-changed-files: 60
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

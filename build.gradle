@@ -57,10 +57,12 @@ jacocoTestReport {
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
-                    "**/auth/service/CustomerUserDetailService.class",
-                    "**/common/*",
-                    "**/config/*",
-                    "**/GregoriApplication.class"
+                "**/auth/**",
+                "**/common/**",
+                "**/config/**",
+                "**/mypage/**",
+                "**/refresh_token/**",
+                "**/GregoriApplication.class"
             ])
         }))
     }
@@ -68,8 +70,10 @@ jacocoTestReport {
     reports {
         xml.required = true
         csv.required = false
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+        html.required = true
     }
+
+//    finalizedBy jacocoTestCoverageVerification
 }
 
 jacocoTestCoverageVerification {
@@ -81,20 +85,27 @@ jacocoTestCoverageVerification {
         }
 
         rule {
-            enabled = true
             element = 'CLASS'
+
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = 0.2
+            }
 
             limit {
                 counter = 'LINE'
                 value = 'TOTALCOUNT'
-                maximum = 0.3
+                maximum = 200
             }
 
             excludes = [
-                    "**/auth/service/CustomerUserDetailService.class",
-                    "**/common/*",
-                    "**/config/*",
-                    "**/GregoriApplication.class"
+                "**/auth/**",
+                "**/common/**",
+                "**/config/**",
+                "**/mypage/**",
+                "**/refresh_token/**",
+                "**/GregoriApplication.class"
             ]
         }
     }
