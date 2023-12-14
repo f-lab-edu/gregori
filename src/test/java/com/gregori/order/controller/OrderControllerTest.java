@@ -1,34 +1,51 @@
 package com.gregori.order.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.ResultActions;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.common.response.CustomResponse;
+import com.gregori.item.domain.Item;
+import com.gregori.item.mapper.ItemMapper;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
+import com.gregori.order.domain.Order;
 import com.gregori.order.dto.OrderRequestDto;
-import com.gregori.order.service.OrderService;
+import com.gregori.order.dto.OrderResponseDto;
+import com.gregori.order.mapper.OrderMapper;
+import com.gregori.order_item.domain.OrderItem;
 import com.gregori.order_item.dto.OrderItemRequestDto;
+import com.gregori.order_item.mapper.OrderItemMapper;
 
-import static com.gregori.common.DeepReflectionEqMatcher.deepRefEq;
+import lombok.extern.slf4j.Slf4j;
+
 import static org.hamcrest.Matchers.is;
-import static org.mockito.Answers.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = OrderController.class)
+@Slf4j
+@SpringBootTest
+@ActiveProfiles("test")
+@AutoConfigureMockMvc
+@AutoConfigureRestDocs
 class OrderControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
@@ -36,46 +53,152 @@ class OrderControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@MockBean(answer = RETURNS_DEEP_STUBS)
-	OrderService orderService;
+	@Autowired
+	private MemberMapper memberMapper;
+
+	@Autowired
+	private ItemMapper itemMapper;
+
+	@Autowired
+	private OrderMapper orderMapper;
+
+	@Autowired
+	private OrderItemMapper orderItemMapper;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	Member member;
+	List<Item> items = new ArrayList<>();
+	List<Long> orderIds = new ArrayList<>();
+	List<Long> orderItemIds = new ArrayList<>();
+
+	@BeforeEach
+	void beforeEach() {
+		member = Member.builder()
+			.email("a@a.a")
+			.name("일호")
+			.password(passwordEncoder.encode("aa11111!"))
+			.build();
+		memberMapper.insert(member);
+
+		Item item1 = Item.builder()
+			.name("아이템1")
+			.price(100L)
+			.inventory(1L)
+			.build();
+		Item item2 = Item.builder()
+			.name("아이템2")
+			.price(200L)
+			.inventory(2L)
+			.build();
+
+		itemMapper.insert(item1);
+		itemMapper.insert(item2);
+		items.add(item1);
+		items.add(item2);
+	}
+
+	@AfterEach
+	void afterEach() {
+		if (!orderItemIds.isEmpty()) {
+			orderItemMapper.deleteByIds(orderItemIds);
+			orderItemIds.clear();
+		}
+		if (!orderIds.isEmpty()) {
+			orderMapper.deleteByIds(orderIds);
+			orderIds.clear();
+		}
+		if (!items.isEmpty()) {
+			itemMapper.deleteById(items.stream().map(Item::getId).toList());
+			items.clear();
+		}
+		if(member != null) {
+			memberMapper.deleteByIds(List.of(member.getId()));
+			member = null;
+		}
+	}
 
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 주문을 새로 생성한다.")
 	void createOrder() throws Exception {
 		// given
-		List<OrderItemRequestDto> orderItemsRequest = List.of(new OrderItemRequestDto(1L, 1L));
-		OrderRequestDto orderRequestDto = new OrderRequestDto(1L, "카드", 1000L, 12500L, orderItemsRequest);
+		List<OrderItemRequestDto> orderItemsRequest = List.of(new OrderItemRequestDto(1L, items.get(0).getId()));
+		OrderRequestDto input = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderItemsRequest);
 
 		// when
-		mockMvc.perform(MockMvcRequestBuilders.post("/order")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(orderRequestDto)))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		ResultActions actions = mockMvc.perform(
+			RestDocumentationRequestBuilders.post("/order")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(input))
+		);
+
+		CustomResponse<OrderResponseDto> result = objectMapper.readValue(
+			actions.andReturn().getResponse().getContentAsString(),
+			new TypeReference<>(){});
+		orderIds.add(result.getData().getId());
+		orderItemIds.add(result.getData().getOrderItems().get(0).getId());
 
 		// then
-		verify(orderService, times(1)).saveOrder(deepRefEq(orderRequestDto));
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.result", is("SUCCESS")))
+			.andExpect(jsonPath("$.httpStatus", is("OK")))
+			.andExpect(jsonPath("$.data", is(notNullValue())))
+			.andExpect(jsonPath("$.data.id", is(notNullValue())))
+			.andExpect(jsonPath("$.data.memberId", is(notNullValue())))
+			.andExpect(jsonPath("$.data.orderNumber", is(notNullValue())))
+			.andExpect(jsonPath("$.data.paymentMethod", is(notNullValue())))
+			.andExpect(jsonPath("$.data.paymentAmount", is(notNullValue())))
+			.andExpect(jsonPath("$.data.deliveryCost", is(notNullValue())))
+			.andExpect(jsonPath("$.data.status", is(notNullValue())))
+			.andExpect(jsonPath("$.data.orderItems", is(notNullValue())))
+			.andExpect(jsonPath("$.description", is(notNullValue())))
+			.andDo(print());
 	}
 
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 주문을 조회한다.")
 	void getOrder() throws Exception {
 		// given
-		Long orderId = 1L;
+		Order order = Order.builder()
+			.memberId(member.getId())
+			.paymentMethod("카드")
+			.paymentAmount(1000L)
+			.deliveryCost(2500L)
+			.build();
+		orderMapper.insert(order);
+		orderIds.add(order.getId());
+
+		OrderItem orderItem = OrderItem.builder()
+			.orderId(order.getId())
+			.orderCount(2L)
+			.itemId(items.get(0).getId())
+			.itemName(items.get(0).getName())
+			.itemPrice(items.get(0).getPrice())
+			.build();
+		orderItemMapper.insert(orderItem);
+		orderItemIds.add(orderItem.getId());
 
 		// when
-		mockMvc.perform(MockMvcRequestBuilders.get("/order/" + orderId)
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		ResultActions actions = mockMvc.perform(
+			RestDocumentationRequestBuilders.get("/order/" + order.getId())
+				.contentType(MediaType.APPLICATION_JSON)
+		);
 
 		// then
-		verify(orderService).getOrder(orderId);
+		actions.andExpect(status().isOk())
+			.andExpect(jsonPath("$.result", is("SUCCESS")))
+			.andExpect(jsonPath("$.httpStatus", is("OK")))
+			.andExpect(jsonPath("$.data", is(notNullValue())))
+			.andExpect(jsonPath("$.data.id", is(notNullValue())))
+			.andExpect(jsonPath("$.data.memberId", is(notNullValue())))
+			.andExpect(jsonPath("$.data.orderNumber", is(notNullValue())))
+			.andExpect(jsonPath("$.data.paymentMethod", is(notNullValue())))
+			.andExpect(jsonPath("$.data.paymentAmount", is(notNullValue())))
+			.andExpect(jsonPath("$.data.deliveryCost", is(notNullValue())))
+			.andExpect(jsonPath("$.data.status", is(notNullValue())))
+			.andExpect(jsonPath("$.data.orderItems", is(notNullValue())))
+			.andExpect(jsonPath("$.description", is(notNullValue())))
+			.andDo(print());
 	}
 }
