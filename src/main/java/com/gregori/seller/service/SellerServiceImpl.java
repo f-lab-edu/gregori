@@ -73,27 +73,6 @@ public class SellerServiceImpl implements SellerService {
 			}
 		}
 
-		/*
-		예외 처리를 어떻게 할 것인지
-		- 스트림의 안 쪽에서 처리해야 할 것인지
-		- 바깥 쪽에서 처리해야 할 것인지
-
-		DB를 스트림 내부에서 불러오는게 맞는지 고민해보기
-		*/
-		List<OrderItem> completedOrderItems = items.stream()
-			.map(Item::getId)
-			.flatMap(itemId -> orderItemMapper.findByItemId(itemId).stream())
-			.filter(orderItem -> {
-				Order order = orderMapper.findById(orderItem.getOrderId()).orElse(null);
-
-				if(order != null && order.getStatus() == ORDER_COMPLETED && orderItem.getStatus() != DELIVERED) {
-					throw new BusinessRuleViolationException("주문이 완료되었으나 배송이 완료되지 않은 상품이 있어 폐업 신청이 불가합니다.");
-				}
-
-				return true;
-			})
-			.toList();
-
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 		seller.closed();
 		sellerMapper.update(seller);
