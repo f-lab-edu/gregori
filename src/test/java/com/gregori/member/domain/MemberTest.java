@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@SpringBootTest
 @NoArgsConstructor
 class MemberTest {
 	@Test
