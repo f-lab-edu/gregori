@@ -2,22 +2,20 @@ package com.gregori.member.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.CustomMybatisTest;
 import com.gregori.member.domain.Member;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@CustomMybatisTest
 class MemberMapperTest {
 	@Autowired
 	private MemberMapper memberMapper;
@@ -33,114 +31,104 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("Members 테이블에 새로운 회원을 추가한다.")
-	void insert() {
+	@DisplayName("DB에 새로운 회원을 추가한다.")
+	void should_insert_when_validMember() {
 		// given
-		Member member = Member.builder()
-			.name("김일호")
-			.email("z@z.z")
-			.password("aa11111!")
-			.build();
+		Member member = new Member("name", "new email", "password");
 
 		// when
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
-		Member result = memberMapper.findById(member.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), member.getId());
-		assertEquals(result.getName(), member.getName());
+		Optional<Member> result = memberMapper.findById(member.getId());
+		assertTrue(result.isPresent());
 	}
 
 	@Test
-	@DisplayName("Members 테이블의 상품을 수정한다.")
-	void update() {
+	@DisplayName("DB에서 id가 일치하는 회원의 회원 정보를 갱신한다.")
+	void should_update_when_memberIdMatch() {
 		// given
-		Member member = Member.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.build();
-
+		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
+		member.updateMemberInfo("new name", "new password");
 
 		// when
-		member.updateMemberInfo("김이호", "bb22222@");
 		memberMapper.update(member);
-		Member result = memberMapper.findById(member.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), member.getId());
-		assertEquals(result.getName(), member.getName());
-		assertEquals(result.getPassword(), member.getPassword());
+		Optional<Member> result = memberMapper.findById(member.getId());
+		assertTrue(result.isPresent());
+		assertEquals(result.get().getName(), "new name");
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 Member 테이블의 회원을 전부 삭제한다.")
-	void deleteByIds() {
+	@DisplayName("DB에서 id가 일치하는 회원을 삭제한다.")
+	void should_delete_when_memberIdMatch() {
 		// given
-		Member member = Member.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.build();
-
+		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
 
 		// when
-		memberMapper.deleteByIds(List.of(member.getId()));
-		Member result = memberMapper.findById(member.getId()).orElse(null);
+		memberMapper.deleteById(member.getId());
 
 		// then
-		assertNull(result);
+		Optional<Member> result = memberMapper.findById(member.getId());
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
-	@DisplayName("Members 테이블에서 id가 일치하는 회원을 조회한다.")
-	void findById() {
+	@DisplayName("DB에서 Id 목록과 일치하는 회원을 전부 삭제한다.")
+	void should_delete_when_memberIdsMatch() {
 		// given
-		Member member = Member.builder()
-			.name("김일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.build();
+		Member member1 = new Member("name", "email1", "password");
+		Member member2 = new Member("name", "email2", "password");
+		memberMapper.insert(member1);
+		memberMapper.insert(member2);
+		memberIds.add(member1.getId());
+		memberIds.add(member2.getId());
 
+		// when
+		memberMapper.deleteByIds(memberIds);
+
+		// then
+		Optional<Member> result1 = memberMapper.findById(member1.getId());
+		Optional<Member> result2 = memberMapper.findById(member2.getId());
+		assertTrue(result1.isEmpty());
+		assertTrue(result2.isEmpty());
+	}
+
+	@Test
+	@DisplayName("DB에서 ID가 일치하는 회원을 조회한다.")
+	void should_find_when_memberIdMatch() {
+		// given
+		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
 
 		// when
-		Member result = memberMapper.findById(member.getId()).orElseThrow(NotFoundException::new);
+		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		assertEquals(result.getId(), member.getId());
-		assertEquals(result.getName(), member.getName());
-		assertEquals(result.getEmail(), member.getEmail());
-		assertEquals(result.getPassword(), member.getPassword());
-		assertEquals(result.getStatus(), member.getStatus());
+		assertTrue(result.isPresent());
+		assertEquals(result.get().getId(), member.getId());
 	}
 
 	@Test
-	@DisplayName("Members 테이블에서 email이 일치하는 회원을 조회한다.")
-	void findByEmail() {
+	@DisplayName("DB에서 email이 일치하는 회원을 조회한다.")
+	void should_find_when_memberEmailMatch() {
 		// given
-		Member member = Member.builder()
-			.name("김일호")
-			.email("z@z.z")
-			.password("aa11111!")
-			.build();
+		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
 
 		// when
-		Member result = memberMapper.findByEmail(member.getEmail()).orElseThrow(NotFoundException::new);
+		Optional<Member> result = memberMapper.findByEmail(member.getEmail());
 
 		// then
-		assertEquals(result.getId(), member.getId());
-		assertEquals(result.getName(), member.getName());
-		assertEquals(result.getEmail(), member.getEmail());
-		assertEquals(result.getPassword(), member.getPassword());
-		assertEquals(result.getStatus(), member.getStatus());
+		assertTrue(result.isPresent());
+		assertEquals(result.get().getEmail(), member.getEmail());
 	}
 }

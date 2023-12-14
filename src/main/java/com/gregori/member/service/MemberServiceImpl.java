@@ -23,7 +23,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponseDto register(@Valid MemberRegisterDto memberRegisterDto) throws DuplicateException {
+    public Long register(@Valid MemberRegisterDto memberRegisterDto) throws DuplicateException {
         memberMapper.findByEmail(memberRegisterDto.getEmail())
             .ifPresent(m -> {
                 throw new DuplicateException();
@@ -33,16 +33,16 @@ public class MemberServiceImpl implements MemberService {
             .toEntity(passwordEncoder.encode(memberRegisterDto.getPassword()));
         memberMapper.insert(member);
 
-        return new MemberResponseDto().toEntity(member);
+        return member.getId();
     }
 
     @Override
     @Transactional
-    public Long updateMember(MemberUpdateDto mypageUpdateDto) throws NotFoundException {
-        Member member = memberMapper.findById(mypageUpdateDto.getId())
+    public Long updateMember(MemberUpdateDto memberUpdateDto) throws NotFoundException {
+        Member member = memberMapper.findById(memberUpdateDto.getId())
             .orElseThrow(NotFoundException::new);
-        member.updateMemberInfo(mypageUpdateDto.getName(),
-            passwordEncoder.encode(mypageUpdateDto.getPassword()));
+        member.updateMemberInfo(memberUpdateDto.getName(),
+            passwordEncoder.encode(memberUpdateDto.getPassword()));
         memberMapper.update(member);
 
         return member.getId();

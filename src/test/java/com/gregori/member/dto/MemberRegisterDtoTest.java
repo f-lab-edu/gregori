@@ -20,9 +20,9 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("Member 객체를 builder 패턴으로 생성한다.")
-	void toEntity() {
+	void should_buildMember() {
 		// given
-		MemberRegisterDto dto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
+		MemberRegisterDto dto = new MemberRegisterDto("이름", "a@a.a", "aa11111!");
 
 		// when
 		Member member = dto.toEntity(dto.getPassword());
@@ -33,7 +33,7 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankNameInputFailsTest() {
+	void should_ValidException_when_blankName() {
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto(null, "a@a.a", "aa11111!");
 		MemberRegisterDto dto2 = new MemberRegisterDto("", "a@a.a", "aa11111!");
@@ -52,7 +52,7 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("name 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedNameInputFailsTest() {
+	void should_ValidException_when_mismatchedName() {
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("김", "email", "aa11111!");
 		MemberRegisterDto dto2 = new MemberRegisterDto("kimchulsu", "email", "aa11111!");
@@ -71,11 +71,11 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("email 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankEmailInputFailsTest() {
+	void should_ValidException_when_blankEmail() {
 		// given
-		MemberRegisterDto dto1 = new MemberRegisterDto("일호", null, "aa11111!");
-		MemberRegisterDto dto2 = new MemberRegisterDto("일호", "", "aa11111!");
-		MemberRegisterDto dto3 = new MemberRegisterDto("일호", " ", "aa11111!");
+		MemberRegisterDto dto1 = new MemberRegisterDto("이름", null, "aa11111!");
+		MemberRegisterDto dto2 = new MemberRegisterDto("이름", "", "aa11111!");
+		MemberRegisterDto dto3 = new MemberRegisterDto("이름", " ", "aa11111!");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -90,10 +90,10 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("email 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedEmailInputFailsTest() {
+	void should_ValidException_when_mismatchedEmail() {
 		// given
-		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "a", "aa11111!");
-		MemberRegisterDto dto2 = new MemberRegisterDto("일호", "a@a.", "aa11111!");
+		MemberRegisterDto dto1 = new MemberRegisterDto("이름", "a", "aa11111!");
+		MemberRegisterDto dto2 = new MemberRegisterDto("이름", "a@a.", "aa11111!");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -107,11 +107,11 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("password 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankPasswordInputFailsTest() {
+	void should_ValidException_when_blankPassword() {
 		// given
-		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "a@a.a", null);
-		MemberRegisterDto dto2 = new MemberRegisterDto("일호","a@a.a",  "");
-		MemberRegisterDto dto3 = new MemberRegisterDto("일호", "a@a.a", " ");
+		MemberRegisterDto dto1 = new MemberRegisterDto("이름", "a@a.a", null);
+		MemberRegisterDto dto2 = new MemberRegisterDto("이름","a@a.a",  "");
+		MemberRegisterDto dto3 = new MemberRegisterDto("이름", "a@a.a", " ");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -126,14 +126,14 @@ class MemberRegisterDtoTest {
 
 	@Test
 	@DisplayName("password 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedPasswordInputFailsTest() {
+	void should_ValidException_when_mismatchedPassword() {
 		// given
-		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "email", "pass%5");
-		MemberRegisterDto dto2 = new MemberRegisterDto("일호", "email", "passwordpassword%5");
-		MemberRegisterDto dto3 = new MemberRegisterDto("일호", "email", "374833e**");
-		MemberRegisterDto dto4 = new MemberRegisterDto("일호", "email", "password!");
-		MemberRegisterDto dto5 = new MemberRegisterDto("일호", "email", "pass5324");
-		MemberRegisterDto dto6 = new MemberRegisterDto("일호", "email", "pass 5324");
+		MemberRegisterDto dto1 = new MemberRegisterDto("이름", "email", "pass%5");
+		MemberRegisterDto dto2 = new MemberRegisterDto("이름", "email", "passwordpassword%5");
+		MemberRegisterDto dto3 = new MemberRegisterDto("이름", "email", "374833e**");
+		MemberRegisterDto dto4 = new MemberRegisterDto("이름", "email", "password!");
+		MemberRegisterDto dto5 = new MemberRegisterDto("이름", "email", "pass5324");
+		MemberRegisterDto dto6 = new MemberRegisterDto("이름", "email", "pass 5324");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -154,10 +154,10 @@ class MemberRegisterDtoTest {
 
 
 	@Test
-	@DisplayName("올바른 입력값이면 SellerRegisterDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	@DisplayName("올바른 입력값이면 MemberRegisterDto 객체 생성에 성공한다.")
+	void should_createMemberRegisterDto_when_validInput() {
 		// given
-		MemberRegisterDto dto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
+		MemberRegisterDto dto = new MemberRegisterDto("이름", "a@a.a", "aa11111!");
 
 		// when
 		var result = validator.validate(dto);

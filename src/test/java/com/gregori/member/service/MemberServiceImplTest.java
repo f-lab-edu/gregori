@@ -1,127 +1,137 @@
 package com.gregori.member.service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.dto.MemberRegisterDto;
-import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
-	@Autowired
+	@Mock
 	private MemberMapper memberMapper;
+	@Mock
+	private PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private MemberService memberService;
-
-	List<Long> memberIds = new ArrayList<>();
-
-	@AfterEach
-	void afterEach() {
-		if (!memberIds.isEmpty()) {
-			memberMapper.deleteByIds(memberIds);
-			memberIds.clear();
-		}
-	}
-
+	@InjectMocks
+	private MemberServiceImpl memberService;
 
 	@Test
-	@DisplayName("새로운 회원을 DB에 저장하고 id를 반환한다.")
-	 void saveMember() {
+	@DisplayName("이메일이 중복되지 않으면 새로운 회원을 DB에 저장하고 id를 반환한다.")
+	 void should_saveMember_when_notDuplicatedEmail() {
 		// given
-		MemberRegisterDto memberRegisterDto = new MemberRegisterDto("일호", "z@z.z", "aa11111!");
+		final MemberRegisterDto dto = new MemberRegisterDto("name", "email", "password");
+		given(memberMapper.findByEmail("email")).willReturn(Optional.empty());
+		given(passwordEncoder.encode(dto.getPassword())).willReturn("encodedPassword");
 
 		// when
-		MemberResponseDto result = memberService.register(memberRegisterDto);
-		Member member = memberMapper.findById(result.getId()).orElseThrow(NotFoundException::new);
-		memberIds.add(member.getId());
+		memberService.register(dto);
 
 		// then
-		assertEquals(result.getId(), member.getId());
-		assertEquals(member.getName(), "일호");
-		assertEquals(member.getEmail(), "z@z.z");
+		verify(memberMapper).insert(any(Member.class));
 	}
 
 	@Test
-	@DisplayName("DB에 저장된 회원을 수정하고 id를 반환한다.")
-	void updateMember() {
+	@DisplayName("회원 이메일이 중복되면 가입을 실패한다.")
+	void should_DuplicationException_when_duplicationEmail() {
 		// given
-		Member member = Member.builder()
-			.name("일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.build();
-		memberMapper.insert(member);
-		memberIds.add(member.getId());
+		final MemberRegisterDto dto = new MemberRegisterDto("name", "email", "password");
+		given(memberMapper.findByEmail("email"))
+			.willReturn(Optional.of(new Member("name", "email", "password")));
 
-		MemberUpdateDto memberUpdateDto = new MemberUpdateDto(member.getId(),"이호", "bb22222@");
+		// when, then
+		assertThrows(DuplicateException.class, () -> memberService.register(dto));
+	}
+
+	@Test
+	@DisplayName("DB에 회원이 존재하면 회원 정보를 수정하고 id를 반환한다.")
+	void should_updateMember_when_existMember() {
+		// given
+		final Member member = new Member("name", "email", "password");
+		final MemberUpdateDto dto = new MemberUpdateDto(1L, "member", "password");
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 
 		// when
-		Long result = memberService.updateMember(memberUpdateDto);
-		Member findMember = memberMapper.findById(result).orElseThrow(NotFoundException::new);
+		memberService.updateMember(dto);
 
 		// then
-		assertEquals(result, findMember.getId());
-		assertEquals(memberUpdateDto.getName(), findMember.getName());
-		assertNotEquals(memberUpdateDto.getPassword(), findMember.getPassword());
+		verify(memberMapper).update(member);
 	}
 
 	@Test
-	@DisplayName("DB에 저장된 회원의 상태를 변경하고 id를 반환한다.")
-	void deleteMember() {
+	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 수정을 실패한다.")
+	void should_NotFoundException_when_nonExistMemberUpdate() {
 		// given
-		Member member = Member.builder()
-			.name("일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.build();
-		memberMapper.insert(member);
-		memberIds.add(member.getId());
+		final MemberUpdateDto dto = new MemberUpdateDto(1L, "member", "password");
+		given(memberMapper.findById(1L)).willReturn(Optional.empty());
+
+		// when, then
+		assertThrows(NotFoundException.class, () -> memberService.updateMember(dto));
+	}
+
+	@Test
+	@DisplayName("DB에 회원이 존재하면 회원을 삭제하고 id를 반환한다.")
+	void should_deleteMember_when_existMember() {
+		// given
+		final Long memberId = 1L;
+		final Member member = new Member("name", "email", "password");
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 
 		// when
-		Long result = memberService.deleteMember(member.getId());
-		Member findMember = memberMapper.findById(member.getId()).orElseThrow(NotFoundException::new);
+		memberService.deleteMember(memberId);
 
 		// then
-		assertEquals(result, findMember.getId());
-		assertEquals(findMember.getStatus(), DEACTIVATE);
-
+		verify(memberMapper).update(member);
 	}
 
 	@Test
-	@DisplayName("회원 id로 DB에 저장된 회원을 조회해서 반환한다.")
+	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 삭제를 실패한다.")
+	void should_NotFoundException_when_nonExistMemberDelete() {
+		// given
+		given(memberMapper.findById(1L)).willReturn(Optional.empty());
+
+		// when, then
+		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
+	}
+
+	@Test
+	@DisplayName("DB에 회원이 존재하면 회원을 조회해서 반환한다.")
 	void getMember() {
 		// given
-		Member member = Member.builder()
-			.name("일호")
-			.email("a@a.a")
-			.password("aa11111!")
-			.build();
-		memberMapper.insert(member);
-		memberIds.add(member.getId());
+		final Long memberId = 1L;
+		final Member member = new Member("name", "email", "password");
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 
 		// when
-		MemberResponseDto result = memberService.getMember(member.getId());
+		memberService.getMember(memberId);
 
 		// then
-		assertEquals(result.getId(), member.getId());
-		assertEquals(result.getName(), member.getName());
-		assertEquals(result.getStatus(), member.getStatus());
+		verify(memberMapper).findById(memberId);
+	}
+
+	@Test
+	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 삭제를 실패한다.")
+	void should_NotFoundException_when_nonExistMemberGet() {
+		// given
+		given(memberMapper.findById(1L)).willReturn(Optional.empty());
+
+		// when, then
+		assertThrows(NotFoundException.class, () -> memberService.getMember(1L));
 	}
 }

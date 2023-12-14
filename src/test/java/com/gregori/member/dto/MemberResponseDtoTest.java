@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class MemberResponseDtoTest {
 	@Test
 	@DisplayName("Member를 파라미터로 받아 MemberResponseDto 객체를 builder 패턴으로 생성한다.")
-	void toEntityTest() {
+	void should_buildMemberResponseDto_when_memberParameter() {
 		// given
 		Member member = Member.builder()
 			.name("일호")
@@ -29,7 +29,7 @@ class MemberResponseDtoTest {
 
 	@Test
 	@DisplayName("SellerResponseDto 객체의 필드를 getter 메서드로 조회한다.")
-	void getterTest() {
+	void should_getFields() {
 		// given
 		MemberResponseDto dto = new MemberResponseDto(1L, "a@a.a", "일호", ACTIVATE);
 

@@ -16,9 +16,9 @@ class MemberUpdateDtoTest {
 
 	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
-	void nullIdInputFailsTest() {
+	void should_ValidException_when_nullId() {
 		// given
-		MemberUpdateDto dto = new MemberUpdateDto(null, "일호", "aa11111!");
+		MemberUpdateDto dto = new MemberUpdateDto(null, "이름", "aa11111!");
 
 		// when
 		var result = validator.validate(dto);
@@ -29,7 +29,7 @@ class MemberUpdateDtoTest {
 
 	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankNameInputFailsTest() {
+	void should_ValidException_when_blankName() {
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto(null, "a@a.a", "aa11111!");
 		MemberRegisterDto dto2 = new MemberRegisterDto("", "a@a.a", "aa11111!");
@@ -48,7 +48,7 @@ class MemberUpdateDtoTest {
 
 	@Test
 	@DisplayName("name 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedNameInputFailsTest() {
+	void should_ValidException_when_mismatchedName() {
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("김", "email", "aa11111!");
 		MemberRegisterDto dto2 = new MemberRegisterDto("kimchulsu", "email", "aa11111!");
@@ -67,7 +67,7 @@ class MemberUpdateDtoTest {
 
 	@Test
 	@DisplayName("password 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankPasswordInputFailsTest() {
+	void should_ValidException_when_blankPassword() {
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "a@a.a", null);
 		MemberRegisterDto dto2 = new MemberRegisterDto("일호","a@a.a",  "");
@@ -86,7 +86,7 @@ class MemberUpdateDtoTest {
 
 	@Test
 	@DisplayName("password 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedPasswordInputFailsTest() {
+	void should_ValidException_when_mismatchedPassword() {
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "email", "pass%5");
 		MemberRegisterDto dto2 = new MemberRegisterDto("일호", "email", "passwordpassword%5");
@@ -114,7 +114,7 @@ class MemberUpdateDtoTest {
 
 	@Test
 	@DisplayName("올바른 입력값이면 MemberUpdateDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	void should_createMemberUpdateDto_when_validInput() {
 		// given
 		MemberUpdateDto dto = new MemberUpdateDto(1L, "일호", "aa11111!");
 
