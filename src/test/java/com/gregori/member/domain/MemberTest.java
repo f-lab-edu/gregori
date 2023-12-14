@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+@NoArgsConstructor
 class MemberTest {
 	@Test
 	@DisplayName("Member 객체의 필드를 수정한다.")
