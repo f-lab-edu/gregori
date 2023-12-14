@@ -11,7 +11,7 @@
 
     <update id="update">
         UPDATE members
-        SET name = #{name}, password = #{password}, status = #{status}
+        SET name = #{name}, password = #{password}, status = #{status}, authority = #{authority}
         WHERE id = #{id}
     </update>
 

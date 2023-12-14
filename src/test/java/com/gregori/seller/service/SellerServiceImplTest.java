@@ -21,6 +21,7 @@ import com.gregori.seller.dto.SellerResponseDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.seller.domain.Seller.Status.CLOSED;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -75,11 +76,13 @@ class SellerServiceImplTest {
 
 		// when
 		Long result = sellerService.saveSeller(sellerRegisterDto);
+		Member findMember = memberMapper.findById(member.getId()).orElseThrow(NotFoundException::new);
 		Seller seller = sellerMapper.findById(result).orElseThrow(NotFoundException::new);
 		sellerIds.add(seller.getId());
 
 		// then
 		assertEquals(result, seller.getId());
+		assertEquals(findMember.getAuthority(), SELLING_MEMBER);
 		assertEquals(seller.getBusinessNumber(), "123-45-67891");
 		assertEquals(seller.getBusinessName(), "일호 상점");
 	}

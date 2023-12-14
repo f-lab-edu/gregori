@@ -1,7 +1,6 @@
 package com.gregori.seller.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,10 +10,8 @@ import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.item.domain.Item;
 import com.gregori.item.mapper.ItemMapper;
-import com.gregori.order.domain.Order;
-import com.gregori.order.mapper.OrderMapper;
-import com.gregori.order_item.domain.OrderItem;
-import com.gregori.order_item.mapper.OrderItemMapper;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerResponseDto;
@@ -25,23 +22,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.item.domain.Item.Status.ON_SALE;
-import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
-import static com.gregori.order_item.domain.OrderItem.Status.DELIVERED;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService {
+	private final MemberMapper memberMapper;
 	private final SellerMapper sellerMapper;
 	private final ItemMapper itemMapper;
-	private final OrderItemMapper orderItemMapper;
-	private final OrderMapper orderMapper;
 
 	@Override
+	@Transactional
 	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
 		if (!businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber())) {
 			throw new ValidationException();
 		}
+
+		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
+		member.sellingMember();
+		memberMapper.update(member);
 
 		Seller seller = sellerRegisterDto.toEntity();
 		sellerMapper.insert(seller);
