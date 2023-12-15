@@ -11,7 +11,8 @@ import com.gregori.member.domain.Member;
 public interface MemberMapper {
     Long insert(Member member);
     Long update(Member member);
-    void deleteByEmails(List<String> memberEmails);
+    void deleteById(Long memberId);
+    void deleteByIds(List<Long> memberIds);
     Optional<Member> findById(Long memberId);
     Optional<Member> findByEmail(String email);
 }

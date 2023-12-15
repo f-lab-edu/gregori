@@ -89,7 +89,7 @@ class AuthControllerIntegrationTest {
 		}
 
 		if (!members.isEmpty()) {
-			memberMapper.deleteByEmails(members.stream().map(Member::getEmail).toList());
+			memberMapper.deleteByIds(members.stream().map(Member::getId).toList());
 			members.clear();
 		}
 	}
