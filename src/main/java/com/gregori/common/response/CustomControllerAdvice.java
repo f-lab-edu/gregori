@@ -28,11 +28,10 @@ public class CustomControllerAdvice {
 			log.error("[Excetion] http status: {}, message: {} ", httpStatus, e.getMessage());
 
 			return CustomResponse.failure(httpStatus, e);
-		} else {
-			HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-			log.error("[Excetion] http status: {}, message: {} ", httpStatus, e.getMessage());
-
-			return CustomResponse.failure(httpStatus, e);
 		}
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		log.error("[Excetion] http status: {}, message: {} ", httpStatus, e.getMessage());
+
+		return CustomResponse.failure(httpStatus, e);
 	}
 }

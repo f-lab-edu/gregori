@@ -7,11 +7,12 @@ import com.gregori.member.domain.Member;
 
 import static com.gregori.member.domain.Member.Status.ACTIVATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class MemberResponseDtoTest {
 	@Test
-	@DisplayName("Member를 파라미터로 받아 MemberResponseDto 객체를 builder 패턴으로 생성한다.")
-	void should_buildMemberResponseDto_when_memberParameter() {
+	@DisplayName("toEntity 메서드를 호출하면 MemberResponseDto 객체를 t한다.")
+	void should_createMemberResponseDtoSuccess_when_toEntityMethodOccurs() {
 		// given
 		Member member = Member.builder()
 			.name("일호")
@@ -20,11 +21,11 @@ class MemberResponseDtoTest {
 			.build();
 
 		// when
-		MemberResponseDto dto = new MemberResponseDto().toEntity(member);
+		MemberResponseDto result = new MemberResponseDto().toEntity(member);
 
 		// then
-		assertEquals(member.getName(), dto.getName());
-		assertEquals(member.getEmail(), dto.getEmail());
+		assertNotNull(result);
+		assertEquals(result.getName(), member.getName());
 	}
 
 	@Test

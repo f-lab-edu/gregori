@@ -12,6 +12,7 @@ import jakarta.validation.ValidatorFactory;
 import static com.gregori.member.domain.Member.Status.ACTIVATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MemberRegisterDtoTest {
@@ -19,8 +20,8 @@ class MemberRegisterDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("Member 객체를 builder 패턴으로 생성한다.")
-	void should_buildMember() {
+	@DisplayName("toEntity 메서드를 호출하면 Member 객체를 builder 패턴으로 생성하는데 성공한다.")
+	void should_buildMemberSuccess_when_toEntityMethodOccurs() {
 		// given
 		MemberRegisterDto dto = new MemberRegisterDto("이름", "a@a.a", "aa11111!");
 
@@ -28,6 +29,7 @@ class MemberRegisterDtoTest {
 		Member member = dto.toEntity(dto.getPassword());
 
 		// then
+		assertNotNull(member);
 		assertEquals(member.getStatus(), ACTIVATE);
 	}
 
