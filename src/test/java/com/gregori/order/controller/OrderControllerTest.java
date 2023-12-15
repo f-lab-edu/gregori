@@ -133,7 +133,7 @@ class OrderControllerTest {
 			seller = null;
 		}
 		if(member != null) {
-			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			memberMapper.deleteByIds(List.of(member.getId()));
 			member = null;
 		}
 	}

@@ -15,8 +15,6 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-@SpringBootTest
-@ActiveProfiles("test")
 class ItemCreateDtoTest {
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	private final Validator validator = factory.getValidator();

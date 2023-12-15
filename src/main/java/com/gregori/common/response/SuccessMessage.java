@@ -7,8 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum
-SuccessMessage {
+public enum SuccessMessage {
 	REGISTER_SUCCESS(HttpStatus.OK, "가입을 성공했습니다."),
 	SIGNIN_SUCCESS(HttpStatus.OK, "로그인을 성공했습니다."),
 	SIGNOUT_SUCCESS(HttpStatus.OK, "로그아웃을 성공했습니다."),

@@ -39,4 +39,13 @@ public class CustomResponse<T> {
 			.description(errorMessage.getDescription())
 			.build();
 	}
+
+	public static <T> CustomResponse<T> failure(HttpStatus httpStatus, Exception e) {
+		return CustomResponse.<T>builder()
+			.result(Result.FAILURE)
+			.httpStatus(httpStatus)
+			.errorType(null)
+			.description(e.getMessage())
+			.build();
+	}
 }

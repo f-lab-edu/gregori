@@ -83,7 +83,7 @@ class ItemControllerTest {
 			seller = null;
 		}
 		if(member != null) {
-			memberMapper.deleteByEmails(List.of(member.getEmail()));
+			memberMapper.deleteById(member.getId());
 			member = null;
 		}
 	}

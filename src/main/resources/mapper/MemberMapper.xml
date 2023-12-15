@@ -15,14 +15,19 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deleteByEmails" parameterType="map">
+    <delete id="deleteById">
         DELETE FROM members
-        WHERE email IN (
-        <foreach collection="list" item="item" separator=",">
-            #{item}
-        </foreach>
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByIds" parameterType="map">
+        DELETE FROM members
+        WHERE id IN (
+            <foreach collection="list" item="item" separator=",">
+                #{item}
+            </foreach>
         )
-    </update>
+    </delete>
 
     <select id="findById" resultType="com.gregori.member.domain.Member" parameterType="Long">
         SELECT id, name, email, password, status, authority, created_at, updated_at
