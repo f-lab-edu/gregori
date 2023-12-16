@@ -31,7 +31,7 @@ public class Member extends AbstractEntity {
         this.email = email;
         this.password = password;
         this.status = Status.ACTIVATE;
-        this.authority = Authority.MEMBER;
+        this.authority = Authority.GENERAL_MEMBER;
     }
 
     public void updateMemberInfo(String name, String password) {
@@ -45,5 +45,13 @@ public class Member extends AbstractEntity {
 
     public void deactivate() {
         this.status = Status.DEACTIVATE;
+    }
+
+    public void generalMember() {
+        this.authority = Authority.GENERAL_MEMBER;
+    }
+
+    public void sellingMember() {
+        this.authority = Authority.SELLING_MEMBER;
     }
 }

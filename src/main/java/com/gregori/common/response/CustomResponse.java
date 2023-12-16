@@ -25,7 +25,7 @@ public class CustomResponse<T> {
 	public static <T> CustomResponse<T> success(T data, SuccessMessage successMessage) {
 		return CustomResponse.<T>builder()
 			.result(Result.SUCCESS)
-			.httpStatus(successMessage.getHttpStatus())
+			.httpStatus(HttpStatus.OK)
 			.data(data)
 			.description(successMessage.getDescription())
 			.build();

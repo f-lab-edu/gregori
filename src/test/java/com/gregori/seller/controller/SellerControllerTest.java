@@ -1,7 +1,8 @@
-package com.gregori.item.controller;
+package com.gregori.seller.controller;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,11 +19,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.gregori.item.domain.Item;
-import com.gregori.item.mapper.ItemMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.common.response.CustomResponse;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
-import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
 import static org.hamcrest.Matchers.is;
@@ -35,9 +36,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class ItemControllerTest {
+class SellerControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Autowired
 	private MemberMapper memberMapper;
@@ -46,14 +50,10 @@ class ItemControllerTest {
 	private SellerMapper sellerMapper;
 
 	@Autowired
-	private ItemMapper itemMapper;
-
-	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	Member member;
-	Seller seller;
-	List<Long> itemIds = new ArrayList<>();
+	Long sellerId = -1L;
 
 	@BeforeEach
 	void beforeEach() {
@@ -63,24 +63,13 @@ class ItemControllerTest {
 			.password(passwordEncoder.encode("aa11111!"))
 			.build();
 		memberMapper.insert(member);
-
-		seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("111-11-11111")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
 	}
 
 	@AfterEach
 	void afterEach() {
-		if (!itemIds.isEmpty()) {
-			itemMapper.deleteByIds(itemIds);
-			itemIds.clear();
-		}
-		if (seller != null) {
-			sellerMapper.deleteByIds(List.of(seller.getId()));
-			seller = null;
+		if (sellerId > -1) {
+			sellerMapper.deleteByIds(List.of(sellerId));
+			sellerId = -1L;
 		}
 		if(member != null) {
 			memberMapper.deleteById(member.getId());
@@ -89,35 +78,31 @@ class ItemControllerTest {
 	}
 
 	@Test
-	@DisplayName("클라이언트의 요청에 따라 테이블에 저장된 상품을 조회한다.")
-	void getItem() throws Exception {
+	@DisplayName("클라이언트의 요청에 따라 신규 셀러를 등록한다.")
+	void createSeller() throws Exception {
 		// given
-		Item item = Item.builder()
-			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		itemMapper.insert(item);
-		itemIds.add(item.getId());
+		Map<String, String> input = new HashMap<>();
+		input.put("memberId", member.getId().toString());
+		input.put("businessNumber", "123-45-67891");
+		input.put("businessName", "일호 상점");
 
 		// when
 		ResultActions actions = mockMvc.perform(
-			RestDocumentationRequestBuilders.get("/item/1")
+			RestDocumentationRequestBuilders.post("/seller/register")
 				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(input))
 		);
+
+		CustomResponse<Long> result = objectMapper.readValue(
+			actions.andReturn().getResponse().getContentAsString(),
+			new TypeReference<>(){});
+		sellerId = result.getData();
 
 		// then
 		actions.andExpect(status().isOk())
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
 			.andExpect(jsonPath("$.httpStatus", is("OK")))
 			.andExpect(jsonPath("$.data", is(notNullValue())))
-			.andExpect(jsonPath("$.data.id", is(notNullValue())))
-			.andExpect(jsonPath("$.data.sellerId", is(notNullValue())))
-			.andExpect(jsonPath("$.data.name", is(notNullValue())))
-			.andExpect(jsonPath("$.data.price", is(notNullValue())))
-			.andExpect(jsonPath("$.data.inventory", is(notNullValue())))
-			.andExpect(jsonPath("$.data.status", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
 	}

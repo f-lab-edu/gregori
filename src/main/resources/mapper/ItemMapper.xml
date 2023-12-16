@@ -6,8 +6,8 @@
 <mapper namespace="com.gregori.item.mapper.ItemMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.item.domain.Item">
-        INSERT INTO items (name, price, inventory, status)
-        VALUES (#{name}, #{price}, #{inventory}, #{status})
+        INSERT INTO items (seller_id, name, price, inventory, status)
+        VALUES (#{sellerId}, #{name}, #{price}, #{inventory}, #{status})
     </insert>
 
     <update id="update">
@@ -16,7 +16,7 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deleteById" parameterType="map">
+    <update id="deleteByIds" parameterType="map">
         DELETE FROM items
         WHERE id IN (
         <foreach collection="list" item="item" separator=",">
@@ -26,17 +26,23 @@
     </update>
 
     <select id="findById" resultType="com.gregori.item.domain.Item" parameterType="Long">
-        SELECT id, name, price, inventory, status
+        SELECT id, seller_id, name, price, inventory, status
         FROM items
         WHERE id = #{id}
     </select>
 
     <select id="findByIds" resultType="com.gregori.item.domain.Item" parameterType="List">
-        SELECT id, name, price, inventory, status
+        SELECT id, seller_id, name, price, inventory, status
         FROM items
         WHERE id IN
-        <foreach collection="itemIds" item="id" open="(" separator="," close=")">
+        <foreach collection="list" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </select>
+
+    <select id="findBySellerId" resultType="com.gregori.item.domain.Item" parameterType="Long">
+        SELECT id, seller_id, name, price, inventory, status
+        FROM items
+        WHERE seller_id = #{sellerId}
     </select>
 </mapper>

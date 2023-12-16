@@ -11,5 +11,6 @@ public interface OrderItemMapper {
 	Long insert(OrderItem orderItem);
 	void deleteByIds(List<Long> orderItemIds);
 	List<OrderItem> findByOrderId(Long orderId);
-	List<OrderItem> findByIds(List<Long> itemIds);
+	List<OrderItem> findByItemId(Long itemId);
+	List<OrderItem> findByIds(List<Long> orderItemIds);
 }

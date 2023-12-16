@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS order_items CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
-DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS items CASCADE;
 DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS sellers CASCADE;
 DROP TABLE IF EXISTS members;
 
 CREATE TABLE members (
@@ -23,14 +24,27 @@ CREATE TABLE refresh_tokens (
     updated_at          TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '토큰 수정 날짜'
 );
 
+CREATE TABLE sellers (
+     id              BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '셀러 인덱스',
+     member_id       BIGINT                NOT NULL                                                                   COMMENT '회원 인덱스',
+     business_number VARCHAR(255)          NOT NULL                                                                   COMMENT '셀러 사업자 등록번호',
+     business_name   VARCHAR(255)          NOT NULL                                                                   COMMENT '셀러 상호 이름',
+     status          VARCHAR(255)          NOT NULL                                                                   COMMENT '셀러 상태',
+     created_at      TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '셀러 가입 날짜',
+     updated_at      TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '셀러 수정 날짜',
+     CONSTRAINT sellers_member_id FOREIGN KEY (member_id) REFERENCES members(id)
+);
+
 CREATE TABLE items (
     id         BIGINT AUTO_INCREMENT NOT NULL PRIMARY KEY                                                       COMMENT '상품 인덱스',
+    seller_id  BIGINT                NOT NULL                                                                   COMMENT '셀러 인덱스',
     name       VARCHAR(255)          NOT NULL                                                                   COMMENT '상품 이름',
     price      BIGINT                NOT NULL                                                                   COMMENT '상품 가격',
     inventory  BIGINT                NOT NULL                                                                   COMMENT '상품 재고',
     status     VARCHAR(255)          NOT NULL                                                                   COMMENT '상품 상태',
     created_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '상품 생성 날짜',
-    updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜'
+    updated_at TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜',
+    CONSTRAINT items_seller_id FOREIGN KEY (seller_id) REFERENCES sellers(id)
 );
 
 CREATE TABLE orders (
@@ -43,7 +57,7 @@ CREATE TABLE orders (
     status         VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 상태',
     created_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 접수 날짜',
     updated_at     TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 수정 날짜',
-    CONSTRAINT member_id FOREIGN KEY (member_id) REFERENCES members(id)
+    CONSTRAINT orders_member_id FOREIGN KEY (member_id) REFERENCES members(id)
 );
 
 CREATE TABLE order_items (
@@ -56,6 +70,7 @@ CREATE TABLE order_items (
     status      VARCHAR(255)          NOT NULL                                                                   COMMENT '주문 상품 상태',
     created_at  TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 상품 생성 날짜',
     updated_at  TIMESTAMP             NOT NULL             DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 상품 수정 날짜',
-    CONSTRAINT order_id FOREIGN KEY (order_id) REFERENCES orders(id),
-    CONSTRAINT item_id FOREIGN KEY (item_id) REFERENCES items(id)
+    CONSTRAINT order_items_order_id FOREIGN KEY (order_id) REFERENCES orders(id),
+    CONSTRAINT order_items_item_id FOREIGN KEY (item_id) REFERENCES items(id)
 );
+

@@ -23,7 +23,7 @@ class ItemCreateDtoTest {
 	@DisplayName("Item 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
 		// given
-		ItemCreateDto dto = new ItemCreateDto("name", 1L, 1L);
+		ItemCreateDto dto = new ItemCreateDto(1L, "name", 1L, 1L);
 
 		// when
 		Item item = dto.toEntity();
@@ -33,12 +33,25 @@ class ItemCreateDtoTest {
 	}
 
 	@Test
+	@DisplayName("sellerId 필드가 비어 있으면 에러가 발생한다.")
+	void nullSellerIdInputFailsTest() {
+		// given
+		ItemCreateDto dto = new ItemCreateDto(null, "name", 1L, 1L);
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertFalse(result.isEmpty());
+	}
+
+	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void blankNameInputFailsTest() {
 		// given
-		ItemCreateDto dto1 = new ItemCreateDto(null, 1L, 1L);
-		ItemCreateDto dto2 = new ItemCreateDto("", 1L, 1L);
-		ItemCreateDto dto3 = new ItemCreateDto(" ", 1L, 1L);
+		ItemCreateDto dto1 = new ItemCreateDto(1L,null, 1L, 1L);
+		ItemCreateDto dto2 = new ItemCreateDto(1L, "", 1L, 1L);
+		ItemCreateDto dto3 = new ItemCreateDto(1L, " ", 1L, 1L);
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -55,7 +68,7 @@ class ItemCreateDtoTest {
 	@DisplayName("price 필드가 비어 있으면 에러가 발생한다.")
 	void nullPriceInputFailsTest() {
 		// given
-		ItemCreateDto dto = new ItemCreateDto("name", null, 1L);
+		ItemCreateDto dto = new ItemCreateDto(1L,"name", null, 1L);
 
 		// when
 		var result = validator.validate(dto);
@@ -68,7 +81,7 @@ class ItemCreateDtoTest {
 	@DisplayName("inventory 필드가 비어 있으면 에러가 발생한다.")
 	void nullInventoryInputFailsTest() {
 		// given
-		ItemCreateDto dto = new ItemCreateDto("name", 1L, null);
+		ItemCreateDto dto = new ItemCreateDto(1L,"name", 1L, null);
 
 		// when
 		var result = validator.validate(dto);
@@ -81,7 +94,7 @@ class ItemCreateDtoTest {
 	@DisplayName("올바른 입력값이면 ItemCreateDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
 		// given
-		ItemCreateDto dto = new ItemCreateDto("name", 1L, 1L);
+		ItemCreateDto dto = new ItemCreateDto(1L,"name", 1L, 1L);
 
 		//when
 		var result = validator.validate(dto);

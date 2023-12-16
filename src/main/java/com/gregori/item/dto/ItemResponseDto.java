@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ItemResponseDto {
 	private Long id;
+	private Long sellerId;
 	private String name;
 	private Long price;
 	private Long inventory;
@@ -21,6 +22,7 @@ public class ItemResponseDto {
 	public ItemResponseDto toEntity(Item item) {
 		return ItemResponseDto.builder()
 			.id(item.getId())
+			.sellerId(item.getSellerId())
 			.name(item.getName())
 			.price(item.getPrice())
 			.inventory(item.getInventory())

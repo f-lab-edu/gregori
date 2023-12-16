@@ -82,7 +82,7 @@ class AuthControllerIntegrationTest {
 	}
 
 	@AfterEach
-	void AfterEach() {
+	void afterEach() {
 		if (refreshToken != null) {
 			refreshTokenMapper.deleteById(refreshToken.getId());
 			refreshToken = null;

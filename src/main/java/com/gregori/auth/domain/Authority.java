@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum Authority {
-	MEMBER("회원"), ADMIN("관리자");
+	GENERAL_MEMBER("일반 회원"), SELLING_MEMBER("판매 회원");
 	private final String description;
 }

@@ -14,7 +14,8 @@ public enum ErrorMessage {
 	INVALID_PARAMETER_ERROR(HttpStatus.BAD_REQUEST, "요청한 값이 올바르지 않습니다."),
 	VALIDATION_ERROR(HttpStatus.BAD_REQUEST, "유효한 값이 아닙니다."),
 	ENTITY_NOT_FOUND_ERROR(HttpStatus.NOT_FOUND, "존재하지 않는 엔티티입니다."),
-	ENTITY_DUPLICATE_ERROR(HttpStatus.CONFLICT, "중복되는 엔티티입니다.");
+	ENTITY_DUPLICATE_ERROR(HttpStatus.CONFLICT, "중복되는 엔티티입니다."),
+	BUSINESS_RULE_VIOLATION_ERROR(HttpStatus.CONFLICT, "비즈니스 룰을 위반했습니다.");
 
 	private final HttpStatus httpStatus;
 	private final String description;

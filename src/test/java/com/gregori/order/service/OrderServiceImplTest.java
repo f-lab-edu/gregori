@@ -24,6 +24,8 @@ import com.gregori.order.mapper.OrderMapper;
 import com.gregori.order_item.domain.OrderItem;
 import com.gregori.order_item.dto.OrderItemRequestDto;
 import com.gregori.order_item.mapper.OrderItemMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OrderServiceImplTest {
 	@Autowired
 	private MemberMapper memberMapper;
+
+	@Autowired
+	private SellerMapper sellerMapper;
 
 	@Autowired
 	private ItemMapper itemMapper;
@@ -49,6 +54,7 @@ class OrderServiceImplTest {
 	private OrderService orderService;
 
 	Member member;
+	Seller seller;
 	List<Item> items = new ArrayList<>();
 	List<Long> orderIds = new ArrayList<>();
 	List<Long> orderItemIds = new ArrayList<>();
@@ -62,12 +68,21 @@ class OrderServiceImplTest {
 			.build();
 		memberMapper.insert(member);
 
+		seller = Seller.builder()
+			.memberId(member.getId())
+			.businessNumber("111-11-11111")
+			.businessName("일호 상점")
+			.build();
+		sellerMapper.insert(seller);
+
 		Item item1 = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
 			.build();
 		Item item2 = Item.builder()
+			.sellerId(seller.getId())
 			.name("아이템2")
 			.price(200L)
 			.inventory(2L)
@@ -90,8 +105,12 @@ class OrderServiceImplTest {
 			orderIds.clear();
 		}
 		if (!items.isEmpty()) {
-			itemMapper.deleteById(items.stream().map(Item::getId).toList());
+			itemMapper.deleteByIds(items.stream().map(Item::getId).toList());
 			items.clear();
+		}
+		if (seller != null) {
+			sellerMapper.deleteByIds(List.of(seller.getId()));
+			seller = null;
 		}
 		if(member != null) {
 			memberMapper.deleteByIds(List.of(member.getId()));
