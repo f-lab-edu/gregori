@@ -34,9 +34,7 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
-		if (!businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber())) {
-			throw new ValidationException();
-		}
+		businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber())
 
 		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
 		member.sellingMember();
@@ -51,9 +49,7 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
-		if (!businessNumberValidationCheck(sellerUpdateDto.getBusinessNumber())) {
-			throw new ValidationException();
-		}
+		businessNumberValidationCheck(sellerUpdateDto.getBusinessNumber());
 
 		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
 		seller.updateSellerInfo(sellerUpdateDto.getBusinessNumber(), sellerUpdateDto.getBusinessName());
@@ -93,7 +89,7 @@ public class SellerServiceImpl implements SellerService {
 		return new SellerResponseDto().toEntity(seller);
 	}
 
-	public boolean businessNumberValidationCheck(String businessNumber) {
+	private void businessNumberValidationCheck(String businessNumber) {
 		String tenNumber = businessNumber.replace("-", "");
 		if (tenNumber.length() != 10) {
 			throw new ValidationException();
@@ -111,6 +107,8 @@ public class SellerServiceImpl implements SellerService {
 		sum = sum % 10;
 		int errorCheckingNumber = 10 - sum;
 
-		return lastNumber == errorCheckingNumber;
+		if (lastNumber == errorCheckingNumber) {
+			throw new ValidationException();
+		}
 	}
 }
