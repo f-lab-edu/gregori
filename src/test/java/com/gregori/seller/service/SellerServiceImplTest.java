@@ -88,12 +88,25 @@ class SellerServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("잘못된 사업자 등록번호면 셀러 생성을 실패한다.")
+	void should_createMemberFail_when_invalidBusinessNumberInput() {
+		// given
+		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "111-11-111111", "일호 상점");
+
+		// when
+		Throwable result = catchThrowable(() -> sellerServiceImpl.saveSeller(sellerRegisterDto));
+
+		// then
+		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
+	}
+
+	@Test
 	@DisplayName("DB에 저장된 셀러를 수정하고 id를 반환한다.")
 	void updateSeller() {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNumber("111-11-11111")
+			.businessNumber("123-45-67891")
 			.businessName("일호 상점")
 			.build();
 		sellerMapper.insert(seller);
@@ -112,12 +125,33 @@ class SellerServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("잘못된 사업자 등록번호면 업데이트를 실패한다.")
+	void should_updateMemberFail_when_invalidBusinessNumberInput() {
+		// given
+		Seller seller = Seller.builder()
+			.memberId(member.getId())
+			.businessNumber("123-45-67891")
+			.businessName("일호 상점")
+			.build();
+		sellerMapper.insert(seller);
+		sellerIds.add(seller.getId());
+
+		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(seller.getId(), seller.getMemberId(), "111-11-111", "이호 상점");
+
+		// when
+		Throwable result = catchThrowable(() -> sellerServiceImpl.updateSeller(sellerUpdateDto));
+
+		// then
+		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
+	}
+
+	@Test
 	@DisplayName("DB에 저장된 셀러의 상태를 변경하고 id를 반환한다.")
 	void deleteSeller() {
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
-			.businessNumber("111-11-11111")
+			.businessNumber("123-45-67891")
 			.businessName("일호 상점")
 			.build();
 		sellerMapper.insert(seller);
@@ -181,47 +215,5 @@ class SellerServiceImplTest {
 		assertEquals(result.getId(), seller.getId());
 		assertEquals(result.getMemberId(), seller.getMemberId());
 		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
-	}
-
-	@Test
-	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하지 않으면 false를 반환한다.")
-	void invalidBusinessNumberInputFailsTest() {
-		// given
-		String businessNumber1 = "111-11-111";
-		String businessNumber2 = "111-11-111111";
-
-		String businessNumber3 = "000-45-67891";
-		String businessNumber4 = "123-00-67891";
-		String businessNumber5 = "123-45-00000";
-		String businessNumber6 = "123-45-99999";
-
-		// when
-		Throwable result1 = catchThrowable(() -> sellerServiceImpl.businessNumberValidationCheck(businessNumber1));
-		Throwable result2 = catchThrowable(() -> sellerServiceImpl.businessNumberValidationCheck(businessNumber2));
-		Boolean result3 = sellerServiceImpl.businessNumberValidationCheck(businessNumber3);
-		Boolean result4 = sellerServiceImpl.businessNumberValidationCheck(businessNumber4);
-		Boolean result5 = sellerServiceImpl.businessNumberValidationCheck(businessNumber5);
-		Boolean result6 = sellerServiceImpl.businessNumberValidationCheck(businessNumber6);
-
-		// then
-		then(result1).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
-		then(result2).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
-		assertEquals(result3, false);
-		assertEquals(result4, false);
-		assertEquals(result5, false);
-		assertEquals(result6, false);
-	}
-
-	@Test
-	@DisplayName("사업자 등록번호의 유효성을 검증하고 유효하면 true를 반환한다.")
-	void validBusinessNumberInputSucceedsTest() {
-		// given
-		String businessNumber = "123-45-67891";
-
-		// when
-		Boolean result = sellerServiceImpl.businessNumberValidationCheck(businessNumber);
-
-		// then
-		assertEquals(result, true);
 	}
 }

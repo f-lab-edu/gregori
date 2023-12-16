@@ -107,7 +107,7 @@ public class SellerServiceImpl implements SellerService {
 		sum = sum % 10;
 		int errorCheckingNumber = 10 - sum;
 
-		if (lastNumber == errorCheckingNumber) {
+		if (lastNumber != errorCheckingNumber) {
 			throw new ValidationException();
 		}
 	}
