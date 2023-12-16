@@ -34,7 +34,7 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
-		businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber())
+		businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber());
 
 		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
 		member.sellingMember();
