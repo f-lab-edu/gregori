@@ -21,22 +21,24 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
+
 	private final MemberMapper memberMapper;
 
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
 		return memberMapper.findByEmail(username)
 			.map(this::createUserDetails)
 			.orElseThrow(NotFoundException::new);
 	}
 
 	private UserDetails createUserDetails(Member member) {
+
 		GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(member.getAuthority().toString());
 		Set<GrantedAuthority> authorities = new HashSet<>();
 		authorities.add(grantedAuthority);
 
-		return new User(String.valueOf(member.getId()),
-			member.getPassword(), authorities);
+		return new User(String.valueOf(member.getId()), member.getPassword(), authorities);
 	}
 }

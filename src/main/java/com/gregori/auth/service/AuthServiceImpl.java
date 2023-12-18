@@ -1,8 +1,8 @@
 package com.gregori.auth.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,25 +23,26 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-	private final AuthenticationManagerBuilder authenticationManagerBuilder;
-	private final TokenProvider tokenProvider;
+
 	private final RefreshTokenMapper refreshTokenMapper;
+	private final TokenProvider tokenProvider;
+	private final AuthenticationManager authenticationManager;
 
 	@Override
 	@Transactional
 	public TokenDto signIn(AuthSignInDto authSignInDto) {
-		UsernamePasswordAuthenticationToken authenticationToken = authSignInDto.toAuthentication();
-		Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
+		UsernamePasswordAuthenticationToken authenticationToken = authSignInDto.toAuthentication();
+		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
 
-		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName()).orElse(null);
+		refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
+			.ifPresent(refreshToken -> refreshTokenMapper.deleteById(refreshToken.getId()));
 
-		if (refreshToken != null) {
-			refreshTokenMapper.deleteById(refreshToken.getId());
-		}
-
-		refreshTokenMapper.insert(authSignInDto.toEntity(authentication.getName(), tokenDto.getRefreshToken()));
+		refreshTokenMapper.insert(RefreshToken.builder()
+			.refreshTokenKey(authentication.getName())
+			.refreshTokenValue(tokenDto.getRefreshToken())
+			.build());
 
 		return tokenDto;
 	}
@@ -49,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public Long signOut(TokenRequestDto tokenRequestDto) {
+
 		Authentication authentication = getAuthentication(tokenRequestDto);
 		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
 
@@ -58,6 +60,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public TokenDto refresh(TokenRequestDto tokenRequestDto) {
+
 		Authentication authentication = getAuthentication(tokenRequestDto);
 		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
 
@@ -70,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
   	}
 
 	private RefreshToken getRefreshToken(String requestRefreshToken, Authentication authentication) {
+
 		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
 			.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
@@ -81,6 +85,7 @@ public class AuthServiceImpl implements AuthService {
 	}
 
 	private Authentication getAuthentication(TokenRequestDto tokenRequestDto) {
+
 		if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
 			throw new ValidationException("Refresh Token이 유효하지 않습니다.");
 		}
