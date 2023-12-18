@@ -1,8 +1,8 @@
 package com.gregori.refresh_token.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +22,12 @@ class RefreshTokenMapperTest {
 	@Autowired
 	private RefreshTokenMapper refreshTokenMapper;
 
-	List<Long> tokenIds = new ArrayList<>();
+	List<Long> tokenIds = new CopyOnWriteArrayList<>();
 
 	@AfterEach
 	void afterEach() {
 		if (!tokenIds.isEmpty()) {
-			tokenIds.stream().map(tokenId -> refreshTokenMapper.deleteById(tokenId));
+			tokenIds.forEach(tokenId -> refreshTokenMapper.deleteById(tokenId));
 			tokenIds.clear();
 		}
 	}
