@@ -1,6 +1,6 @@
 package com.gregori.item.controller;
 
-import static com.gregori.common.response.SuccessMessage.GET_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.GET;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,7 @@ public class ItemController {
 	@GetMapping("/{itemId}")
 	public ResponseEntity<CustomResponse<ItemResponseDto>> getItem(@PathVariable Long itemId) {
 		CustomResponse<ItemResponseDto> response = CustomResponse
-			.success(itemService.getItem(itemId), GET_SUCCESS);
+			.success(itemService.getItem(itemId), GET);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
