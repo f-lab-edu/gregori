@@ -33,11 +33,11 @@ public class MypageController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto mypageUpdateDto) {
-		authorizationCheck(mypageUpdateDto.getId());
+	public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto memberUpdateDto) {
+		authorizationCheck(memberUpdateDto.getId());
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.updateMember(mypageUpdateDto), UPDATE);
+			.success(memberService.updateMember(memberUpdateDto), UPDATE);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -65,6 +65,7 @@ public class MypageController {
 	private void authorizationCheck(Long memberId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		long currentMemberId = parseLong(authentication.getName());
+
 		if (currentMemberId != memberId) {
 			throw new AccessDeniedException();
 		}
