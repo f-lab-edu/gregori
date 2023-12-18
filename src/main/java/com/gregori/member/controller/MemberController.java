@@ -1,6 +1,6 @@
 package com.gregori.member.controller;
 
-import static com.gregori.common.response.SuccessMessage.REGISTER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.REGISTER;
 
 import com.gregori.common.response.CustomResponse;
 import com.gregori.member.dto.MemberRegisterDto;
@@ -23,7 +23,7 @@ public class MemberController {
     @PostMapping("/register")
     public ResponseEntity<CustomResponse<Long>> register(@RequestBody @Valid MemberRegisterDto memberRegisterDto) {
         CustomResponse<Long> response = CustomResponse
-            .success(memberService.register(memberRegisterDto), REGISTER_SUCCESS);
+            .success(memberService.register(memberRegisterDto), REGISTER);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

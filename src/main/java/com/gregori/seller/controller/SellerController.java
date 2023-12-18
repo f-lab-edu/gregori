@@ -14,7 +14,7 @@ import com.gregori.seller.service.SellerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import static com.gregori.common.response.SuccessMessage.REGISTER_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.REGISTER;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class SellerController {
 	@PostMapping("/register")
 	public ResponseEntity<CustomResponse<Long>> createSeller(@RequestBody @Valid SellerRegisterDto sellerRegisterDto) {
 		CustomResponse<Long> response = CustomResponse
-			.success(sellerService.saveSeller(sellerRegisterDto), REGISTER_SUCCESS);
+			.success(sellerService.saveSeller(sellerRegisterDto), REGISTER);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
