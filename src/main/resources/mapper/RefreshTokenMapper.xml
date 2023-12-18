@@ -21,6 +21,12 @@
         WHERE id = #{id}
     </delete>
 
+    <select id="findById" resultType="com.gregori.refresh_token.domain.RefreshToken" parameterType="Long">
+        SELECT id, refresh_token_key, refresh_token_value
+        FROM refresh_tokens
+        WHERE id = #{id}
+    </select>
+
     <select id="findByRefreshTokenKey" resultType="com.gregori.refresh_token.domain.RefreshToken" parameterType="String">
         SELECT id, refresh_token_key, refresh_token_value
         FROM refresh_tokens

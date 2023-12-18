@@ -1,8 +1,8 @@
 package com.gregori.mypage.controller;
 
-import static com.gregori.common.response.SuccessMessage.DELETE_SUCCESS;
-import static com.gregori.common.response.SuccessMessage.GET_SUCCESS;
-import static com.gregori.common.response.SuccessMessage.UPDATE_SUCCESS;
+import static com.gregori.common.response.SuccessMessage.DELETE;
+import static com.gregori.common.response.SuccessMessage.GET;
+import static com.gregori.common.response.SuccessMessage.UPDATE;
 import static java.lang.Long.parseLong;
 
 import org.springframework.http.HttpStatus;
@@ -33,11 +33,11 @@ public class MypageController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto mypageUpdateDto) {
-		authorizationCheck(mypageUpdateDto.getId());
+	public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto memberUpdateDto) {
+		authorizationCheck(memberUpdateDto.getId());
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.updateMember(mypageUpdateDto), UPDATE_SUCCESS);
+			.success(memberService.updateMember(memberUpdateDto), UPDATE);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -47,7 +47,7 @@ public class MypageController {
 		authorizationCheck(memberId);
 
 		CustomResponse<Long> response = CustomResponse
-			.success(memberService.deleteMember(memberId), DELETE_SUCCESS);
+			.success(memberService.deleteMember(memberId), DELETE);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -57,7 +57,7 @@ public class MypageController {
 		authorizationCheck(memberId);
 
 		CustomResponse<MemberResponseDto> response = CustomResponse
-			.success(memberService.getMember(memberId), GET_SUCCESS);
+			.success(memberService.getMember(memberId), GET);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -65,6 +65,7 @@ public class MypageController {
 	private void authorizationCheck(Long memberId) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		long currentMemberId = parseLong(authentication.getName());
+
 		if (currentMemberId != memberId) {
 			throw new AccessDeniedException();
 		}
