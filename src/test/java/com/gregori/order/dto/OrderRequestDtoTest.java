@@ -20,14 +20,14 @@ class OrderRequestDtoTest {
 
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	private final Validator validator = factory.getValidator();
-	private final List<OrderDetailRequestDto> orderItems = List.of(new OrderDetailRequestDto(1L, 1L));
+	private final List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
 
 	@Test
-	@DisplayName("OrderItem 객체를 builder 패턴으로 생성한다.")
+	@DisplayName("OrderDetail 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
 
 		// given
-		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderItems);
+		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
 
 		// when
 		Order order = dto.toEntity();
@@ -41,7 +41,7 @@ class OrderRequestDtoTest {
 	void nullMemberIdInputFailsTest() {
 
 		// given
-		OrderRequestDto dto = new OrderRequestDto(null, "method", 1L, 1L, orderItems);
+		OrderRequestDto dto = new OrderRequestDto(null, "method", 1L, 1L, orderDetails);
 
 		// when
 		var result = validator.validate(dto);
@@ -55,9 +55,9 @@ class OrderRequestDtoTest {
 	void blankPaymentMethodInputFailsTest() {
 
 		// given
-		OrderRequestDto dto1 = new OrderRequestDto(1L, null, 1L, 1L, orderItems);
-		OrderRequestDto dto2 = new OrderRequestDto(1L, "", 1L, 1L, orderItems);
-		OrderRequestDto dto3 = new OrderRequestDto(1L, " ", 1L, 1L, orderItems);
+		OrderRequestDto dto1 = new OrderRequestDto(1L, null, 1L, 1L, orderDetails);
+		OrderRequestDto dto2 = new OrderRequestDto(1L, "", 1L, 1L, orderDetails);
+		OrderRequestDto dto3 = new OrderRequestDto(1L, " ", 1L, 1L, orderDetails);
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -75,7 +75,7 @@ class OrderRequestDtoTest {
 	void nullPaymentAmountInputFailsTest() {
 
 		// given
-		OrderRequestDto dto = new OrderRequestDto(1L, "method", null, 1L, orderItems);
+		OrderRequestDto dto = new OrderRequestDto(1L, "method", null, 1L, orderDetails);
 
 		// when
 		var result = validator.validate(dto);
@@ -89,7 +89,7 @@ class OrderRequestDtoTest {
 	void nullDeliveryCostInputFailsTest() {
 
 		// given
-		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, null, orderItems);
+		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, null, orderDetails);
 
 		// when
 		var result = validator.validate(dto);
@@ -99,8 +99,8 @@ class OrderRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("orderItems 필드가 비어 있으면 에러가 발생한다.")
-	void nullOrderItemsInputFailsTest() {
+	@DisplayName("orderDetails 필드가 비어 있으면 에러가 발생한다.")
+	void nullOrderDetailsInputFailsTest() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, null);
@@ -117,7 +117,7 @@ class OrderRequestDtoTest {
 	void validInputSucceedsTest() {
 
 		// given
-		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderItems);
+		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
 
 		//when
 		var result = validator.validate(dto);

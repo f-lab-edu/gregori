@@ -12,7 +12,7 @@ class OrderTest {
 
 	@Test
 	@DisplayName("15자리 이상의 주문 번호를 생성한다.")
-	void orderNoGenerator() {
+	void orderNumberGenerator() {
 
 		// given
 		Order order = Order.builder()

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class OrderDetailResponseDtoTest {
 
 	@Test
-	@DisplayName("OrderItemResponseDto 객체를 builder 패턴으로 생성한다.")
+	@DisplayName("OrderDetailResponseDto 객체를 builder 패턴으로 생성한다.")
 	void toEntityTest() {
 
 		// given
@@ -29,7 +29,7 @@ class OrderDetailResponseDtoTest {
 	}
 
 	@Test
-	@DisplayName("OrderItemResponseDto의 필드를 getter 메서드로 조회한다.")
+	@DisplayName("OrderDetailResponseDto의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
 
 		// given

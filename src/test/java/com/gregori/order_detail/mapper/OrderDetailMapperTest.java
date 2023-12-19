@@ -50,7 +50,7 @@ class OrderDetailMapperTest {
 	Seller seller;
 	Order order;
 	List<Product> products = new ArrayList<>();
-	List<Long> orderItemIds = new ArrayList<>();
+	List<Long> orderDetailIds = new ArrayList<>();
 
 	@BeforeEach
 	void beforeEach() {
@@ -97,9 +97,9 @@ class OrderDetailMapperTest {
 
 	@AfterEach
 	void afterEach() {
-		if (!orderItemIds.isEmpty()) {
-			orderDetailMapper.deleteByIds(orderItemIds);
-			orderItemIds.clear();
+		if (!orderDetailIds.isEmpty()) {
+			orderDetailMapper.deleteByIds(orderDetailIds);
+			orderDetailIds.clear();
 		}
 		if (order != null) {
 			orderMapper.deleteByIds(List.of(order.getId()));
@@ -134,7 +134,7 @@ class OrderDetailMapperTest {
 
 		// when
 		orderDetailMapper.insert(orderDetail);
-		orderItemIds.add(orderDetail.getId());
+		orderDetailIds.add(orderDetail.getId());
 		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
 
 		// then
@@ -157,7 +157,7 @@ class OrderDetailMapperTest {
 			.build();
 
 		orderDetailMapper.insert(orderDetail);
-		orderItemIds.add(orderDetail.getId());
+		orderDetailIds.add(orderDetail.getId());
 
 		// when
 		orderDetailMapper.deleteByIds(List.of(orderDetail.getId()));
@@ -189,8 +189,8 @@ class OrderDetailMapperTest {
 
 		orderDetailMapper.insert(orderDetail1);
 		orderDetailMapper.insert(orderDetail2);
-		orderItemIds.add(orderDetail1.getId());
-		orderItemIds.add(orderDetail2.getId());
+		orderDetailIds.add(orderDetail1.getId());
+		orderDetailIds.add(orderDetail2.getId());
 
 		// when
 		List<OrderDetail> result = orderDetailMapper.findByOrderId(order.getId());
@@ -224,8 +224,8 @@ class OrderDetailMapperTest {
 
 		orderDetailMapper.insert(orderDetail1);
 		orderDetailMapper.insert(orderDetail2);
-		orderItemIds.add(orderDetail1.getId());
-		orderItemIds.add(orderDetail2.getId());
+		orderDetailIds.add(orderDetail1.getId());
+		orderDetailIds.add(orderDetail2.getId());
 
 		// when
 		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail1.getId(), orderDetail2.getId()));

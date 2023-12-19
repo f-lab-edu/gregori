@@ -78,7 +78,7 @@ class OrderControllerTest {
 	Seller seller;
 	List<Product> products = new ArrayList<>();
 	List<Long> orderIds = new ArrayList<>();
-	List<Long> orderItemIds = new ArrayList<>();
+	List<Long> orderDetailIds = new ArrayList<>();
 
 	@BeforeEach
 	void beforeEach() {
@@ -117,9 +117,9 @@ class OrderControllerTest {
 
 	@AfterEach
 	void afterEach() {
-		if (!orderItemIds.isEmpty()) {
-			orderDetailMapper.deleteByIds(orderItemIds);
-			orderItemIds.clear();
+		if (!orderDetailIds.isEmpty()) {
+			orderDetailMapper.deleteByIds(orderDetailIds);
+			orderDetailIds.clear();
 		}
 		if (!orderIds.isEmpty()) {
 			orderMapper.deleteByIds(orderIds);
@@ -158,7 +158,7 @@ class OrderControllerTest {
 			actions.andReturn().getResponse().getContentAsString(),
 			new TypeReference<>(){});
 		orderIds.add(result.getData().getId());
-		orderItemIds.add(result.getData().getOrderDetails().get(0).getId());
+		orderDetailIds.add(result.getData().getOrderDetails().get(0).getId());
 
 		// then
 		actions.andExpect(status().isOk())
@@ -199,7 +199,7 @@ class OrderControllerTest {
 			.productCount(2L)
 			.build();
 		orderDetailMapper.insert(orderDetail);
-		orderItemIds.add(orderDetail.getId());
+		orderDetailIds.add(orderDetail.getId());
 
 		// when
 		ResultActions actions = mockMvc.perform(

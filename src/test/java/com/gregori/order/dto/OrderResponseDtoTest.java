@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class OrderResponseDtoTest {
 
-	private final List<OrderDetailResponseDto> orderItems = List.of(
+	private final List<OrderDetailResponseDto> orderDetails = List.of(
 		OrderDetailResponseDto.builder()
 			.orderId(1L)
 			.productId(1L)
@@ -26,7 +26,7 @@ class OrderResponseDtoTest {
 			.build());
 
 	@Test
-	@DisplayName("Order와 OrderItems를 파라미터로 받아 OrderResponseDto 객체를 builder 패턴으로 생성한다.")
+	@DisplayName("Order와 OrderDetails를 파라미터로 받아 OrderResponseDto 객체를 builder 패턴으로 생성한다.")
 	void toEntityTest() {
 
 		// given
@@ -38,7 +38,7 @@ class OrderResponseDtoTest {
 			.build();
 
 		// when
-		OrderResponseDto dto = new OrderResponseDto().toEntity(order, orderItems);
+		OrderResponseDto dto = new OrderResponseDto().toEntity(order, orderDetails);
 
 		// then
 		assertEquals(order.getMemberId(), dto.getMemberId());
@@ -46,8 +46,8 @@ class OrderResponseDtoTest {
 		assertEquals(order.getPaymentAmount(), dto.getPaymentAmount());
 		assertEquals(order.getDeliveryCost(), dto.getDeliveryCost());
 		assertNotNull(dto.getOrderDetails());
-		assertEquals(orderItems.get(0).getOrderId(), dto.getOrderDetails().get(0).getOrderId());
-		assertEquals(orderItems.get(0).getProductCount(), dto.getOrderDetails().get(0).getProductCount());
+		assertEquals(orderDetails.get(0).getOrderId(), dto.getOrderDetails().get(0).getOrderId());
+		assertEquals(orderDetails.get(0).getProductCount(), dto.getOrderDetails().get(0).getProductCount());
 	}
 
 	@Test
@@ -55,7 +55,7 @@ class OrderResponseDtoTest {
 	void getterTest() {
 
 		// given
-		OrderResponseDto dto = new OrderResponseDto(1L, 1L, "orderNo", "paymentMethod", 1L, 1L, ORDER_COMPLETED, orderItems);
+		OrderResponseDto dto = new OrderResponseDto(1L, 1L, "orderNo", "paymentMethod", 1L, 1L, ORDER_COMPLETED, orderDetails);
 
 		// then
 		assertEquals(dto.getId(), 1L);

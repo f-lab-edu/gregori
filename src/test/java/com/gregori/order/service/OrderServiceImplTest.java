@@ -58,7 +58,7 @@ class OrderServiceImplTest {
 	Seller seller;
 	List<Product> products = new ArrayList<>();
 	List<Long> orderIds = new ArrayList<>();
-	List<Long> orderItemIds = new ArrayList<>();
+	List<Long> orderDetailIds = new ArrayList<>();
 
 	@BeforeEach
 	void beforeEach() {
@@ -97,9 +97,9 @@ class OrderServiceImplTest {
 
 	@AfterEach
 	void afterEach() {
-		if (!orderItemIds.isEmpty()) {
-			orderDetailMapper.deleteByIds(orderItemIds);
-			orderItemIds.clear();
+		if (!orderDetailIds.isEmpty()) {
+			orderDetailMapper.deleteByIds(orderDetailIds);
+			orderDetailIds.clear();
 		}
 		if (!orderIds.isEmpty()) {
 			orderMapper.deleteByIds(orderIds);
@@ -124,8 +124,8 @@ class OrderServiceImplTest {
 	void createOrder() {
 
 		// given
-		List<OrderDetailRequestDto> orderItemsRequest = List.of(new OrderDetailRequestDto(1L, products.get(0).getId()));
-		OrderRequestDto orderRequestDto = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderItemsRequest);
+		List<OrderDetailRequestDto> orderDetailRequest = List.of(new OrderDetailRequestDto(1L, products.get(0).getId()));
+		OrderRequestDto orderRequestDto = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderDetailRequest);
 
 		// when
 		OrderResponseDto result = orderService.saveOrder(orderRequestDto);
@@ -133,7 +133,7 @@ class OrderServiceImplTest {
 		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(order.getId());
 
 		orderIds.add(order.getId());
-		orderItemIds.add(orderDetails.get(0).getId());
+		orderDetailIds.add(orderDetails.get(0).getId());
 
 		// then
 		assertEquals(result.getId(), order.getId());
@@ -167,7 +167,7 @@ class OrderServiceImplTest {
 			.productCount(2L)
 			.build();
 		orderDetailMapper.insert(orderDetail);
-		orderItemIds.add(orderDetail.getId());
+		orderDetailIds.add(orderDetail.getId());
 
 		// when
 		OrderResponseDto result = orderService.getOrder(order.getId());

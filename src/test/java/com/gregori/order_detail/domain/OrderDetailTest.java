@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class OrderDetailTest {
 
 	@Test
-	@DisplayName("OrderItem 객체의 상태를 'PAYMENT_COMPLETED'로 변경한다.")
+	@DisplayName("OrderDetail 객체의 상태를 'PAYMENT_COMPLETED'로 변경한다.")
 	void paymentCompleted() {
 
 		// given
@@ -31,7 +31,7 @@ class OrderDetailTest {
 	}
 
 	@Test
-	@DisplayName("OrderItem 객체의 상태를 'SHIPMENT_PREPARATION'로 변경한다.")
+	@DisplayName("OrderDetail 객체의 상태를 'SHIPMENT_PREPARATION'로 변경한다.")
 	void shipmentPreparation() {
 
 		// given
@@ -51,7 +51,7 @@ class OrderDetailTest {
 	}
 
 	@Test
-	@DisplayName("OrderItem 객체의 상태를 'SHIPPED'로 변경한다.")
+	@DisplayName("OrderDetail 객체의 상태를 'SHIPPED'로 변경한다.")
 	void shipped() {
 
 		// given
@@ -71,7 +71,7 @@ class OrderDetailTest {
 	}
 
 	@Test
-	@DisplayName("OrderItem 객체의 상태를 'DELIVERED'로 변경한다.")
+	@DisplayName("OrderDetail 객체의 상태를 'DELIVERED'로 변경한다.")
 	void deliveryCost() {
 
 		// given
@@ -91,7 +91,7 @@ class OrderDetailTest {
 	}
 
 	@Test
-	@DisplayName("OrderItem 객체를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
+	@DisplayName("OrderDetail 객체를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
 	void builderAndGetterTest() {
 
 		// given
