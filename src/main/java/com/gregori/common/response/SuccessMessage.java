@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum SuccessMessage {
+
 	REGISTER("가입을 성공했습니다."),
 	SIGNIN("로그인을 성공했습니다."),
 	SIGNOUT("로그아웃을 성공했습니다."),

@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @CustomMybatisTest
 class MemberMapperTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -33,6 +34,7 @@ class MemberMapperTest {
 	@Test
 	@DisplayName("DB에 새로운 회원을 추가한다.")
 	void should_insert_when_validMember() {
+
 		// given
 		Member member = new Member("name", "new email", "password");
 
@@ -48,6 +50,7 @@ class MemberMapperTest {
 	@Test
 	@DisplayName("DB에서 id가 일치하는 회원의 회원 정보를 갱신한다.")
 	void should_update_when_memberIdMatch() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
@@ -66,6 +69,7 @@ class MemberMapperTest {
 	@Test
 	@DisplayName("DB에서 id가 일치하는 회원을 삭제한다.")
 	void should_delete_when_memberIdMatch() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
@@ -82,6 +86,7 @@ class MemberMapperTest {
 	@Test
 	@DisplayName("DB에서 Id 목록과 일치하는 회원을 전부 삭제한다.")
 	void should_delete_when_memberIdsMatch() {
+
 		// given
 		Member member1 = new Member("name", "email1", "password");
 		Member member2 = new Member("name", "email2", "password");
@@ -103,6 +108,7 @@ class MemberMapperTest {
 	@Test
 	@DisplayName("DB에서 ID가 일치하는 회원을 조회한다.")
 	void should_find_when_memberIdMatch() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
@@ -119,6 +125,7 @@ class MemberMapperTest {
 	@Test
 	@DisplayName("DB에서 email이 일치하는 회원을 조회한다.")
 	void should_find_when_memberEmailMatch() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);

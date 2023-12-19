@@ -9,6 +9,7 @@ import com.gregori.order.domain.Order;
 
 @Mapper
 public interface OrderMapper {
+
 	Long insert(Order order);
 	void deleteByIds(List<Long> orderIds);
 	Optional<Order> findById(Long orderId);

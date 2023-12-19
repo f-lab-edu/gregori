@@ -30,10 +30,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/mypage")
 public class MypageController {
+
 	private final MemberService memberService;
 
 	@PostMapping
 	public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto memberUpdateDto) {
+
 		authorizationCheck(memberUpdateDto.getId());
 
 		CustomResponse<Long> response = CustomResponse
@@ -44,6 +46,7 @@ public class MypageController {
 
 	@DeleteMapping("/{memberId}")
 	public ResponseEntity<CustomResponse<Long>> deleteMember(@PathVariable Long memberId) {
+
 		authorizationCheck(memberId);
 
 		CustomResponse<Long> response = CustomResponse
@@ -54,6 +57,7 @@ public class MypageController {
 
 	@GetMapping("/{memberId}")
 	public ResponseEntity<CustomResponse<MemberResponseDto>> getMember(@PathVariable Long memberId) {
+
 		authorizationCheck(memberId);
 
 		CustomResponse<MemberResponseDto> response = CustomResponse
@@ -63,6 +67,7 @@ public class MypageController {
 	}
 
 	private void authorizationCheck(Long memberId) {
+
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		long currentMemberId = parseLong(authentication.getName());
 

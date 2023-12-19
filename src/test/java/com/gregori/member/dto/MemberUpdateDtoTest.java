@@ -11,12 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MemberUpdateDtoTest {
+
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	private final Validator validator = factory.getValidator();
 
 	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
 	void should_ValidException_when_nullId() {
+
 		// given
 		MemberUpdateDto dto = new MemberUpdateDto(null, "이름", "aa11111!");
 
@@ -30,6 +32,7 @@ class MemberUpdateDtoTest {
 	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankName() {
+
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto(null, "a@a.a", "aa11111!");
 		MemberRegisterDto dto2 = new MemberRegisterDto("", "a@a.a", "aa11111!");
@@ -49,6 +52,7 @@ class MemberUpdateDtoTest {
 	@Test
 	@DisplayName("name 필드의 패턴이 불일치하면 에러가 발생한다.")
 	void should_ValidException_when_mismatchedName() {
+
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("김", "email", "aa11111!");
 		MemberRegisterDto dto2 = new MemberRegisterDto("kimchulsu", "email", "aa11111!");
@@ -68,6 +72,7 @@ class MemberUpdateDtoTest {
 	@Test
 	@DisplayName("password 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankPassword() {
+
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "a@a.a", null);
 		MemberRegisterDto dto2 = new MemberRegisterDto("일호","a@a.a",  "");
@@ -87,6 +92,7 @@ class MemberUpdateDtoTest {
 	@Test
 	@DisplayName("password 필드의 패턴이 불일치하면 에러가 발생한다.")
 	void should_ValidException_when_mismatchedPassword() {
+
 		// given
 		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "email", "pass%5");
 		MemberRegisterDto dto2 = new MemberRegisterDto("일호", "email", "passwordpassword%5");
@@ -115,6 +121,7 @@ class MemberUpdateDtoTest {
 	@Test
 	@DisplayName("올바른 입력값이면 MemberUpdateDto 객체 생성에 성공한다.")
 	void should_createMemberUpdateDto_when_validInput() {
+
 		// given
 		MemberUpdateDto dto = new MemberUpdateDto(1L, "일호", "aa11111!");
 

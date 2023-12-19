@@ -1,7 +1,5 @@
 package com.gregori.config.security;
 
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.*;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -19,10 +17,13 @@ import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
 	private final String[] allowedURL = { "/", "/member/register", "/auth/**", "/items", "/order", "/seller/register" };
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenMapper refreshTokenMapper;
@@ -30,6 +31,7 @@ public class SecurityConfig {
 	@Bean
 	@Profile("test")
 	SecurityFilterChain h2ConsoleSecurityFilterChain(HttpSecurity http) throws Exception {
+
 		log.info("테스트 필터 체인 실행");
 
 		http.csrf(csrf -> csrf
@@ -53,6 +55,7 @@ public class SecurityConfig {
 	@Bean
 	@Profile("!test")
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
 		log.info("일반 필터 체인 실행");
 
 		http.csrf(AbstractHttpConfigurer::disable)
@@ -74,6 +77,7 @@ public class SecurityConfig {
 
 	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+
 		return configuration.getAuthenticationManager();
 	}
 }

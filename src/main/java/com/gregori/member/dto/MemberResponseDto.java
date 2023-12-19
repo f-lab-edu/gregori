@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
+
 	private Long id;
 	private String email;
 	private String name;
 	private Member.Status status;
 
 	public MemberResponseDto toEntity(Member member) {
+
 		return MemberResponseDto.builder()
 			.id(member.getId())
 			.name(member.getName())

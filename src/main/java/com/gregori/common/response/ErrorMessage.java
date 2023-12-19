@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorMessage {
+
 	SYSTEM_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "예기치 못한 시스템 에러가 발생했습니다."),
 	UNAUTHORIZED_ERROR(HttpStatus.UNAUTHORIZED, "인증되지 않은 사용자입니다."),
 	ACCESS_DENIED_ERROR(HttpStatus.FORBIDDEN, "접근 권한이 없습니다."),

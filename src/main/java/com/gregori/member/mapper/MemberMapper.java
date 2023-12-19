@@ -9,6 +9,7 @@ import com.gregori.member.domain.Member;
 
 @Mapper
 public interface MemberMapper {
+
     Long insert(Member member);
     Long update(Member member);
     void deleteById(Long memberId);

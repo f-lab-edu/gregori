@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Order extends AbstractEntity {
+
 	private Long id;
 	private Long memberId;
 	private String orderNumber;
@@ -25,7 +26,10 @@ public class Order extends AbstractEntity {
 	@Getter
 	@RequiredArgsConstructor
 	public enum Status {
-		ORDER_COMPLETED("주문 완료"), ORDER_CANCELLED("주문 취소");
+
+		ORDER_COMPLETED("주문 완료"),
+		ORDER_CANCELLED("주문 취소");
+
 		private final String description;
 	}
 

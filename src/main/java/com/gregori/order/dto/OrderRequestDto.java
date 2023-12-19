@@ -3,7 +3,7 @@ package com.gregori.order.dto;
 import java.util.List;
 
 import com.gregori.order.domain.Order;
-import com.gregori.order_item.dto.OrderItemRequestDto;
+import com.gregori.order_detail.dto.OrderDetailRequestDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +13,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class OrderRequestDto {
+
 	@NotNull
 	private Long memberId;
 
@@ -26,9 +27,10 @@ public class OrderRequestDto {
 	private Long deliveryCost;
 
 	@NotNull
-	private List<OrderItemRequestDto> orderItems;
+	private List<OrderDetailRequestDto> orderDetails;
 
 	public Order toEntity() {
+
 		return Order.builder()
 			.memberId(memberId)
 			.paymentAmount(paymentAmount)

@@ -13,6 +13,7 @@ import static com.gregori.common.RegexPatterns.BUSINESS_NO_REGEX;
 @Getter
 @AllArgsConstructor
 public class SellerRegisterDto {
+
 	@NotNull
 	private Long memberId;
 
@@ -24,6 +25,7 @@ public class SellerRegisterDto {
 	private String businessName;
 
 	public Seller toEntity() {
+
 		return Seller.builder()
 			.memberId(memberId)
 			.businessNumber(businessNumber)

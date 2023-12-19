@@ -6,57 +6,60 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.NotFoundException;
-import com.gregori.item.domain.Item;
-import com.gregori.item.mapper.ItemMapper;
+import com.gregori.product.domain.Product;
+import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.order_item.domain.OrderItem;
-import com.gregori.order_item.dto.OrderItemResponseDto;
-import com.gregori.order_item.mapper.OrderItemMapper;
+import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order_detail.dto.OrderDetailResponseDto;
+import com.gregori.order_detail.mapper.OrderDetailMapper;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
+
 	private final OrderMapper orderMapper;
-	private final ItemMapper itemMapper;
-	private final OrderItemMapper orderItemMapper;
+	private final ProductMapper productMapper;
+	private final OrderDetailMapper orderDetailMapper;
 
 	@Override
 	@Transactional
 	public OrderResponseDto saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
+
 		Order order = orderRequestDto.toEntity();
 		orderMapper.insert(order);
-		List<OrderItemResponseDto> orderItems = orderRequestDto.getOrderItems()
+		List<OrderDetailResponseDto> orderDetails = orderRequestDto.getOrderDetails()
 			.stream()
-			.map(orderItemRequestDto -> {
-				Item item = itemMapper.findById(orderItemRequestDto.getItemId())
+			.map(orderDetailRequestDto -> {
+				Product product = productMapper.findById(orderDetailRequestDto.getProductId())
 					.orElseThrow(NotFoundException::new);
-				OrderItem initOrderItem = orderItemRequestDto.toEntity(order.getId(), item);
-				orderItemMapper.insert(initOrderItem);
+				OrderDetail initOrderDetail = orderDetailRequestDto.toEntity(order.getId(), product);
+				orderDetailMapper.insert(initOrderDetail);
 
-				return new OrderItemResponseDto().toEntity(initOrderItem);
+				return new OrderDetailResponseDto().toEntity(initOrderDetail);
 			})
 			.toList();
 
-		return new OrderResponseDto().toEntity(order, orderItems);
+		return new OrderResponseDto().toEntity(order, orderDetails);
 	}
 
 	@Override
 	@Transactional
 	public OrderResponseDto getOrder(Long orderId) throws NotFoundException {
+
 		Order order = orderMapper.findById(orderId)
 			.orElseThrow(NotFoundException::new);
-		List<OrderItem> orderItems = orderItemMapper.findByOrderId(order.getId());
-		if (orderItems.isEmpty()) {
+		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(order.getId());
+		if (orderDetails.isEmpty()) {
 			throw new NotFoundException();
 		}
 
-		return new OrderResponseDto().toEntity(order, orderItems.stream()
-			.map(orderItem -> new OrderItemResponseDto().toEntity(orderItem))
+		return new OrderResponseDto().toEntity(order, orderDetails.stream()
+			.map(orderDetail -> new OrderDetailResponseDto().toEntity(orderDetail))
 			.toList());
 	}
 }

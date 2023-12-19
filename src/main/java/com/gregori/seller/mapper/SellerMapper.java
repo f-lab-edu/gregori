@@ -9,6 +9,7 @@ import com.gregori.seller.domain.Seller;
 
 @Mapper
 public interface SellerMapper {
+
 	Long insert(Seller seller);
 	Long update(Seller seller);
 	void deleteByIds(List<Long> id);

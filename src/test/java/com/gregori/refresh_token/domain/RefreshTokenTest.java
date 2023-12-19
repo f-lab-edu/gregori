@@ -11,6 +11,7 @@ class RefreshTokenTest {
 	@Test
 	@DisplayName("RefreshToken 객체의 필드를 수정한다.")
 	void should_updateRefreshTokenValue() {
+
 		// given
 		RefreshToken refreshToken = new RefreshToken("key", "value");
 
@@ -24,6 +25,7 @@ class RefreshTokenTest {
 	@Test
 	@DisplayName("Member 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
 	void should_getFields_when_buildMember() {
+
 		// given
 		RefreshToken refreshToken = RefreshToken.builder()
 			.refreshTokenKey("key")

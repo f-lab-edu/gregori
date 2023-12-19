@@ -8,6 +8,7 @@ import com.gregori.refresh_token.domain.RefreshToken;
 
 @Mapper
 public interface RefreshTokenMapper {
+
 	Long insert(RefreshToken refreshToken);
 	Long update(RefreshToken refreshToken);
 	Long deleteById(Long tokenId);

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @Builder
 public class CustomResponse<T> {
+
 	private Result result;
 	private T data;
 	private HttpStatus httpStatus;
@@ -18,11 +19,15 @@ public class CustomResponse<T> {
 	@Getter
 	@RequiredArgsConstructor
 	public enum Result {
-		SUCCESS("성공"), FAILURE("실패");
+
+		SUCCESS("성공"),
+		FAILURE("실패");
+
 		private final String description;
 	}
 
 	public static <T> CustomResponse<T> success(T data, SuccessMessage successMessage) {
+
 		return CustomResponse.<T>builder()
 			.result(Result.SUCCESS)
 			.httpStatus(HttpStatus.OK)
@@ -32,6 +37,7 @@ public class CustomResponse<T> {
 	}
 
 	public static <T> CustomResponse<T> failure(ErrorMessage errorMessage) {
+
 		return CustomResponse.<T>builder()
 			.result(Result.FAILURE)
 			.httpStatus(errorMessage.getHttpStatus())
@@ -41,6 +47,7 @@ public class CustomResponse<T> {
 	}
 
 	public static <T> CustomResponse<T> failure(HttpStatus httpStatus, Exception e) {
+
 		return CustomResponse.<T>builder()
 			.result(Result.FAILURE)
 			.httpStatus(httpStatus)

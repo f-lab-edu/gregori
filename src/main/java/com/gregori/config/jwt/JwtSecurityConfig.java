@@ -11,11 +11,13 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
+
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenMapper refreshTokenMapper;
 
 	@Override
 	public void configure(HttpSecurity builder) throws Exception {
+
 		JwtFilter jwtFilter = new JwtFilter(tokenProvider, refreshTokenMapper);
 		builder.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	}

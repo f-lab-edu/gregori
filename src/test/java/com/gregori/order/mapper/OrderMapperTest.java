@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class OrderMapperTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -60,6 +61,7 @@ class OrderMapperTest {
 	@Test
 	@DisplayName("Orders 테이블에 새로운 주문을 삽입한다.")
 	void insert() {
+
 		// given
 		Order order = Order.builder()
 			.memberId(member.getId())
@@ -82,6 +84,7 @@ class OrderMapperTest {
 	@Test
 	@DisplayName("Orders 테이블에서 id가 일치하는 주문을 삭제한다.")
 	void deleteByIds() {
+
 		// given
 		Order order = Order.builder()
 			.memberId(member.getId())
@@ -104,6 +107,7 @@ class OrderMapperTest {
 	@Test
 	@DisplayName("Orders 테이블에서 id가 일치하는 주문을 조회한다.")
 	void findById() {
+
 		// given
 		Order order = Order.builder()
 			.memberId(member.getId())

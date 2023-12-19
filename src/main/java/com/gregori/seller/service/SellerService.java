@@ -8,6 +8,7 @@ import com.gregori.seller.dto.SellerResponseDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 
 public interface SellerService {
+
 	Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException;
 	Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException;
 	Long deleteSeller(Long sellerId);

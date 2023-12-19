@@ -23,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class SellerMapperTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -62,6 +63,7 @@ class SellerMapperTest {
 	@Test
 	@DisplayName("Sellers 테이블에 새로운 셀러를 추가한다.")
 	void insert() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -82,6 +84,7 @@ class SellerMapperTest {
 	@Test
 	@DisplayName("Sellers 테이블의 상품을 수정한다.")
 	void update() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -106,6 +109,7 @@ class SellerMapperTest {
 	@Test
 	@DisplayName("Id 목록과 일치하는 Seller 테이블의 셀러를 전부 삭제한다.")
 	void deleteByIds() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -127,6 +131,7 @@ class SellerMapperTest {
 	@Test
 	@DisplayName("Sellers 테이블에서 memberId가 일치하는 셀러를 조회한다.")
 	void findByMemberId() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -147,6 +152,7 @@ class SellerMapperTest {
 	@Test
 	@DisplayName("Sellers 테이블에서 id가 일치하는 셀러를 조회한다.")
 	void findById() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())

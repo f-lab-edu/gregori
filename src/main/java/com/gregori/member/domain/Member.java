@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Member extends AbstractEntity {
+
     private Long id;
     private String name;
     private String email;
@@ -21,7 +22,10 @@ public class Member extends AbstractEntity {
     @Getter
     @RequiredArgsConstructor
     public enum Status {
-        ACTIVATE("활성화"), DEACTIVATE("비활성화");
+
+        ACTIVATE("활성화"),
+        DEACTIVATE("비활성화");
+
         private final String description;
     }
 
