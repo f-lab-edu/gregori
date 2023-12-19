@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class Seller extends AbstractEntity {
+
 	private Long id;
 	private Long memberId;
 	private String businessNumber;
@@ -19,12 +20,16 @@ public class Seller extends AbstractEntity {
 	@Getter
 	@RequiredArgsConstructor
 	public enum Status {
-		OPERATING("영업"), CLOSED("폐업");
+
+		OPERATING("영업"),
+		CLOSED("폐업");
+
 		private final String description;
 	}
 
 	@Builder
 	public Seller(Long memberId, String businessNumber, String businessName) {
+
 		this.memberId = memberId;
 		this.businessNumber = businessNumber;
 		this.businessName = businessName;
@@ -32,6 +37,7 @@ public class Seller extends AbstractEntity {
 	}
 
 	public void updateSellerInfo(String businessNumber, String businessName) {
+
 		this.businessNumber = businessNumber;
 		this.businessName = businessName;
 	}

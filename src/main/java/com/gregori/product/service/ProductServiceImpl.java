@@ -21,10 +21,12 @@ import static com.gregori.product.domain.Product.Status.PRE_SALE;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
+
 	private final ProductMapper productMapper;
 
 	@Override
 	public Long saveProduct(ProductCreateDto productCreateDto) {
+
 		Product product = productCreateDto.toEntity();
 		productMapper.insert(product);
 
@@ -34,6 +36,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public Long updateProduct(ProductUpdateDto productUpdateDto) throws NotFoundException {
+
 		Product product = productMapper.findById(productUpdateDto.getId()).orElseThrow(NotFoundException::new);
 		product.updateProductInfo(productUpdateDto.getName(), productUpdateDto.getPrice(),
 			productUpdateDto.getInventory());
@@ -45,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public Long updateProductStatus(Product.Status status, Long productId) throws NotFoundException {
+
 		Product product = productMapper.findById(productId).orElseThrow(NotFoundException::new);
 
 		if (status == PRE_SALE) {
@@ -62,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public ProductResponseDto getProduct(Long productId) {
+
 		Product product = productMapper.findById(productId).orElseThrow(NotFoundException::new);
 
 		return new ProductResponseDto().toEntity(product);
@@ -69,6 +74,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<ProductResponseDto> getProducts(List<Long> productIds) {
+
 		var products = productMapper.findByIds(productIds);
 
 		return products.stream()

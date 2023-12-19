@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ProductUpdateDto {
+
 	@NotNull
 	private Long id;
 

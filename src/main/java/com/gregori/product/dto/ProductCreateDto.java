@@ -10,6 +10,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ProductCreateDto {
+
 	@NotNull
 	private Long sellerId;
 
@@ -23,6 +24,7 @@ public class ProductCreateDto {
 	private Long inventory;
 
 	public Product toEntity() {
+
 		return Product.builder()
 			.sellerId(sellerId)
 			.name(name)

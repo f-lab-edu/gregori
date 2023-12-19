@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class TokenProvider {
+
 	private static final String AUTHORIZATION_KEY = "auth";
 	private static final String BEARER_TYPE = "bearer";
 	private static final long ACCESS_TOKEN_EXPIRATION_TIME = 1000 * 60 * 30;
@@ -41,11 +42,13 @@ public class TokenProvider {
 	private final SecretKey key;
 
 	public TokenProvider(@Value("${jwt.secret}") String secret) {
+
 		byte[] keyBytes = Decoders.BASE64.decode(secret);
 		this.key = Keys.hmacShaKeyFor(keyBytes);
 	}
 
 	public TokenDto generateToken(Authentication authentication) {
+
 		String authorities = authentication.getAuthorities().stream()
 			.map(GrantedAuthority::getAuthority)
 			.collect(Collectors.joining(","));
@@ -73,6 +76,7 @@ public class TokenProvider {
 	}
 
 	public Authentication getAuthentication(String accessToken) {
+
 		Claims claims = parseClaims(accessToken);
 		if (claims.get(AUTHORIZATION_KEY) == null) {
 			throw new NotFoundException("권한 정보가 없습니다.");
@@ -89,6 +93,7 @@ public class TokenProvider {
 	}
 
 	public Claims parseClaims(String accessToken) {
+
 		try {
 			return Jwts.parser().verifyWith(key).build().parseSignedClaims(accessToken).getPayload();
 		} catch (ExpiredJwtException e) {
@@ -103,6 +108,7 @@ public class TokenProvider {
 	}
 
 	public boolean validateToken(String token) {
+
 		try {
 			Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
 

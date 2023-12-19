@@ -20,10 +20,12 @@ import static com.gregori.common.response.SuccessMessage.REGISTER;
 @RequiredArgsConstructor
 @RequestMapping("/seller")
 public class SellerController {
+
 	private final SellerService sellerService;
 
 	@PostMapping("/register")
 	public ResponseEntity<CustomResponse<Long>> createSeller(@RequestBody @Valid SellerRegisterDto sellerRegisterDto) {
+
 		CustomResponse<Long> response = CustomResponse
 			.success(sellerService.saveSeller(sellerRegisterDto), REGISTER);
 

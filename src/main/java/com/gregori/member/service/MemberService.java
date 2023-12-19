@@ -7,6 +7,7 @@ import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberUpdateDto;
 
 public interface MemberService {
+
     Long register(MemberRegisterDto memberRegisterDto) throws DuplicateException;
     Long updateMember(MemberUpdateDto mypageUpdateDto) throws NotFoundException;
     Long deleteMember(Long memberId) throws NotFoundException;

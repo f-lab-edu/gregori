@@ -18,6 +18,7 @@ public class OrderDetailRequestDto {
 	private Long productCount;
 
 	public OrderDetail toEntity(Long orderId, Product product) {
+
 		return OrderDetail.builder()
 			.orderId(orderId)
 			.productId(productId)

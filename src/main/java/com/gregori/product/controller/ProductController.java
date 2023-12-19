@@ -19,10 +19,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/product")
 public class ProductController {
+
 	private final ProductService productService;
 
 	@GetMapping("/{productId}")
 	public ResponseEntity<CustomResponse<ProductResponseDto>> getProduct(@PathVariable Long productId) {
+
 		CustomResponse<ProductResponseDto> response = CustomResponse
 			.success(productService.getProduct(productId), GET);
 

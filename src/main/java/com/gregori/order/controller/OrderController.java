@@ -24,20 +24,21 @@ import static com.gregori.common.response.SuccessMessage.GET;
 @RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
+
 	private final OrderService orderService;
 
 	@PostMapping
 	public ResponseEntity<CustomResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
-		CustomResponse<OrderResponseDto> response = CustomResponse
-			.success(orderService.saveOrder(orderRequestDto), CREATE);
+
+		CustomResponse<OrderResponseDto> response = CustomResponse.success(orderService.saveOrder(orderRequestDto), CREATE);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{orderId}")
 	public ResponseEntity<CustomResponse<OrderResponseDto>> getOrder(@PathVariable Long orderId) {
-		CustomResponse<OrderResponseDto> response = CustomResponse
-			.success(orderService.getOrder(orderId), GET);
+
+		CustomResponse<OrderResponseDto> response = CustomResponse.success(orderService.getOrder(orderId), GET);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

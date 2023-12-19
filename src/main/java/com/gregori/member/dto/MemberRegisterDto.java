@@ -14,6 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class MemberRegisterDto {
+
 	@NotBlank
 	@Pattern(regexp = NAME_REGEX, message = "이름 형식이 올바르지 않습니다.")
 	private String name;
@@ -27,6 +28,7 @@ public class MemberRegisterDto {
 	private String password;
 
 	public Member toEntity(String encodedPassword) {
+
 		return Member.builder()
 			.name(name)
 			.email(email)

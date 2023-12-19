@@ -8,6 +8,7 @@ import com.gregori.order_detail.domain.OrderDetail;
 
 @Mapper
 public interface OrderDetailMapper {
+
 	Long insert(OrderDetail orderDetail);
 	void deleteByIds(List<Long> orderDetailIds);
 	List<OrderDetail> findByOrderId(Long orderId);

@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponseDto {
+
 	private Long id;
 	private Long sellerId;
 	private String name;
@@ -20,6 +21,7 @@ public class ProductResponseDto {
 	private Product.Status status;
 
 	public ProductResponseDto toEntity(Product product) {
+
 		return ProductResponseDto.builder()
 			.id(product.getId())
 			.sellerId(product.getSellerId())

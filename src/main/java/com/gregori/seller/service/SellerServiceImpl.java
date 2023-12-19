@@ -27,6 +27,7 @@ import static com.gregori.product.domain.Product.Status.ON_SALE;
 @Service
 @RequiredArgsConstructor
 public class SellerServiceImpl implements SellerService {
+
 	private final MemberMapper memberMapper;
 	private final SellerMapper sellerMapper;
 	private final ProductMapper productMapper;
@@ -34,6 +35,7 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
+
 		businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber());
 
 		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
@@ -49,6 +51,7 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
+
 		businessNumberValidationCheck(sellerUpdateDto.getBusinessNumber());
 
 		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
@@ -61,6 +64,7 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long deleteSeller(Long sellerId) {
+
 		List<Product> products = productMapper.findBySellerId(sellerId);
 		for (Product product : products) {
 			if (product.getStatus() == ON_SALE) {
@@ -77,6 +81,7 @@ public class SellerServiceImpl implements SellerService {
 
 	@Override
 	public List<SellerResponseDto> getSellers(Long memberId) {
+
 		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
 
 		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
@@ -84,12 +89,14 @@ public class SellerServiceImpl implements SellerService {
 
 	@Override
 	public SellerResponseDto getSeller(Long sellerId) {
+
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 
 		return new SellerResponseDto().toEntity(seller);
 	}
 
 	private void businessNumberValidationCheck(String businessNumber) {
+
 		String tenNumber = businessNumber.replace("-", "");
 		if (tenNumber.length() != 10) {
 			throw new ValidationException();
