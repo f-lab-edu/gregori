@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
-import com.gregori.item.domain.Item;
-import com.gregori.item.mapper.ItemMapper;
+import com.gregori.product.domain.Product;
+import com.gregori.product.mapper.ProductMapper;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
@@ -21,7 +21,7 @@ import com.gregori.seller.mapper.SellerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.gregori.item.domain.Item.Status.ON_SALE;
+import static com.gregori.product.domain.Product.Status.ON_SALE;
 
 @Slf4j
 @Service
@@ -29,7 +29,7 @@ import static com.gregori.item.domain.Item.Status.ON_SALE;
 public class SellerServiceImpl implements SellerService {
 	private final MemberMapper memberMapper;
 	private final SellerMapper sellerMapper;
-	private final ItemMapper itemMapper;
+	private final ProductMapper productMapper;
 
 	@Override
 	@Transactional
@@ -61,9 +61,9 @@ public class SellerServiceImpl implements SellerService {
 	@Override
 	@Transactional
 	public Long deleteSeller(Long sellerId) {
-		List<Item> items = itemMapper.findBySellerId(sellerId);
-		for (Item item: items) {
-			if (item.getStatus() == ON_SALE) {
+		List<Product> products = productMapper.findBySellerId(sellerId);
+		for (Product product : products) {
+			if (product.getStatus() == ON_SALE) {
 				throw new BusinessRuleViolationException("판매 중인 상품이 있으면 폐업 신청이 불가합니다.");
 			}
 		}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.gregori.order_detail.mapper.OrderDetailMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.order_detail.domain.OrderDetail">
+        INSERT INTO order_details (order_id, product_id, product_name, product_price, product_count, status)
+        VALUES (#{orderId}, #{productId}, #{productName}, #{productPrice}, #{productCount}, #{status})
+    </insert>
+
+    <update id="deleteByIds" parameterType="map">
+        DELETE FROM order_details
+        WHERE id IN (
+        <foreach collection="list" item="item" separator=",">
+            #{item}
+        </foreach>
+        )
+    </update>
+
+    <select id="findByProductId" resultType="com.gregori.order_detail.domain.OrderDetail" parameterType="Long">
+        SELECT id, order_id, product_id, product_name, product_price, product_count, status
+        FROM order_details
+        WHERE productId = #{productId}
+    </select>
+
+    <select id="findByOrderId" resultType="com.gregori.order_detail.domain.OrderDetail" parameterType="Long">
+        SELECT id, order_id, product_id, product_name, product_price, product_count, status
+        FROM order_details
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="findByIds" resultType="com.gregori.order_detail.domain.OrderDetail" parameterType="List">
+        SELECT id, order_id, product_id, product_name, product_price, product_count, status
+        FROM order_details
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

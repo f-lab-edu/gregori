@@ -3,7 +3,7 @@ package com.gregori.order.dto;
 import java.util.List;
 
 import com.gregori.order.domain.Order;
-import com.gregori.order_item.dto.OrderItemResponseDto;
+import com.gregori.order_detail.dto.OrderDetailResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +22,9 @@ public class OrderResponseDto {
 	private Long paymentAmount;
 	private Long deliveryCost;
 	private Order.Status status;
-	private List<OrderItemResponseDto> orderItems;
+	private List<OrderDetailResponseDto> orderDetails;
 
-	public OrderResponseDto toEntity(Order order, List<OrderItemResponseDto> orderItems) {
+	public OrderResponseDto toEntity(Order order, List<OrderDetailResponseDto> orderDetails) {
 		return OrderResponseDto.builder()
 			.id(order.getId())
 			.memberId(order.getMemberId())
@@ -33,7 +33,7 @@ public class OrderResponseDto {
 			.paymentAmount(order.getPaymentAmount())
 			.deliveryCost(order.getDeliveryCost())
 			.status(order.getStatus())
-			.orderItems(orderItems)
+			.orderDetails(orderDetails)
 			.build();
 	}
 }

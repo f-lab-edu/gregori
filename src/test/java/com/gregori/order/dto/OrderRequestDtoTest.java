@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.gregori.order.domain.Order;
-import com.gregori.order_item.dto.OrderItemRequestDto;
+import com.gregori.order_detail.dto.OrderDetailRequestDto;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class OrderRequestDtoTest {
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	private final Validator validator = factory.getValidator();
-	private final List<OrderItemRequestDto> orderItems = List.of(new OrderItemRequestDto(1L, 1L));
+	private final List<OrderDetailRequestDto> orderItems = List.of(new OrderDetailRequestDto(1L, 1L));
 
 	@Test
 	@DisplayName("OrderItem 객체를 builder 패턴으로 생성한다.")

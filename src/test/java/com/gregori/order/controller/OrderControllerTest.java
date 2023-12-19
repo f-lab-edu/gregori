@@ -21,17 +21,17 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.common.response.CustomResponse;
-import com.gregori.item.domain.Item;
-import com.gregori.item.mapper.ItemMapper;
+import com.gregori.product.domain.Product;
+import com.gregori.product.mapper.ProductMapper;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.order_item.domain.OrderItem;
-import com.gregori.order_item.dto.OrderItemRequestDto;
-import com.gregori.order_item.mapper.OrderItemMapper;
+import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order_detail.dto.OrderDetailRequestDto;
+import com.gregori.order_detail.mapper.OrderDetailMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
@@ -62,20 +62,20 @@ class OrderControllerTest {
 	private SellerMapper sellerMapper;
 
 	@Autowired
-	private ItemMapper itemMapper;
+	private ProductMapper productMapper;
 
 	@Autowired
 	private OrderMapper orderMapper;
 
 	@Autowired
-	private OrderItemMapper orderItemMapper;
+	private OrderDetailMapper orderDetailMapper;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
 	Member member;
 	Seller seller;
-	List<Item> items = new ArrayList<>();
+	List<Product> products = new ArrayList<>();
 	List<Long> orderIds = new ArrayList<>();
 	List<Long> orderItemIds = new ArrayList<>();
 
@@ -95,38 +95,38 @@ class OrderControllerTest {
 			.build();
 		sellerMapper.insert(seller);
 
-		Item item1 = Item.builder()
+		Product product1 = Product.builder()
 			.sellerId(seller.getId())
 			.name("아이템1")
 			.price(100L)
 			.inventory(1L)
 			.build();
-		Item item2 = Item.builder()
+		Product product2 = Product.builder()
 			.sellerId(seller.getId())
 			.name("아이템2")
 			.price(200L)
 			.inventory(2L)
 			.build();
 
-		itemMapper.insert(item1);
-		itemMapper.insert(item2);
-		items.add(item1);
-		items.add(item2);
+		productMapper.insert(product1);
+		productMapper.insert(product2);
+		products.add(product1);
+		products.add(product2);
 	}
 
 	@AfterEach
 	void afterEach() {
 		if (!orderItemIds.isEmpty()) {
-			orderItemMapper.deleteByIds(orderItemIds);
+			orderDetailMapper.deleteByIds(orderItemIds);
 			orderItemIds.clear();
 		}
 		if (!orderIds.isEmpty()) {
 			orderMapper.deleteByIds(orderIds);
 			orderIds.clear();
 		}
-		if (!items.isEmpty()) {
-			itemMapper.deleteByIds(items.stream().map(Item::getId).toList());
-			items.clear();
+		if (!products.isEmpty()) {
+			productMapper.deleteByIds(products.stream().map(Product::getId).toList());
+			products.clear();
 		}
 		if (seller != null) {
 			sellerMapper.deleteByIds(List.of(seller.getId()));
@@ -142,7 +142,7 @@ class OrderControllerTest {
 	@DisplayName("클라이언트의 요청에 따라 주문을 새로 생성한다.")
 	void createOrder() throws Exception {
 		// given
-		List<OrderItemRequestDto> orderItemsRequest = List.of(new OrderItemRequestDto(1L, items.get(0).getId()));
+		List<OrderDetailRequestDto> orderItemsRequest = List.of(new OrderDetailRequestDto(1L, products.get(0).getId()));
 		OrderRequestDto input = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderItemsRequest);
 
 		// when
@@ -156,7 +156,7 @@ class OrderControllerTest {
 			actions.andReturn().getResponse().getContentAsString(),
 			new TypeReference<>(){});
 		orderIds.add(result.getData().getId());
-		orderItemIds.add(result.getData().getOrderItems().get(0).getId());
+		orderItemIds.add(result.getData().getOrderDetails().get(0).getId());
 
 		// then
 		actions.andExpect(status().isOk())
@@ -170,7 +170,7 @@ class OrderControllerTest {
 			.andExpect(jsonPath("$.data.paymentAmount", is(notNullValue())))
 			.andExpect(jsonPath("$.data.deliveryCost", is(notNullValue())))
 			.andExpect(jsonPath("$.data.status", is(notNullValue())))
-			.andExpect(jsonPath("$.data.orderItems", is(notNullValue())))
+			.andExpect(jsonPath("$.data.orderDetails", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
 	}
@@ -188,15 +188,15 @@ class OrderControllerTest {
 		orderMapper.insert(order);
 		orderIds.add(order.getId());
 
-		OrderItem orderItem = OrderItem.builder()
+		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(order.getId())
-			.orderCount(2L)
-			.itemId(items.get(0).getId())
-			.itemName(items.get(0).getName())
-			.itemPrice(items.get(0).getPrice())
+			.productId(products.get(0).getId())
+			.productName(products.get(0).getName())
+			.productPrice(products.get(0).getPrice())
+			.productCount(2L)
 			.build();
-		orderItemMapper.insert(orderItem);
-		orderItemIds.add(orderItem.getId());
+		orderDetailMapper.insert(orderDetail);
+		orderItemIds.add(orderDetail.getId());
 
 		// when
 		ResultActions actions = mockMvc.perform(
@@ -216,7 +216,7 @@ class OrderControllerTest {
 			.andExpect(jsonPath("$.data.paymentAmount", is(notNullValue())))
 			.andExpect(jsonPath("$.data.deliveryCost", is(notNullValue())))
 			.andExpect(jsonPath("$.data.status", is(notNullValue())))
-			.andExpect(jsonPath("$.data.orderItems", is(notNullValue())))
+			.andExpect(jsonPath("$.data.orderDetails", is(notNullValue())))
 			.andExpect(jsonPath("$.description", is(notNullValue())))
 			.andDo(print());
 	}
