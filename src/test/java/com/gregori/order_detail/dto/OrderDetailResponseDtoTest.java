@@ -9,9 +9,11 @@ import static com.gregori.order_detail.domain.OrderDetail.Status.PAYMENT_COMPLET
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class OrderDetailResponseDtoTest {
+
 	@Test
 	@DisplayName("OrderItemResponseDto 객체를 builder 패턴으로 생성한다.")
 	void toEntityTest() {
+
 		// given
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, "아이템1", 100L, 1L);
 
@@ -29,6 +31,7 @@ class OrderDetailResponseDtoTest {
 	@Test
 	@DisplayName("OrderItemResponseDto의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
+
 		// given
 		OrderDetailResponseDto dto = new OrderDetailResponseDto(1L, 1L, 1L, "아이템1", 100L, 1L, PAYMENT_COMPLETED);
 

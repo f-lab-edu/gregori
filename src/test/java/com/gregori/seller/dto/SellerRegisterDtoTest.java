@@ -21,6 +21,7 @@ class SellerRegisterDtoTest {
 	@Test
 	@DisplayName("Seller 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
+
 		// given
 		SellerRegisterDto dto = new SellerRegisterDto(1L, "000-00-00000", "name");
 
@@ -34,6 +35,7 @@ class SellerRegisterDtoTest {
 	@Test
 	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
 	void nullMemberIdInputFailsTest() {
+
 		// given
 		SellerRegisterDto dto = new SellerRegisterDto(null, "000-00-00000", "name");
 
@@ -47,6 +49,7 @@ class SellerRegisterDtoTest {
 	@Test
 	@DisplayName("businessNumber 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void blankBusinessNumberInputFailsTest() {
+
 		// given
 		SellerRegisterDto dto1 = new SellerRegisterDto(1L, null, "name");
 		SellerRegisterDto dto2 = new SellerRegisterDto(1L, "", "name");
@@ -66,6 +69,7 @@ class SellerRegisterDtoTest {
 	@Test
 	@DisplayName("businessNumber 필드의 패턴이 불일치하면 에러가 발생한다.")
 	void mismatchedBusinessNumberInputFailsTest() {
+
 		// given
 		SellerRegisterDto dto = new SellerRegisterDto(1L, "00-00-00", "name");
 
@@ -79,6 +83,7 @@ class SellerRegisterDtoTest {
 	@Test
 	@DisplayName("businessName 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void blankBusinessNameInputFailsTest() {
+
 		// given
 		SellerRegisterDto dto1 = new SellerRegisterDto(1L, "000-00-00000", null);
 		SellerRegisterDto dto2 = new SellerRegisterDto(1L, "000-00-00000", "");
@@ -98,6 +103,7 @@ class SellerRegisterDtoTest {
 	@Test
 	@DisplayName("올바른 입력값이면 SellerRegisterDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
+
 		// given
 		SellerRegisterDto dto = new SellerRegisterDto(1L, "000-00-00000", "name");
 

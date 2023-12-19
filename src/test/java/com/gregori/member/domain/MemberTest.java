@@ -12,6 +12,7 @@ class MemberTest {
 	@Test
 	@DisplayName("Member 객체의 필드를 수정한다.")
 	void should_updateMemberInfo() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 
@@ -26,6 +27,7 @@ class MemberTest {
 	@Test
 	@DisplayName("Member 객체의 상태를 'ACTIAVTE'로 변경한다.")
 	void should_activate() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 		member.deactivate();
@@ -44,6 +46,7 @@ class MemberTest {
 	@Test
 	@DisplayName("Member 객체의 상태를 'DEACTIVATE'로 변경한다.")
 	void should_deactivate() {
+
 		// given
 		Member member = new Member("name", "email", "password");
 		Member.Status status = member.getStatus();
@@ -60,6 +63,7 @@ class MemberTest {
 	@Test
 	@DisplayName("Member 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
 	void should_getFields_when_buildMember() {
+
 		// given
 		Member member = Member.builder()
 			.name("name")

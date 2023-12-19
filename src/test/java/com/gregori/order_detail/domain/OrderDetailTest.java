@@ -7,9 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class OrderDetailTest {
+
 	@Test
 	@DisplayName("OrderItem 객체의 상태를 'PAYMENT_COMPLETED'로 변경한다.")
 	void paymentCompleted() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(1L)
@@ -31,6 +33,7 @@ class OrderDetailTest {
 	@Test
 	@DisplayName("OrderItem 객체의 상태를 'SHIPMENT_PREPARATION'로 변경한다.")
 	void shipmentPreparation() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(1L)
@@ -50,6 +53,7 @@ class OrderDetailTest {
 	@Test
 	@DisplayName("OrderItem 객체의 상태를 'SHIPPED'로 변경한다.")
 	void shipped() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(1L)
@@ -69,6 +73,7 @@ class OrderDetailTest {
 	@Test
 	@DisplayName("OrderItem 객체의 상태를 'DELIVERED'로 변경한다.")
 	void deliveryCost() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(1L)
@@ -88,6 +93,7 @@ class OrderDetailTest {
 	@Test
 	@DisplayName("OrderItem 객체를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
 	void builderAndGetterTest() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(1L)

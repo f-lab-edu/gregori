@@ -25,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @WebMvcTest(value = MemberController.class)
 class MemberControllerTest {
+
 	@Autowired
 	private MockMvc mockMvc;
 	@Autowired
@@ -36,6 +37,7 @@ class MemberControllerTest {
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 신규 회원을 등록한다.")
 	void should_register() throws Exception {
+
 		// given
 		MemberRegisterDto memberRegisterDto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
 

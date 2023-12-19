@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @ActiveProfiles("test")
 class ProductMapperTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -73,7 +74,8 @@ class ProductMapperTest {
 	@Test
 	@DisplayName("Items 테이블에 새로운 상품을 추가한다.")
 	void insert() {
-		//given
+
+		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
 			.name("아이템1")
@@ -95,6 +97,7 @@ class ProductMapperTest {
 	@Test
 	@DisplayName("Items 테이블의 상품을 수정한다.")
 	void update() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
@@ -122,6 +125,7 @@ class ProductMapperTest {
 	@Test
 	@DisplayName("Id 목록과 일치하는 Items 테이블의 상품을 전부 삭제한다.")
 	void deleteByIds() {
+
 		 // given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
@@ -144,6 +148,7 @@ class ProductMapperTest {
 	@Test
 	@DisplayName("Items 테이블에서 id가 일치하는 상품을 조회한다.")
 	void findById() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
@@ -172,6 +177,7 @@ class ProductMapperTest {
 	@Test
 	@DisplayName("Items 테이블에서 id 목록과 일치하는 상품을 전부 조회한다.")
 	void findAllById() {
+
 		// given
 		Product product1 = Product.builder()
 			.sellerId(seller.getId())
@@ -204,6 +210,7 @@ class ProductMapperTest {
 	@Test
 	@DisplayName("Items 테이블에서 sellerId가 일치하는 상품 목록을 조회한다.")
 	void findBySellerId() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())

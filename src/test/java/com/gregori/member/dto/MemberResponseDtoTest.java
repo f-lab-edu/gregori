@@ -10,9 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class MemberResponseDtoTest {
+
 	@Test
 	@DisplayName("toEntity 메서드를 호출하면 MemberResponseDto 객체를 t한다.")
 	void should_createMemberResponseDtoSuccess_when_toEntityMethodOccurs() {
+
 		// given
 		Member member = Member.builder()
 			.name("일호")
@@ -31,6 +33,7 @@ class MemberResponseDtoTest {
 	@Test
 	@DisplayName("SellerResponseDto 객체의 필드를 getter 메서드로 조회한다.")
 	void should_getFields() {
+
 		// given
 		MemberResponseDto dto = new MemberResponseDto(1L, "a@a.a", "일호", ACTIVATE);
 

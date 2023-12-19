@@ -37,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class SellerControllerTest {
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -80,6 +81,7 @@ class SellerControllerTest {
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 신규 셀러를 등록한다.")
 	void createSeller() throws Exception {
+
 		// given
 		Map<String, String> input = new HashMap<>();
 		input.put("memberId", member.getId().toString());

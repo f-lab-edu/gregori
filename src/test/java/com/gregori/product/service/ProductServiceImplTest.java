@@ -29,6 +29,7 @@ import com.gregori.seller.mapper.SellerMapper;
 @SpringBootTest
 @ActiveProfiles("test")
 class ProductServiceImplTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -80,6 +81,7 @@ class ProductServiceImplTest {
 	@Test
 	@DisplayName("새로운 상품을 저장하고 id를 반환한다.")
 	void saveItem() {
+
 		// given
 		ProductCreateDto productCreateDto = new ProductCreateDto(seller.getId(), "아이템1", 100L, 1L);
 
@@ -98,6 +100,7 @@ class ProductServiceImplTest {
 	@Test
 	@DisplayName("DB에 저장된 상품을 수정하고 id를 반환한다.")
 	void updateItem() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
@@ -124,6 +127,7 @@ class ProductServiceImplTest {
 	@Test
 	@DisplayName("DB에 저장된 상품의 상태를 변경하고 id를 반환한다.")
 	void updateItemStatus() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
@@ -146,6 +150,7 @@ class ProductServiceImplTest {
 	@Test
 	@DisplayName("상품의 id로 DB에 저장된 상품을 조회해서 반환한다.")
 	void getItem() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())
@@ -170,6 +175,7 @@ class ProductServiceImplTest {
 	@Test
 	@DisplayName("상품 id 목록으로 DB에 저장된 상품을 전부 조회해서 반환한다.")
 	void getItems() {
+
 		// given
 		Product product1 = Product.builder()
 			.sellerId(seller.getId())

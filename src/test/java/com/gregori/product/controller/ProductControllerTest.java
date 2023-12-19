@@ -36,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class ProductControllerTest {
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -91,6 +92,7 @@ class ProductControllerTest {
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 테이블에 저장된 상품을 조회한다.")
 	void getItem() throws Exception {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(seller.getId())

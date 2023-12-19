@@ -30,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 class SellerServiceImplTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -71,6 +72,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("새로운 셀러를 DB에 저장하고 id를 반환한다.")
 	void saveSeller() {
+
 		// given
 		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "123-45-67891", "일호 상점");
 
@@ -90,6 +92,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("잘못된 사업자 등록번호면 셀러 생성을 실패한다.")
 	void should_createMemberFail_when_invalidBusinessNumberInput() {
+
 		// given
 		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "111-11-111111", "일호 상점");
 
@@ -103,6 +106,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("DB에 저장된 셀러를 수정하고 id를 반환한다.")
 	void updateSeller() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -127,6 +131,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("잘못된 사업자 등록번호면 업데이트를 실패한다.")
 	void should_updateMemberFail_when_invalidBusinessNumberInput() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -148,6 +153,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("DB에 저장된 셀러의 상태를 변경하고 id를 반환한다.")
 	void deleteSeller() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())
@@ -170,6 +176,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("회원 id로 DB에 저장된 회원의 셀러 정보를 전부 조회해서 반환한다.")
 	void getSellers() {
+
 		// given
 		Seller seller1 = Seller.builder()
 			.memberId(member.getId())
@@ -199,6 +206,7 @@ class SellerServiceImplTest {
 	@Test
 	@DisplayName("셀러 id로 DB에 저장된 셀러를 조회해서 반환한다.")
 	void getSeller() {
+
 		// given
 		Seller seller = Seller.builder()
 			.memberId(member.getId())

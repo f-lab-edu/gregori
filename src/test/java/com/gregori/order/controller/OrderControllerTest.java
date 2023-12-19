@@ -49,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class OrderControllerTest {
+
 	@Autowired
 	private MockMvc mockMvc;
 
@@ -141,6 +142,7 @@ class OrderControllerTest {
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 주문을 새로 생성한다.")
 	void createOrder() throws Exception {
+
 		// given
 		List<OrderDetailRequestDto> orderItemsRequest = List.of(new OrderDetailRequestDto(1L, products.get(0).getId()));
 		OrderRequestDto input = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderItemsRequest);
@@ -178,6 +180,7 @@ class OrderControllerTest {
 	@Test
 	@DisplayName("클라이언트의 요청에 따라 주문을 조회한다.")
 	void getOrder() throws Exception {
+
 		// given
 		Order order = Order.builder()
 			.memberId(member.getId())

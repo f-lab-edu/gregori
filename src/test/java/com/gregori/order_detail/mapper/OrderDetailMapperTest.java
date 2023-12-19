@@ -27,6 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 class OrderDetailMapperTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -121,6 +122,7 @@ class OrderDetailMapperTest {
 	@Test
 	@DisplayName("OrderDetails 테이블에 새로운 주문 상품을 삽입한다.")
 	void insert() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(order.getId())
@@ -144,6 +146,7 @@ class OrderDetailMapperTest {
 	@Test
 	@DisplayName("OrderDetails 테이블에서 id가 일치하는 주문을 전부 삭제한다.")
 	void deleteByIds() {
+
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(order.getId())
@@ -167,6 +170,7 @@ class OrderDetailMapperTest {
 	@Test
 	@DisplayName("OrderDetails 테이블에서 orderId가 일치하는 주문 상품을 조회한다.")
 	void findByOrderId() {
+
 		// given
 		OrderDetail orderDetail1 = OrderDetail.builder()
 			.orderId(order.getId())
@@ -201,6 +205,7 @@ class OrderDetailMapperTest {
 	@Test
 	@DisplayName("OrderDetails 테이블에서 id가 일치하는 주문을 전부 조회한다.")
 	void findByIds() {
+
 		// given
 		OrderDetail orderDetail1 = OrderDetail.builder()
 			.orderId(order.getId())

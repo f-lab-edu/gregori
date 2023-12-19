@@ -15,12 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderDetailRequestDtoTest {
+
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 	private final Validator validator = factory.getValidator();
 
 	@Test
 	@DisplayName("OrderItem 객체를 builder 패턴으로 생성한다.")
 	void toEntity() {
+
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(1L, 1L);
 
@@ -35,6 +37,7 @@ class OrderDetailRequestDtoTest {
 	@Test
 	@DisplayName("orderItem 필드가 비어 있으면 에러가 발생한다.")
 	void nullOrderCountInputFailsTest() {
+
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(null, 1L);
 
@@ -48,6 +51,7 @@ class OrderDetailRequestDtoTest {
 	@Test
 	@DisplayName("itemId 필드가 비어 있으면 에러가 발생한다.")
 	void nullItemIdInputFailsTest() {
+
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(1L, null);
 
@@ -61,6 +65,7 @@ class OrderDetailRequestDtoTest {
 	@Test
 	@DisplayName("입력값이 올바르면 OrderItemRequestDto 객체 생성에 성공한다.")
 	void validInputSucceedsTest() {
+
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(1L, 1L);
 

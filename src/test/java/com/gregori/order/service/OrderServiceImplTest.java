@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 @ActiveProfiles("test")
 class OrderServiceImplTest {
+
 	@Autowired
 	private MemberMapper memberMapper;
 
@@ -121,6 +122,7 @@ class OrderServiceImplTest {
 	@Test
 	@DisplayName("새로운 주문과 주문 상품을 DB에 저장하고 주문 정보를 반환한다.")
 	void createOrder() {
+
 		// given
 		List<OrderDetailRequestDto> orderItemsRequest = List.of(new OrderDetailRequestDto(1L, products.get(0).getId()));
 		OrderRequestDto orderRequestDto = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderItemsRequest);
@@ -146,6 +148,7 @@ class OrderServiceImplTest {
 	@Test
 	@DisplayName("orderId로 DB에 저장된 주문과 주문 상품을 조회해서 반환한다.")
 	void findOrderById() {
+
 		// given
 		Order order = Order.builder()
 			.memberId(member.getId())

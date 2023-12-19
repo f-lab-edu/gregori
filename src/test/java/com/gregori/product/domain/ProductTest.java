@@ -14,6 +14,7 @@ class ProductTest {
 	@Test
 	@DisplayName("Item 객체의 필드를 수정한다.")
 	void updateItemInfo() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(1L)
@@ -34,6 +35,7 @@ class ProductTest {
 	@Test
 	@DisplayName("Item 객체의 상태를 'PRE_SALE'로 변경한다.")
 	void preSale() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(1L)
@@ -55,6 +57,7 @@ class ProductTest {
 	@Test
 	@DisplayName("Item 객체의 상태를 'ON_SALE'로 변경한다.")
 	void onSale() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(1L)
@@ -75,6 +78,7 @@ class ProductTest {
 	@Test
 	@DisplayName("Item 객체의 상태를 'END_OF_SALE'로 변경한다.")
 	void endOfSale() {
+
 		// given
 		Product product = Product.builder()
 			.sellerId(1L)
@@ -94,6 +98,7 @@ class ProductTest {
 	@Test
 	@DisplayName("Item 객체의 필드를 getter 메서드로 조회한다.")
 	void getterTest() {
+
 		// given
 		Product product = new Product(1L, "name", 1L, 10L);
 
@@ -111,6 +116,7 @@ class ProductTest {
 	@Test
 	@DisplayName("Item 객체를 builder 패턴으로 생성한다.")
 	void builder() {
+
 		// given
 		Product product = Product.builder()
 			.name("name")
