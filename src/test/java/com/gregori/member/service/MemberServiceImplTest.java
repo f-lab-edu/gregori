@@ -12,11 +12,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.dto.MemberRegisterDto;
-import com.gregori.member.dto.MemberUpdateDto;
+import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 
+import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -35,10 +37,11 @@ class MemberServiceImplTest {
 
 	@Test
 	@DisplayName("이메일이 중복되지 않으면 새로운 회원을 DB에 저장하고 id를 반환한다.")
-	 void should_saveMember_when_notDuplicatedEmail() {
+	 void should_register_when_notDuplicatedEmail() {
 
 		// given
 		final MemberRegisterDto dto = new MemberRegisterDto("name", "email", "password");
+
 		given(memberMapper.findByEmail("email")).willReturn(Optional.empty());
 		given(passwordEncoder.encode(dto.getPassword())).willReturn("encodedPassword");
 
@@ -55,39 +58,86 @@ class MemberServiceImplTest {
 
 		// given
 		final MemberRegisterDto dto = new MemberRegisterDto("name", "email", "password");
-		given(memberMapper.findByEmail("email"))
-			.willReturn(Optional.of(new Member("name", "email", "password")));
+
+		given(memberMapper.findByEmail("email")).willReturn(Optional.of(new Member("name", "email", "password")));
 
 		// when, then
 		assertThrows(DuplicateException.class, () -> memberService.register(dto));
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하면 회원 정보를 수정하고 id를 반환한다.")
-	void should_updateMember_when_existMember() {
+	@DisplayName("DB에 회원이 존재하면 회원 이름을 수정한다.")
+	void should_updateMemberName_when_existMember() {
 
 		// given
-		final Member member = new Member("name", "email", "password");
-		final MemberUpdateDto dto = new MemberUpdateDto(1L, "member", "password");
-		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+		Long id = 1L;
+		String name = "name";
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(new Member()));
 
 		// when
-		memberService.updateMember(dto);
+		memberService.updateMemberName(id, name);
 
 		// then
-		verify(memberMapper).update(member);
+		verify(memberMapper).updateName(id, name);
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 수정을 실패한다.")
-	void should_NotFoundException_when_nonExistMemberUpdate() {
+	@DisplayName("DB에 회원이 존재하지 않으면 회원 이름 수정을 실패한다.")
+	void should_NotFoundException_when_nonExistMemberUpdateName() {
 
 		// given
-		final MemberUpdateDto dto = new MemberUpdateDto(1L, "member", "password");
+		Long id = 1L;
+		String name = "name";
+
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.updateMember(dto));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(id, name));
+	}
+
+	@Test
+	@DisplayName("DB에 회원이 존재하고 기존 비밀번호가 일치하면 회원 비밀번호를 수정한다.")
+	void should_updateMemberPassword_when_existMember() {
+
+		// given
+		Member member = new Member("name", "email", passwordEncoder.encode("password"));
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+
+		// when
+		memberService.updateMemberPassword(dto);
+
+		// then
+		verify(memberMapper).updatePassword(any(), any());
+	}
+
+	@Test
+	@DisplayName("DB에 회원이 존재하지 않으면 회원 비밀번호 변경을 실패한다.")
+	void should_NotFoundException_when_nonExistMemberUpdatePassword() {
+
+		// given
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.empty());
+
+		// when, then
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(dto));
+	}
+
+	@Test
+	@DisplayName("DB의 기존 비밀번호가 일치하지 않으면 회원 비밀번호 변경을 실패한다.")
+	void should_ValidationException_when_nonExistMemberUpdatePassword() {
+
+		// given
+		Member member = new Member("name", "email", "aa11111!");
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+
+		// when, then
+		assertThrows(ValidationException.class, () -> memberService.updateMemberPassword(dto));
 	}
 
 	@Test
@@ -103,7 +153,7 @@ class MemberServiceImplTest {
 		memberService.deleteMember(memberId);
 
 		// then
-		verify(memberMapper).update(member);
+		verify(memberMapper).updateStatus(memberId, DEACTIVATE);
 	}
 
 	@Test
@@ -134,7 +184,7 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 삭제를 실패한다.")
+	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 조회를 실패한다.")
 	void should_NotFoundException_when_nonExistMemberGet() {
 
 		// given

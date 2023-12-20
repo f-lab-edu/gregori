@@ -2,18 +2,23 @@ package com.gregori.member.service;
 
 import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberUpdateDto;
+import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 
 @Service
 @RequiredArgsConstructor
@@ -24,15 +29,14 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long register(@Valid MemberRegisterDto memberRegisterDto) throws DuplicateException {
+    public Long register(@Valid MemberRegisterDto dto) throws DuplicateException {
 
-        memberMapper.findByEmail(memberRegisterDto.getEmail())
-            .ifPresent(m -> {
-                throw new DuplicateException();
-            });
+        if (memberMapper.findByEmail(dto.getEmail()).isPresent()) {
+            throw new DuplicateException();
+        }
 
-        Member member = memberRegisterDto
-            .toEntity(passwordEncoder.encode(memberRegisterDto.getPassword()));
+        String newPassword = passwordEncoder.encode(dto.getPassword());
+        Member member = dto.toEntity(newPassword);
         memberMapper.insert(member);
 
         return member.getId();
@@ -53,22 +57,40 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long deleteMember(Long memberId) throws NotFoundException {
+    public void updateMemberName(Long memberId, String name) {
 
-        Member member = memberMapper.findById(memberId)
-            .orElseThrow(NotFoundException::new);
-        member.deactivate();
-        memberMapper.update(member);
-
-        return member.getId();
+        memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
+        memberMapper.updateName(memberId, name);
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public MemberResponseDto getMember(Long memberId) throws NotFoundException {
+    public void updateMemberPassword(MemberPasswordUpdateDto dto) {
 
-        Member member = memberMapper.findById(memberId)
-            .orElseThrow(NotFoundException::new);
+        Member member = memberMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+        String oldPassword = passwordEncoder.encode(dto.getOldPassword());
+
+        if (!StringUtils.equals(oldPassword, member.getPassword())) {
+            throw new ValidationException("기존 비밀번호가 일치하지 않습니다.");
+        }
+
+        String newPassword = passwordEncoder.encode(dto.getNewPassword());
+        memberMapper.updatePassword(dto.getId(), newPassword);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteMember(Long memberId) {
+
+        memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
+        memberMapper.updateStatus(memberId, DEACTIVATE);
+
+        return memberId;
+    }
+
+    @Override
+    public MemberResponseDto getMember(Long memberId) {
+
+        Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
 
         return new MemberResponseDto().toEntity(member);
     }
