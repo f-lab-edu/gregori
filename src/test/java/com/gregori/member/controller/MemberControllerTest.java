@@ -15,11 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.service.MemberService;
 
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -46,9 +44,7 @@ class MemberControllerTest {
 				.with(SecurityMockMvcRequestPostProcessors.csrf())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(memberRegisterDto)))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
+			.andExpect(status().isCreated())
 			.andDo(print());
 
 		// then

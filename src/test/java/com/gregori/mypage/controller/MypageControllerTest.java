@@ -19,13 +19,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.member.dto.MemberUpdateDto;
 import com.gregori.member.service.MemberService;
 
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -60,10 +58,7 @@ class MypageControllerTest {
 				.content(objectMapper.writeValueAsString(memberUpdateDto)));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(memberService).updateMember(refEq(memberUpdateDto));
 	}
@@ -86,10 +81,7 @@ class MypageControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(memberService).deleteMember(1L);
 	}
@@ -112,16 +104,13 @@ class MypageControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(memberService).getMember(1L);
 	}
 
 	@Test
-	@DisplayName("회원 id가 토큰 id과 불일치하면 AccessDeniedException이 발생한다.")
+	@DisplayName("회원 id가 토큰 id와 불일치하면 AccessDeniedException이 발생한다.")
 	void should_AccessDeniedException_when_invalidMemberId() throws Exception {
 
 		// given
@@ -138,8 +127,6 @@ class MypageControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.result", is("FAILURE")))
-			.andDo(print());
+		actions.andExpect(status().isForbidden()).andDo(print());
 	}
 }

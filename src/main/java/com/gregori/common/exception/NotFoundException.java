@@ -1,14 +1,17 @@
 package com.gregori.common.exception;
 
-import static com.gregori.common.response.ErrorMessage.ENTITY_NOT_FOUND_ERROR;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class NotFoundException extends BaseException {
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+@ResponseStatus(code = NOT_FOUND)
+public class NotFoundException extends RuntimeException {
 
 	public NotFoundException() {
-		super(ENTITY_NOT_FOUND_ERROR);
+		super("요청한 값을 찾을 수 없습니다.");
 	}
 
-	public NotFoundException(String description) {
-		super(description, ENTITY_NOT_FOUND_ERROR);
+	public NotFoundException(String message) {
+		super(message);
 	}
 }

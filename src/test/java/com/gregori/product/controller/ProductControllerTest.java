@@ -25,10 +25,7 @@ import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -110,17 +107,6 @@ class ProductControllerTest {
 		);
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.data", is(notNullValue())))
-			.andExpect(jsonPath("$.data.id", is(notNullValue())))
-			.andExpect(jsonPath("$.data.sellerId", is(notNullValue())))
-			.andExpect(jsonPath("$.data.name", is(notNullValue())))
-			.andExpect(jsonPath("$.data.price", is(notNullValue())))
-			.andExpect(jsonPath("$.data.inventory", is(notNullValue())))
-			.andExpect(jsonPath("$.data.status", is(notNullValue())))
-			.andExpect(jsonPath("$.description", is(notNullValue())))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 	}
 }

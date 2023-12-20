@@ -1,14 +1,17 @@
 package com.gregori.common.exception;
 
-import static com.gregori.common.response.ErrorMessage.ENTITY_DUPLICATE_ERROR;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class DuplicateException extends BaseException {
+import static org.springframework.http.HttpStatus.CONFLICT;
+
+@ResponseStatus(code = CONFLICT)
+public class DuplicateException extends RuntimeException {
 
 	public DuplicateException() {
-		super(ENTITY_DUPLICATE_ERROR);
+		super("중복된 값입니다.");
 	}
 
-	public DuplicateException(String description) {
-		super(description, ENTITY_DUPLICATE_ERROR);
+	public DuplicateException(String message) {
+		super(message);
 	}
 }

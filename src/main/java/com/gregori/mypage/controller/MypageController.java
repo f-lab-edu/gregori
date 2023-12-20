@@ -1,10 +1,5 @@
 package com.gregori.mypage.controller;
 
-import static com.gregori.common.response.SuccessMessage.DELETE;
-import static com.gregori.common.response.SuccessMessage.GET;
-import static com.gregori.common.response.SuccessMessage.UPDATE;
-import static java.lang.Long.parseLong;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,13 +13,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gregori.common.exception.AccessDeniedException;
-import com.gregori.common.response.CustomResponse;
 import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberUpdateDto;
 import com.gregori.member.service.MemberService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import static java.lang.Long.parseLong;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,36 +30,33 @@ public class MypageController {
 	private final MemberService memberService;
 
 	@PostMapping
-	public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto memberUpdateDto) {
+	public ResponseEntity<Long> updateMember(@RequestBody @Valid MemberUpdateDto memberUpdateDto) {
 
 		authorizationCheck(memberUpdateDto.getId());
 
-		CustomResponse<Long> response = CustomResponse
-			.success(memberService.updateMember(memberUpdateDto), UPDATE);
+		memberService.updateMember(memberUpdateDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@DeleteMapping("/{memberId}")
-	public ResponseEntity<CustomResponse<Long>> deleteMember(@PathVariable Long memberId) {
+	public ResponseEntity<Long> deleteMember(@PathVariable Long memberId) {
 
 		authorizationCheck(memberId);
 
-		CustomResponse<Long> response = CustomResponse
-			.success(memberService.deleteMember(memberId), DELETE);
+		memberService.deleteMember(memberId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	@GetMapping("/{memberId}")
-	public ResponseEntity<CustomResponse<MemberResponseDto>> getMember(@PathVariable Long memberId) {
+	public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long memberId) {
 
 		authorizationCheck(memberId);
 
-		CustomResponse<MemberResponseDto> response = CustomResponse
-			.success(memberService.getMember(memberId), GET);
+		MemberResponseDto response = memberService.getMember(memberId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 
 	private void authorizationCheck(Long memberId) {
