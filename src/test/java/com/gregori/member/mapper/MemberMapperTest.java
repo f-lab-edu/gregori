@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gregori.common.CustomMybatisTest;
 import com.gregori.member.domain.Member;
 
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+import static com.gregori.member.domain.Member.Status.ACTIVATE;
+import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -48,22 +52,79 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 회원의 회원 정보를 갱신한다.")
-	void should_update_when_memberIdMatch() {
+	@DisplayName("DB에서 id가 일치하는 회원의 이름을 갱신한다.")
+	void should_updateName_when_memberIdMatch() {
 
 		// given
 		Member member = new Member("name", "email", "password");
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
-		member.updateMemberInfo("new name", "new password");
 
 		// when
-		memberMapper.update(member);
+		memberMapper.updateName(member.getId(), "new name");
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
 		assertTrue(result.isPresent());
+		assertEquals(member.getName(), "name");
 		assertEquals(result.get().getName(), "new name");
+	}
+
+	@Test
+	@DisplayName("DB에서 id가 일치하는 회원의 비밀번호를 갱신한다.")
+	void should_updatePassword_when_memberIdMatch() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		memberMapper.insert(member);
+		memberIds.add(member.getId());
+
+		// when
+		memberMapper.updatePassword(member.getId(), "new password");
+
+		// then
+		Optional<Member> result = memberMapper.findById(member.getId());
+		assertTrue(result.isPresent());
+		assertEquals(member.getPassword(), "password");
+		assertEquals(result.get().getPassword(), "new password");
+	}
+
+	@Test
+	@DisplayName("DB에서 id가 일치하는 회원의 상태를 갱신한다.")
+	void should_updateStatus_when_memberIdMatch() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		memberMapper.insert(member);
+		memberIds.add(member.getId());
+
+		// when
+		memberMapper.updateStatus(member.getId(), DEACTIVATE);
+
+		// then
+		Optional<Member> result = memberMapper.findById(member.getId());
+		assertTrue(result.isPresent());
+		assertEquals(member.getStatus(), ACTIVATE);
+		assertEquals(result.get().getStatus(), DEACTIVATE);
+	}
+
+	@Test
+	@DisplayName("DB에서 id가 일치하는 회원의 권한을 갱신한다.")
+	void should_updateAuthority_when_memberIdMatch() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		memberMapper.insert(member);
+		memberIds.add(member.getId());
+
+		// when
+		memberMapper.updateAuthority(member.getId(), SELLING_MEMBER);
+
+		// then
+		Optional<Member> result = memberMapper.findById(member.getId());
+		assertTrue(result.isPresent());
+		assertEquals(member.getAuthority(), GENERAL_MEMBER);
+		assertEquals(result.get().getAuthority(), SELLING_MEMBER);
 	}
 
 	@Test
