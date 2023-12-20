@@ -44,19 +44,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long updateMember(MemberUpdateDto memberUpdateDto) throws NotFoundException {
-
-        Member member = memberMapper.findById(memberUpdateDto.getId())
-            .orElseThrow(NotFoundException::new);
-        member.updateMemberInfo(memberUpdateDto.getName(),
-            passwordEncoder.encode(memberUpdateDto.getPassword()));
-        memberMapper.update(member);
-
-        return member.getId();
-    }
-
-    @Override
-    @Transactional
     public void updateMemberName(Long memberId, String name) {
 
         memberMapper.findById(memberId).orElseThrow(NotFoundException::new);

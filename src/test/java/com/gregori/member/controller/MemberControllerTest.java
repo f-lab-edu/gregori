@@ -69,34 +69,6 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 수정을 요청하면 회원 정보를 갱신하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestUpdateMember() throws Exception {
-
-		// given
-		MemberUpdateDto memberUpdateDto = new MemberUpdateDto(1L, "이름", "aa11111!");
-		Authentication authentication = mock(Authentication.class);
-		SecurityContext securityContext = mock(SecurityContext.class);
-
-		given(securityContext.getAuthentication()).willReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		given(authentication.getName()).willReturn("1");
-
-		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(memberUpdateDto)));
-
-		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
-
-		verify(memberService).updateMember(refEq(memberUpdateDto));
-	}
-
-	@Test
 	@DisplayName("회원 이름 수정을 요청하면 회원 정보를 갱신하고 성공 응답을 반환한다.")
 	void should_responseSuccess_when_requestUpdateMemberName() throws Exception {
 

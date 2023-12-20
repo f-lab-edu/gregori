@@ -38,11 +38,6 @@ public class Member extends AbstractEntity {
         this.authority = Authority.GENERAL_MEMBER;
     }
 
-    public void updateMemberInfo(String name, String password) {
-        this.name = name;
-        this.password = password;
-    }
-
     public void activate() {
         this.status = Status.ACTIVATE;
     }

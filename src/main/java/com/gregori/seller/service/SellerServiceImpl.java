@@ -40,7 +40,7 @@ public class SellerServiceImpl implements SellerService {
 
 		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
 		member.sellingMember();
-		memberMapper.update(member);
+		memberMapper.updateAuthority(member.getId(), member.getAuthority());
 
 		Seller seller = sellerRegisterDto.toEntity();
 		sellerMapper.insert(seller);

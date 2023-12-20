@@ -44,17 +44,6 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping
-    public ResponseEntity<CustomResponse<Long>> updateMember(@RequestBody @Valid MemberUpdateDto memberUpdateDto) {
-
-        authorizationCheck(memberUpdateDto.getId());
-
-        CustomResponse<Long> response = CustomResponse
-            .success(memberService.updateMember(memberUpdateDto), UPDATE);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
-
     @PostMapping("/name/{memberId}")
     public ResponseEntity<CustomResponse<Long>> updateMemberName(@PathVariable Long memberId, @RequestBody String name) {
 
