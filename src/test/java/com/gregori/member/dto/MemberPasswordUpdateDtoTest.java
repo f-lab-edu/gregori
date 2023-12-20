@@ -30,6 +30,26 @@ class MemberPasswordUpdateDtoTest {
 	}
 
 	@Test
+	@DisplayName("password 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
+	void should_ValidException_when_blankOldPassword() {
+
+		// given
+		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "a@a.a", null);
+		MemberRegisterDto dto2 = new MemberRegisterDto("일호","a@a.a",  "");
+		MemberRegisterDto dto3 = new MemberRegisterDto("일호", "a@a.a", " ");
+
+		// when
+		var result1 = validator.validate(dto1);
+		var result2 = validator.validate(dto2);
+		var result3 = validator.validate(dto3);
+
+		// then
+		assertFalse(result1.isEmpty());
+		assertFalse(result2.isEmpty());
+		assertFalse(result3.isEmpty());
+	}
+
+	@Test
 	@DisplayName("oldPassword 필드의 패턴이 불일치하면 에러가 발생한다.")
 	void should_ValidException_when_mismatchedOldPassword() {
 

@@ -5,12 +5,13 @@ import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
+import com.gregori.member.dto.MemberNameUpdateDto;
 
 public interface MemberService {
 
-    Long register(MemberRegisterDto memberRegisterDto) throws DuplicateException;
-    void updateMemberName(Long memberId, String name);
-    void updateMemberPassword(MemberPasswordUpdateDto memberPasswordUpdateDto);
+    Long register(MemberRegisterDto dto) throws DuplicateException;
+    void updateMemberName(MemberNameUpdateDto dto);
+    void updateMemberPassword(MemberPasswordUpdateDto dto);
     Long deleteMember(Long memberId) throws NotFoundException;
     MemberResponseDto getMember(Long memberId);
 }

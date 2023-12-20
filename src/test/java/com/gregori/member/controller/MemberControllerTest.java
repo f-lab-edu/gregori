@@ -16,9 +16,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.member.dto.MemberNameUpdateDto;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
-import com.gregori.member.dto.MemberUpdateDto;
 import com.gregori.member.service.MemberService;
 
 import static org.hamcrest.Matchers.is;
@@ -73,8 +73,7 @@ class MemberControllerTest {
 	void should_responseSuccess_when_requestUpdateMemberName() throws Exception {
 
 		// given
-		Long memberId = 1L;
-		String name = "name";
+		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
 		Authentication authentication = mock(Authentication.class);
 		SecurityContext securityContext = mock(SecurityContext.class);
 
@@ -83,15 +82,15 @@ class MemberControllerTest {
 		given(authentication.getName()).willReturn("1");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member/name/" + memberId)
+		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member/name")
 			.with(SecurityMockMvcRequestPostProcessors.csrf())
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(name));
+			.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isNoContent()).andDo(print());
 
-		verify(memberService).updateMemberName(memberId, name);
+		verify(memberService).updateMemberName(refEq(dto));
 	}
 
 	@Test

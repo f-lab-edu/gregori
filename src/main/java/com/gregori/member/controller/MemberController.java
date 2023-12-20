@@ -3,7 +3,6 @@ package com.gregori.member.controller;
 import static com.gregori.common.response.SuccessMessage.DELETE;
 import static com.gregori.common.response.SuccessMessage.GET;
 import static com.gregori.common.response.SuccessMessage.REGISTER;
-import static com.gregori.common.response.SuccessMessage.UPDATE;
 import static java.lang.Long.parseLong;
 
 import com.gregori.common.exception.AccessDeniedException;
@@ -11,7 +10,7 @@ import com.gregori.common.response.CustomResponse;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
-import com.gregori.member.dto.MemberUpdateDto;
+import com.gregori.member.dto.MemberNameUpdateDto;
 import com.gregori.member.service.MemberService;
 
 import jakarta.validation.Valid;
@@ -44,11 +43,11 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/name/{memberId}")
-    public ResponseEntity<CustomResponse<Long>> updateMemberName(@PathVariable Long memberId, @RequestBody String name) {
+    @PostMapping("/name")
+    public ResponseEntity<CustomResponse<Long>> updateMemberName(@RequestBody @Valid MemberNameUpdateDto dto) {
 
-        authorizationCheck(memberId);
-        memberService.updateMemberName(memberId, name);
+        authorizationCheck(dto.getId());
+        memberService.updateMemberName(dto);
 
         return ResponseEntity.noContent().build();
     }

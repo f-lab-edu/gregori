@@ -14,6 +14,7 @@ import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
+import com.gregori.member.dto.MemberNameUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
@@ -70,16 +71,15 @@ class MemberServiceImplTest {
 	void should_updateMemberName_when_existMember() {
 
 		// given
-		Long id = 1L;
-		String name = "name";
+		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(new Member()));
 
 		// when
-		memberService.updateMemberName(id, name);
+		memberService.updateMemberName(dto);
 
 		// then
-		verify(memberMapper).updateName(id, name);
+		verify(memberMapper).updateName(dto.getId(), dto.getName());
 	}
 
 	@Test
@@ -87,13 +87,12 @@ class MemberServiceImplTest {
 	void should_NotFoundException_when_nonExistMemberUpdateName() {
 
 		// given
-		Long id = 1L;
-		String name = "name";
+		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(id, name));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(dto));
 	}
 
 	@Test

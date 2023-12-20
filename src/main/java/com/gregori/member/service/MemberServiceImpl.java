@@ -4,9 +4,9 @@ import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
+import com.gregori.member.dto.MemberNameUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
-import com.gregori.member.dto.MemberUpdateDto;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 
@@ -44,10 +44,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateMemberName(Long memberId, String name) {
+    public void updateMemberName(MemberNameUpdateDto dto) {
 
-        memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
-        memberMapper.updateName(memberId, name);
+        memberMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+        memberMapper.updateName(dto.getId(), dto.getName());
     }
 
     @Override

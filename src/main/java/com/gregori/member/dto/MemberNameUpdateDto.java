@@ -2,7 +2,6 @@ package com.gregori.member.dto;
 
 
 import static com.gregori.common.RegexPatterns.NAME_REGEX;
-import static com.gregori.common.RegexPatterns.PASSWORD_REGEX;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MemberUpdateDto {
+public class MemberNameUpdateDto {
 
 	@NotNull
 	private Long id;
@@ -20,8 +19,4 @@ public class MemberUpdateDto {
 	@NotBlank
 	@Pattern(regexp = NAME_REGEX, message = "이름 형식이 일치해야 합니다.")
 	private String name;
-
-	@NotBlank
-	@Pattern(regexp = PASSWORD_REGEX, message = "비밀번호 형식이 일치해야 합니다.")
-	private String password;
 }
