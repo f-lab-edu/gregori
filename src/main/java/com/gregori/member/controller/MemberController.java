@@ -8,6 +8,7 @@ import static java.lang.Long.parseLong;
 
 import com.gregori.common.exception.AccessDeniedException;
 import com.gregori.common.response.CustomResponse;
+import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberUpdateDto;
@@ -52,6 +53,24 @@ public class MemberController {
             .success(memberService.updateMember(memberUpdateDto), UPDATE);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @PostMapping("/name/{memberId}")
+    public ResponseEntity<CustomResponse<Long>> updateMemberName(@PathVariable Long memberId, @RequestBody String name) {
+
+        authorizationCheck(memberId);
+        memberService.updateMemberName(memberId, name);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<CustomResponse<Long>> updateMemberPassword(@RequestBody @Valid MemberPasswordUpdateDto dto) {
+
+        authorizationCheck(dto.getId());
+        memberService.updateMemberPassword(dto);
+
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{memberId}")

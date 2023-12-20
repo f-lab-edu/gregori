@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberUpdateDto;
 import com.gregori.member.service.MemberService;
@@ -93,6 +94,57 @@ class MemberControllerTest {
 			.andDo(print());
 
 		verify(memberService).updateMember(refEq(memberUpdateDto));
+	}
+
+	@Test
+	@DisplayName("회원 이름 수정을 요청하면 회원 정보를 갱신하고 성공 응답을 반환한다.")
+	void should_responseSuccess_when_requestUpdateMemberName() throws Exception {
+
+		// given
+		Long memberId = 1L;
+		String name = "name";
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+
+		given(securityContext.getAuthentication()).willReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		given(authentication.getName()).willReturn("1");
+
+		// when
+		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member/name/" + memberId)
+			.with(SecurityMockMvcRequestPostProcessors.csrf())
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(name));
+
+		// then
+		actions.andExpect(status().isNoContent()).andDo(print());
+
+		verify(memberService).updateMemberName(memberId, name);
+	}
+
+	@Test
+	@DisplayName("회원 비밀번호 수정을 요청하면 회원 정보를 갱신하고 성공 응답을 반환한다.")
+	void should_responseSuccess_when_requestUpdateMemberPassword() throws Exception {
+
+		// given
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "aa11111!", "aa11111!");
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+
+		given(securityContext.getAuthentication()).willReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		given(authentication.getName()).willReturn("1");
+
+		// when
+		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member/password")
+			.with(SecurityMockMvcRequestPostProcessors.csrf())
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(objectMapper.writeValueAsString(dto)));
+
+		// then
+		actions.andExpect(status().isNoContent()).andDo(print());
+
+		verify(memberService).updateMemberPassword(refEq(dto));
 	}
 
 	@Test
