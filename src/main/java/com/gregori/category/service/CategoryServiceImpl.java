@@ -26,7 +26,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Long updateCategory(Long categoryId, String name) {
+	public Long updateCategory(Long categoryId, String name) throws NotFoundException {
 
 		Category category = categoryMapper.findById(categoryId).orElseThrow(NotFoundException::new);
 		category.updateCategoryName(name);
@@ -44,7 +44,7 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category getCategory(Long categoryId) {
+	public Category getCategory(Long categoryId) throws NotFoundException {
 
 		return categoryMapper.findById(categoryId).orElseThrow(NotFoundException::new);
 	}

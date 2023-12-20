@@ -10,6 +10,6 @@ public interface CategoryService {
 	Long saveCategory(String name);
 	Long updateCategory(Long categoryId, String name) throws NotFoundException;
 	Long deleteCategory(Long categoryId);
-	Category getCategory(Long categoryId);
+	Category getCategory(Long categoryId) throws NotFoundException;
 	List<Category> getCategories();
 }
