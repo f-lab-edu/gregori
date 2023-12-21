@@ -17,6 +17,7 @@ import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gregori.auth.domain.Authority.ADMIN_MEMBER;
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Slf4j
@@ -68,6 +69,7 @@ public class SecurityConfig {
 
 			.authorizeHttpRequests(request -> request
 				.requestMatchers(allowedURL).permitAll()
+				.requestMatchers("/category/**").hasRole(ADMIN_MEMBER.toString())
 				.anyRequest().authenticated())
 
 			.apply(new JwtSecurityConfig(tokenProvider, refreshTokenMapper));
