@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
 	@Override
 	@Transactional
 	public TokenDto signIn(AuthSignInDto authSignInDto) {
-
+		
 		UsernamePasswordAuthenticationToken authenticationToken = authSignInDto.toAuthentication();
 		Authentication authentication = authenticationManager.authenticate(authenticationToken);
 		TokenDto tokenDto = tokenProvider.generateToken(authentication);
