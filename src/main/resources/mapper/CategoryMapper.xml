@@ -30,5 +30,6 @@
     <select id="find" resultType="com.gregori.category.domain.Category">
         SELECT id, name
         FROM categories
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 </mapper>

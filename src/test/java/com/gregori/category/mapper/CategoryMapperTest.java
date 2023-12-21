@@ -115,7 +115,7 @@ class CategoryMapperTest {
 		categoryIds.add(category3.getId());
 
 		// when
-		List<Category> result = categoryMapper.find();
+		List<Category> result = categoryMapper.find(10, 0);
 
 		// then
 		assertEquals(result.size(), 3);

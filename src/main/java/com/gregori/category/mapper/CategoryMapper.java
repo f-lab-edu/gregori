@@ -14,5 +14,5 @@ public interface CategoryMapper {
 	Long updateName(Category category);
 	Long deleteById(Long categoryId);
 	Optional<Category> findById(Long categoryId);
-	List<Category> find();
+	List<Category> find(int limit, int offset);
 }

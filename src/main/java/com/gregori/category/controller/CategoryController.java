@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gregori.category.domain.Category;
 import com.gregori.category.service.CategoryService;
@@ -41,9 +42,7 @@ public class CategoryController {
 	@PostMapping("/{categoryId}")
 	public ResponseEntity<CustomResponse<Long>> updateCategory(@PathVariable Long categoryId, @RequestBody String name) {
 
-
-
-		CustomResponse<Long> response = CustomResponse.success(categoryService.updateCategory(categoryId, name), UPDATE);
+		CustomResponse<Long> response = CustomResponse.success(categoryService.updateCategoryName(categoryId, name), UPDATE);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -65,9 +64,11 @@ public class CategoryController {
 	}
 
 	@GetMapping
-	public ResponseEntity<CustomResponse<List<Category>>> getCategories() {
+	public ResponseEntity<CustomResponse<List<Category>>> getCategories(
+		@RequestParam(defaultValue = "10") int limit,
+		@RequestParam(defaultValue = "0") int offset) {
 
-		CustomResponse<List<Category>> response = CustomResponse.success(categoryService.getCategories(), UPDATE);
+		CustomResponse<List<Category>> response = CustomResponse.success(categoryService.getCategories(limit, offset), UPDATE);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

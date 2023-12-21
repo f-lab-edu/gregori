@@ -50,7 +50,7 @@ class CategoryServiceImplTest {
 		given(categoryMapper.findById(1L)).willReturn(Optional.of(category));
 
 		// when
-		categoryService.updateCategory(categoryId, categoryName);
+		categoryService.updateCategoryName(categoryId, categoryName);
 
 		// then
 		verify(categoryMapper).updateName(any(Category.class));
@@ -93,10 +93,10 @@ class CategoryServiceImplTest {
 	void should_returnCategories() {
 
 		// given, when
-		categoryService.getCategories();
+		categoryService.getCategories(1, 1);
 
 		// then
-		verify(categoryMapper).find();
+		verify(categoryMapper).find(1, 1);
 	}
 
 	@Test

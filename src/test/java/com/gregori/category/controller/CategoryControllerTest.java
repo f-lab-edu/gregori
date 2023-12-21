@@ -72,7 +72,7 @@ class CategoryControllerTest {
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
 			.andDo(print());
 
-		verify(categoryService).updateCategory(categoryId, categoryName);
+		verify(categoryService).updateCategoryName(categoryId, categoryName);
 	}
 
 	@Test
@@ -122,7 +122,7 @@ class CategoryControllerTest {
 	void should_responseSuccess_when_requestGetCategories() throws Exception {
 
 		// given, when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get("/category")
+		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get("/category?limit=1&offset=0")
 			.with(SecurityMockMvcRequestPostProcessors.csrf())
 			.contentType(MediaType.APPLICATION_JSON));
 
@@ -132,6 +132,6 @@ class CategoryControllerTest {
 			.andExpect(jsonPath("$.result", is("SUCCESS")))
 			.andDo(print());
 
-		verify(categoryService).getCategories();
+		verify(categoryService).getCategories(1, 0);
 	}
 }
