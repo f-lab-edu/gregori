@@ -3,6 +3,9 @@ package com.gregori.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.gregori.order.domain.Order.Status.ORDER_CANCELLED;
+import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
+import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,41 +32,57 @@ class OrderTest {
 	}
 
 	@Test
-	@DisplayName("Order 객체의 상태를 'ORDER_COMPLETED'로 변경한다.")
-	void orderCompleted() {
+	@DisplayName("Order 객체의 상태를 'ORDER_CANCELLED'로 변경한다.")
+	void should_orderCancelled() {
 
 		// given
-		Order order = Order.builder()
-			.memberId(1L)
-			.paymentMethod("paymentMethod")
-			.paymentAmount(1L)
-			.deliveryCost(1L)
-			.build();
+		Order order = new Order(1L, "method", 1L, 1L);
+		Order.Status status = order.getStatus();
+
 
 		// when
-		order.orderCompleted();
+		order.orderCancelled();
+		Order.Status result = order.getStatus();
 
 		// then
-		assertEquals(order.getStatus().toString(), "ORDER_COMPLETED");
+		assertEquals(status, ORDER_PROCESSING);
+		assertEquals(result, ORDER_CANCELLED);
+	}
+
+	@Test
+	@DisplayName("Order 객체의 상태를 'ORDER_PROCESSING'로 변경한다.")
+	void should_orderProcessing() {
+
+		// given
+		Order order = new Order(1L, "method", 1L, 1L);
+		order.orderCompleted();
+		Order.Status status = order.getStatus();
+
+		// when
+		order.orderProcessing();
+		Order.Status result = order.getStatus();
+
+		// then
+		assertEquals(status, ORDER_COMPLETED);
+		assertEquals(result, ORDER_PROCESSING);
 	}
 
 	@Test
 	@DisplayName("Order 객체의 상태를 'ORDER_CANCELLED'로 변경한다.")
-	void orderCancelled() {
+	void should_orderCompleted() {
 
 		// given
-		Order order = Order.builder()
-			.memberId(1L)
-			.paymentMethod("paymentMethod")
-			.paymentAmount(1L)
-			.deliveryCost(1L)
-			.build();
+		Order order = new Order(1L, "method", 1L, 1L);
+		Order.Status status = order.getStatus();
+
 
 		// when
-		order.orderCancelled();
+		order.orderCompleted();
+		Order.Status result = order.getStatus();
 
 		// then
-		assertEquals(order.getStatus().toString(), "ORDER_CANCELLED");
+		assertEquals(status, ORDER_PROCESSING);
+		assertEquals(result, ORDER_COMPLETED);
 	}
 
 	@Test
@@ -84,7 +103,7 @@ class OrderTest {
 		assertEquals(order.getPaymentMethod(), "paymentMethod");
 		assertEquals(order.getPaymentAmount(), 1L);
 		assertEquals(order.getDeliveryCost(), 1L);
-		assertEquals(order.getStatus().toString(), "ORDER_COMPLETED");
+		assertEquals(order.getStatus(), ORDER_PROCESSING);
 		assertNull(order.getCreatedAt());
 		assertNull(order.getUpdatedAt());
 	}
