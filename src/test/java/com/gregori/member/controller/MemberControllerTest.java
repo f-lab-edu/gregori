@@ -136,10 +136,7 @@ class MemberControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(memberService).deleteMember(1L);
 	}

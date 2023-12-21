@@ -1,6 +1,5 @@
 package com.gregori.member.controller;
 
-import static com.gregori.common.response.SuccessMessage.DELETE;
 import static com.gregori.common.response.SuccessMessage.GET;
 import static com.gregori.common.response.SuccessMessage.REGISTER;
 import static java.lang.Long.parseLong;
@@ -62,14 +61,13 @@ public class MemberController {
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<CustomResponse<Long>> deleteMember(@PathVariable Long memberId) {
+    public ResponseEntity<?> deleteMember(@PathVariable Long memberId) {
 
         authorizationCheck(memberId);
 
-        CustomResponse<Long> response = CustomResponse
-            .success(memberService.deleteMember(memberId), DELETE);
+        memberService.deleteMember(memberId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{memberId}")
