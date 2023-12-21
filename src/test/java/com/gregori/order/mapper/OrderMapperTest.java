@@ -131,4 +131,36 @@ class OrderMapperTest {
 		assertEquals(result.getCreatedAt(), order.getCreatedAt());
 		assertEquals(result.getUpdatedAt(), order.getUpdatedAt());
 	}
+
+	@Test
+	@DisplayName("Orders 테이블에서 memberId가 일치하는 주문을 조회한다.")
+	void findByMemberId() {
+
+		// given
+		Order order1 = Order.builder()
+			.memberId(member.getId())
+			.paymentMethod("카드")
+			.paymentAmount(1000L)
+			.deliveryCost(2500L)
+			.build();
+
+		Order order2 = Order.builder()
+			.memberId(member.getId())
+			.paymentMethod("카드")
+			.paymentAmount(1000L)
+			.deliveryCost(2500L)
+			.build();
+
+		orderMapper.insert(order1);
+		orderMapper.insert(order2);
+
+		orderIds.add(order1.getId());
+		orderIds.add(order2.getId());
+
+		// when
+		List<Order> result = orderMapper.findByMemberId(member.getId());
+
+		// then
+		assertEquals(result.size(), 2);
+	}
 }
