@@ -1,5 +1,6 @@
 package com.gregori.member.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
@@ -18,6 +20,11 @@ import com.gregori.member.dto.MemberNameUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
+import com.gregori.order.domain.Order;
+import com.gregori.order.mapper.OrderMapper;
+import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -29,9 +36,15 @@ import static org.mockito.Mockito.verify;
 class MemberServiceImplTest {
 
 	@Mock
+	private PasswordEncoder passwordEncoder;
+	@Mock
 	private MemberMapper memberMapper;
 	@Mock
-	private PasswordEncoder passwordEncoder;
+	private SellerMapper sellerMapper;
+	@Mock
+	private OrderMapper orderMapper;
+	@Mock
+	private RefreshTokenMapper refreshTokenMapper;
 
 	@InjectMocks
 	private MemberServiceImpl memberService;
@@ -140,19 +153,51 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하면 회원을 삭제하고 id를 반환한다.")
-	void should_deleteMember_when_existMember() {
+	@DisplayName("일반 회원이 탈퇴 조건을 만족하면 회원을 삭제한다.")
+	void should_deleteGeneralMember_when_existMember() {
 
 		// given
 		final Long memberId = 1L;
 		final Member member = new Member("name", "email", "password");
+
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
+		given(orderMapper.findByMemberId(memberId)).willReturn(List.of());
 
 		// when
 		memberService.deleteMember(memberId);
 
 		// then
 		verify(memberMapper).updateStatus(memberId, DEACTIVATE);
+		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
+	}
+
+	@Test
+	@DisplayName("판매자 회원이 탈퇴 조건을 만족하면 회원을 삭제한다.")
+	void should_deleteSellingMember_when_existMember() {
+
+		// given
+		final Long memberId = 1L;
+		Member member = new Member("name", "email", "password");
+		member.sellingMember();
+
+		Order order1 = new Order(1L, "method", 1L, 1L);
+		Order order2 = new Order(1L, "method", 1L, 1L);
+		order1.orderCancelled();
+		order2.orderCompleted();
+
+		Seller seller = new Seller(1L, "123-45-67891", "name");
+		seller.closed();
+
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
+		given(orderMapper.findByMemberId(memberId)).willReturn(List.of(order1, order2));
+		given(sellerMapper.findByMemberId(1L)).willReturn(List.of(seller));
+
+		// when
+		memberService.deleteMember(memberId);
+
+		// then
+		verify(memberMapper).updateStatus(memberId, DEACTIVATE);
+		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
 	}
 
 	@Test
@@ -164,6 +209,54 @@ class MemberServiceImplTest {
 
 		// when, then
 		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
+	}
+
+	@Test
+	@DisplayName("일반 회원의 주문이 진행 중이면 회원 정보 삭제를 실패한다.")
+	void should_BusinessRuleViolationException_when_processingOrderExist() {
+
+		// given
+		final Member member = new Member("name", "email", "password");
+		Order order = new Order(1L, "method", 1L, 1L);
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+		given(orderMapper.findByMemberId(1L)).willReturn(List.of(order));
+
+		// when, then
+		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));
+	}
+
+	@Test
+	@DisplayName("판매자 회원의 주문이 진행 중이면 회원 정보 삭제를 실패한다.")
+	void should_BusinessRuleViolationException_when_processingOrderExist2() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		member.sellingMember();
+		Order order = new Order(1L, "method", 1L, 1L);
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+		given(orderMapper.findByMemberId(1L)).willReturn(List.of(order));
+
+		// when, then
+		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));
+	}
+
+	@Test
+	@DisplayName("판매자 회원의 사업장이 운영중이면 회원 정보 삭제를 실패한다.")
+	void should_BusinessRuleViolationException_when_operatingSellerExist() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		member.sellingMember();
+		Seller seller = new Seller(1L, "123-45-67891", "name");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+		given(orderMapper.findByMemberId(1L)).willReturn(List.of());
+		given(sellerMapper.findByMemberId(1L)).willReturn(List.of(seller));
+
+		// when, then
+		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));
 	}
 
 	@Test

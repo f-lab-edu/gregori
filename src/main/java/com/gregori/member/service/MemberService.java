@@ -12,6 +12,6 @@ public interface MemberService {
     Long register(MemberRegisterDto dto) throws DuplicateException;
     void updateMemberName(MemberNameUpdateDto dto);
     void updateMemberPassword(MemberPasswordUpdateDto dto);
-    Long deleteMember(Long memberId) throws NotFoundException;
+    void deleteMember(Long memberId) throws NotFoundException;
     MemberResponseDto getMember(Long memberId);
 }
