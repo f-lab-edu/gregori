@@ -100,7 +100,7 @@ class SellerServiceImplTest {
 		Throwable result = catchThrowable(() -> sellerServiceImpl.saveSeller(sellerRegisterDto));
 
 		// then
-		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
+		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효하지 않은");
 	}
 
 	@Test
@@ -147,7 +147,7 @@ class SellerServiceImplTest {
 		Throwable result = catchThrowable(() -> sellerServiceImpl.updateSeller(sellerUpdateDto));
 
 		// then
-		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효한 값이 아닙니다.");
+		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효하지 않은");
 	}
 
 	@Test

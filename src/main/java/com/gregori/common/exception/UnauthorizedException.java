@@ -1,15 +1,17 @@
 package com.gregori.common.exception;
 
-import static com.gregori.common.response.ErrorMessage.UNAUTHORIZED_ERROR;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class UnauthorizedException extends BaseException {
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+@ResponseStatus(code = UNAUTHORIZED)
+public class UnauthorizedException extends RuntimeException {
 
 	public UnauthorizedException() {
-		super(UNAUTHORIZED_ERROR);
+		super("권한이 없습니다.");
 	}
 
-	public UnauthorizedException(String description) {
-		super(description, UNAUTHORIZED_ERROR);
+	public UnauthorizedException(String message) {
+		super(message);
 	}
-
 }

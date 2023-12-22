@@ -29,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
-import static com.gregori.seller.domain.Seller.Status.CLOSED;
 import static com.gregori.seller.domain.Seller.Status.OPERATING;
 
 @Service

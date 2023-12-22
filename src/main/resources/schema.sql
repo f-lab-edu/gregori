@@ -1,8 +1,9 @@
 DROP TABLE IF EXISTS order_details CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
-DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS sellers CASCADE;
+DROP TABLE IF EXISTS refresh_tokens;
+DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS members;
 
 CREATE TABLE members (
@@ -14,6 +15,13 @@ CREATE TABLE members (
      authority  VARCHAR(255) NOT NULL                                                       COMMENT '회원 권한',
      created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '회원 가입 날짜',
      updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '회원 수정 날짜'
+);
+
+CREATE TABLE categories (
+    id         BIGINT       AUTO_INCREMENT PRIMARY KEY NOT NULL                            COMMENT '카테고리 인덱스',
+    name       VARCHAR(255) NOT NULL                                                       COMMENT '카테고리 이름',
+    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '카테고리 가입 날짜',
+    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '카테고리 수정 날짜'
 );
 
 CREATE TABLE refresh_tokens (

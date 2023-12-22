@@ -1,15 +1,17 @@
 package com.gregori.common.exception;
 
-import static com.gregori.common.response.ErrorMessage.VALIDATION_ERROR;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class ValidationException extends BaseException {
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+
+@ResponseStatus(code = BAD_REQUEST)
+public class ValidationException extends RuntimeException {
 
 	public ValidationException() {
-		super(VALIDATION_ERROR);
+		super("유효하지 않은 값입니다.");
 	}
 
-	public ValidationException(String description) {
-		super(description, VALIDATION_ERROR);
+	public ValidationException(String message) {
+		super(message);
 	}
-
 }

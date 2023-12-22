@@ -1,11 +1,8 @@
 package com.gregori.member.controller;
 
-import static com.gregori.common.response.SuccessMessage.GET;
-import static com.gregori.common.response.SuccessMessage.REGISTER;
-import static java.lang.Long.parseLong;
+import java.net.URI;
 
 import com.gregori.common.exception.AccessDeniedException;
-import com.gregori.common.response.CustomResponse;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
@@ -15,7 +12,6 @@ import com.gregori.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +23,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static java.lang.Long.parseLong;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/member")
@@ -35,15 +33,15 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/register")
-    public ResponseEntity<CustomResponse<Long>> register(@RequestBody @Valid MemberRegisterDto memberRegisterDto) {
+    public ResponseEntity<Long> register(@RequestBody @Valid MemberRegisterDto memberRegisterDto) {
 
-        CustomResponse<Long> response = CustomResponse.success(memberService.register(memberRegisterDto), REGISTER);
+        Long memberId = memberService.register(memberRegisterDto);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.created(URI.create("/member/" + memberId)).build();
     }
 
     @PostMapping("/name")
-    public ResponseEntity<CustomResponse<Long>> updateMemberName(@RequestBody @Valid MemberNameUpdateDto dto) {
+    public ResponseEntity<Long> updateMemberName(@RequestBody @Valid MemberNameUpdateDto dto) {
 
         authorizationCheck(dto.getId());
         memberService.updateMemberName(dto);
@@ -52,7 +50,7 @@ public class MemberController {
     }
 
     @PostMapping("/password")
-    public ResponseEntity<CustomResponse<Long>> updateMemberPassword(@RequestBody @Valid MemberPasswordUpdateDto dto) {
+    public ResponseEntity<Long> updateMemberPassword(@RequestBody @Valid MemberPasswordUpdateDto dto) {
 
         authorizationCheck(dto.getId());
         memberService.updateMemberPassword(dto);
@@ -71,14 +69,13 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<CustomResponse<MemberResponseDto>> getMember(@PathVariable Long memberId) {
+    public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long memberId) {
 
         authorizationCheck(memberId);
 
-        CustomResponse<MemberResponseDto> response = CustomResponse
-            .success(memberService.getMember(memberId), GET);
+        MemberResponseDto response = memberService.getMember(memberId);
 
-        return ResponseEntity.status(HttpStatus.OK).body(response);
+        return ResponseEntity.ok().body(response);
     }
 
     private void authorizationCheck(Long memberId) {

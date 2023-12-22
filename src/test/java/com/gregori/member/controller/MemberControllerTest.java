@@ -21,14 +21,12 @@ import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.service.MemberService;
 
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -60,10 +58,7 @@ class MemberControllerTest {
 			.content(objectMapper.writeValueAsString(memberRegisterDto)));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isCreated()).andDo(print());
 
 		verify(memberService).register(refEq(memberRegisterDto));
 	}
@@ -159,10 +154,7 @@ class MemberControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(memberService).getMember(1L);
 	}
@@ -185,8 +177,6 @@ class MemberControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.result", is("FAILURE")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 	}
 }

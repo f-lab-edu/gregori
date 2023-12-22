@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -17,11 +16,10 @@ import com.gregori.auth.dto.AuthSignInDto;
 import com.gregori.auth.dto.TokenRequestDto;
 import com.gregori.auth.service.AuthService;
 
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.verify;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc(addFilters = false)
@@ -44,16 +42,14 @@ class AuthControllerTest {
 		AuthSignInDto authSignInDto = new AuthSignInDto("a@a.a", "aa11111!");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/auth/signin")
-				.with(SecurityMockMvcRequestPostProcessors.csrf())
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/auth/signin")
+				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(authSignInDto)));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(authService).signIn(refEq(authSignInDto));
 	}
@@ -66,16 +62,14 @@ class AuthControllerTest {
 		TokenRequestDto tokenRequestDto = new TokenRequestDto("access_token", "refresh_token");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/auth/signout")
-				.with(SecurityMockMvcRequestPostProcessors.csrf())
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/auth/signout")
+				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(tokenRequestDto)));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(authService).signOut(refEq(tokenRequestDto));
 	}
