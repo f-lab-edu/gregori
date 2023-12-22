@@ -44,10 +44,7 @@ class CategoryControllerTest {
 			.content(categoryName));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isCreated()).andDo(print());
 
 		verify(categoryService).saveCategory(categoryName);
 	}
@@ -67,10 +64,7 @@ class CategoryControllerTest {
 			.content(categoryName));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(categoryService).updateCategoryName(categoryId, categoryName);
 	}
@@ -88,10 +82,7 @@ class CategoryControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(categoryService).deleteCategory(categoryId);
 	}
@@ -109,10 +100,7 @@ class CategoryControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(categoryService).getCategory(categoryId);
 	}
@@ -127,10 +115,7 @@ class CategoryControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk())
-			.andExpect(jsonPath("$.httpStatus", is("OK")))
-			.andExpect(jsonPath("$.result", is("SUCCESS")))
-			.andDo(print());
+		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(categoryService).getCategories(1, 0);
 	}

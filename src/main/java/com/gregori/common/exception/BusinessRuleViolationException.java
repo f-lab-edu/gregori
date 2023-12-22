@@ -1,14 +1,17 @@
 package com.gregori.common.exception;
 
-import static com.gregori.common.response.ErrorMessage.BUSINESS_RULE_VIOLATION_ERROR;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class BusinessRuleViolationException extends BaseException {
+import static org.springframework.http.HttpStatus.CONFLICT;
+
+@ResponseStatus(code = CONFLICT)
+public class BusinessRuleViolationException extends RuntimeException {
 
 	public BusinessRuleViolationException() {
-		super(BUSINESS_RULE_VIOLATION_ERROR);
+		super("비즈니스 룰을 위반했습니다.");
 	}
 
-	public BusinessRuleViolationException(String description) {
-		super(description, BUSINESS_RULE_VIOLATION_ERROR);
+	public BusinessRuleViolationException(String message) {
+		super(message);
 	}
 }

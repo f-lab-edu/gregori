@@ -9,16 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.gregori.common.response.CustomResponse;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.service.OrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import static com.gregori.common.response.SuccessMessage.CREATE;
-import static com.gregori.common.response.SuccessMessage.GET;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,17 +24,17 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping
-	public ResponseEntity<CustomResponse<OrderResponseDto>> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
+	public ResponseEntity<OrderResponseDto> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
 
-		CustomResponse<OrderResponseDto> response = CustomResponse.success(orderService.saveOrder(orderRequestDto), CREATE);
+		OrderResponseDto response = orderService.saveOrder(orderRequestDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
 	@GetMapping("/{orderId}")
-	public ResponseEntity<CustomResponse<OrderResponseDto>> getOrder(@PathVariable Long orderId) {
+	public ResponseEntity<OrderResponseDto> getOrder(@PathVariable Long orderId) {
 
-		CustomResponse<OrderResponseDto> response = CustomResponse.success(orderService.getOrder(orderId), GET);
+		OrderResponseDto response = orderService.getOrder(orderId);
 
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}

@@ -1,6 +1,5 @@
 package com.gregori.auth.controller;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,13 +10,9 @@ import com.gregori.auth.dto.AuthSignInDto;
 import com.gregori.auth.dto.TokenDto;
 import com.gregori.auth.dto.TokenRequestDto;
 import com.gregori.auth.service.AuthService;
-import com.gregori.common.response.CustomResponse;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import static com.gregori.common.response.SuccessMessage.SIGNIN;
-import static com.gregori.common.response.SuccessMessage.SIGNOUT;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,18 +22,18 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signin")
-	public ResponseEntity<CustomResponse<TokenDto>> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
+	public ResponseEntity<TokenDto> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
 
-		CustomResponse<TokenDto> response = CustomResponse.success(authService.signIn(authSignInDto), SIGNIN);
+		TokenDto response = authService.signIn(authSignInDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok().body(response);
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<CustomResponse<Long>> signOut(@RequestBody TokenRequestDto tokenRequestDto) {
+	public ResponseEntity<Long> signOut(@RequestBody TokenRequestDto tokenRequestDto) {
 
-		CustomResponse<Long> response = CustomResponse.success(authService.signOut(tokenRequestDto), SIGNOUT);
+		authService.signOut(tokenRequestDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok().build();
 	}
 }

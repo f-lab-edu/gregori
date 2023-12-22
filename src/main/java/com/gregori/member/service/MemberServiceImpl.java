@@ -10,11 +10,13 @@ import com.gregori.member.mapper.MemberMapper;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -28,7 +30,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberMapper.findByEmail(memberRegisterDto.getEmail())
             .ifPresent(m -> {
-                throw new DuplicateException();
+                throw new DuplicateException("중복된 이메일입니다.");
             });
 
         Member member = memberRegisterDto

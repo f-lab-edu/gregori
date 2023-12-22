@@ -1,14 +1,17 @@
 package com.gregori.common.exception;
 
-import static com.gregori.common.response.ErrorMessage.ACCESS_DENIED_ERROR;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-public class AccessDeniedException extends BaseException {
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+
+@ResponseStatus(code = FORBIDDEN)
+public class AccessDeniedException extends RuntimeException {
 
 	public AccessDeniedException() {
-		super(ACCESS_DENIED_ERROR);
+		super("접근 권한이 없습니다.");
 	}
 
-	public AccessDeniedException(String description) {
-		super(description, ACCESS_DENIED_ERROR);
+	public AccessDeniedException(String message) {
+		super(message);
 	}
 }
