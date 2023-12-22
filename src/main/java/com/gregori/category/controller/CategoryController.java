@@ -1,5 +1,6 @@
 package com.gregori.category.controller;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -15,15 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gregori.category.domain.Category;
 import com.gregori.category.service.CategoryService;
-import com.gregori.common.response.CustomResponse;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-import static com.gregori.common.response.SuccessMessage.CREATE;
-import static com.gregori.common.response.SuccessMessage.UPDATE;
-
-@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/category")
@@ -32,44 +27,44 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@PostMapping
-	public ResponseEntity<CustomResponse<Long>> createCategory(@RequestBody String name) {
+	public ResponseEntity<Long> createCategory(@RequestBody String name) {
 
-		CustomResponse<Long> response = CustomResponse.success(categoryService.saveCategory(name), CREATE);
+		Long categoryId = categoryService.saveCategory(name);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.created(URI.create("/category/" + categoryId)).build();
 	}
 
 	@PostMapping("/{categoryId}")
-	public ResponseEntity<CustomResponse<Long>> updateCategory(@PathVariable Long categoryId, @RequestBody String name) {
+	public ResponseEntity<Long> updateCategoryName(@PathVariable Long categoryId, @RequestBody String name) {
 
-		CustomResponse<Long> response = CustomResponse.success(categoryService.updateCategoryName(categoryId, name), UPDATE);
+		categoryService.updateCategoryName(categoryId, name);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping("/{categoryId}")
-	public ResponseEntity<CustomResponse<Long>> deleteCategory(@PathVariable Long categoryId) {
+	public ResponseEntity<Long> deleteCategory(@PathVariable Long categoryId) {
 
-		CustomResponse<Long> response = CustomResponse.success(categoryService.deleteCategory(categoryId), UPDATE);
+		categoryService.deleteCategory(categoryId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{categoryId}")
-	public ResponseEntity<CustomResponse<Category>> getCategory(@PathVariable Long categoryId) {
+	public ResponseEntity<Category> getCategory(@PathVariable Long categoryId) {
 
-		CustomResponse<Category> response = CustomResponse.success(categoryService.getCategory(categoryId), UPDATE);
+		Category category = categoryService.getCategory(categoryId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok().body(category);
 	}
 
 	@GetMapping
-	public ResponseEntity<CustomResponse<List<Category>>> getCategories(
+	public ResponseEntity<List<Category>> getCategories(
 		@RequestParam(defaultValue = "10") int limit,
 		@RequestParam(defaultValue = "0") int offset) {
 
-		CustomResponse<List<Category>> response = CustomResponse.success(categoryService.getCategories(limit, offset), UPDATE);
+		List<Category> categories = categoryService.getCategories(limit, offset);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.OK).body(categories);
 	}
 }
