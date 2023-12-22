@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import com.gregori.auth.dto.AuthSignInDto;
 import com.gregori.auth.dto.TokenDto;
 import com.gregori.auth.dto.TokenRequestDto;
+import com.gregori.common.exception.NotFoundException;
 import com.gregori.config.jwt.TokenProvider;
 import com.gregori.refresh_token.domain.RefreshToken;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
