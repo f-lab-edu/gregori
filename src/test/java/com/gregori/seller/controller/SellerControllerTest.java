@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,8 +33,8 @@ class SellerControllerTest {
 	SellerService sellerService;
 
 	@Test
-	@DisplayName("신규 판매자 등록을 요청하면 판매자를 생성하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestCreateSeller() throws Exception {
+	@DisplayName("판매자 생성을 요청하면 OK 응답을 반환한다.")
+	void should_responseOK_when_requestCreateSeller() throws Exception {
 
 		// given
 		SellerRegisterDto dto = new SellerRegisterDto(1L, "111-11-11111", "name");

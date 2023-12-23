@@ -33,8 +33,8 @@ class CategoryMapperTest {
 	}
 
 	@Test
-	@DisplayName("category를 입력 받으면 새로운 카테고리를 추가한다.")
-	void should_insert_when_categoryInput() {
+	@DisplayName("새로운 카테고리를 추가한다.")
+	void should_insert() {
 
 		// given
 		Category category = new Category("name");
@@ -47,8 +47,8 @@ class CategoryMapperTest {
 	}
 
 	@Test
-	@DisplayName("category를 입력 받으면 카테고리 이름을 갱신한다.")
-	void should_updateName_when_categoryInput() {
+	@DisplayName("카테고리 이름을 갱신한다.")
+	void should_updateName() {
 
 		// given
 		Category category = new Category("name");
@@ -66,8 +66,8 @@ class CategoryMapperTest {
 	}
 
 	@Test
-	@DisplayName("id를 입력받으면 id와 일치하는 카테고리를 삭제한다.")
-	void should_delete_when_idInput() {
+	@DisplayName("id로 카테고리를 삭제한다.")
+	void should_deleteById() {
 
 		// given
 		Category category = new Category("name");
@@ -82,8 +82,8 @@ class CategoryMapperTest {
 	}
 
 	@Test
-	@DisplayName("id를 입력 받으면 id와 일치하는 카테고리를 조회한다.")
-	void should_find_when_idInput() {
+	@DisplayName("id로 카테고리를 조회한다.")
+	void should_findById() {
 
 		// given
 		Category category = new Category("name");

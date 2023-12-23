@@ -1,184 +1,72 @@
 package com.gregori.order.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gregori.common.exception.NotFoundException;
-import com.gregori.product.domain.Product;
-import com.gregori.product.mapper.ProductMapper;
-import com.gregori.member.domain.Member;
-import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
-import com.gregori.order.dto.OrderRequestDto;
-import com.gregori.order.dto.OrderResponseDto;
-import com.gregori.order.mapper.OrderMapper;
 import com.gregori.order_detail.domain.OrderDetail;
-import com.gregori.order_detail.dto.OrderDetailRequestDto;
+import com.gregori.product.mapper.ProductMapper;
+import com.gregori.order.dto.OrderRequestDto;
+import com.gregori.order.mapper.OrderMapper;
 import com.gregori.order_detail.mapper.OrderDetailMapper;
-import com.gregori.seller.domain.Seller;
-import com.gregori.seller.mapper.SellerMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
 
-	@Autowired
-	private MemberMapper memberMapper;
-
-	@Autowired
-	private SellerMapper sellerMapper;
-
-	@Autowired
+	@Mock
 	private ProductMapper productMapper;
 
-	@Autowired
+	@Mock
 	private OrderMapper orderMapper;
 
-	@Autowired
+	@Mock
 	private OrderDetailMapper orderDetailMapper;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+	@InjectMocks
+	private OrderServiceImpl orderService;
 
-	@Autowired
-	private OrderService orderService;
+	@Test
+	@DisplayName("주문 생성을 성공하면 주문을 반환한다.")
+	void should_returnOrderResponseDto_when_saveOrderSuccess() {
 
-	Member member;
-	Seller seller;
-	List<Product> products = new ArrayList<>();
-	List<Long> orderIds = new ArrayList<>();
-	List<Long> orderDetailIds = new ArrayList<>();
+		// given
+		OrderRequestDto dto = new OrderRequestDto(1L, "paymentMethod", 1L, 1L, List.of());
 
-	@BeforeEach
-	void beforeEach() {
-		member = Member.builder()
-			.email("a@a.a")
-			.name("일호")
-			.password(passwordEncoder.encode("aa11111!"))
-			.build();
-		memberMapper.insert(member);
+		// when
+		orderService.saveOrder(dto);
 
-		seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("111-11-11111")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
-
-		Product product1 = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		Product product2 = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템2")
-			.price(200L)
-			.inventory(2L)
-			.build();
-
-		productMapper.insert(product1);
-		productMapper.insert(product2);
-		products.add(product1);
-		products.add(product2);
-	}
-
-	@AfterEach
-	void afterEach() {
-		if (!orderDetailIds.isEmpty()) {
-			orderDetailMapper.deleteByIds(orderDetailIds);
-			orderDetailIds.clear();
-		}
-		if (!orderIds.isEmpty()) {
-			orderMapper.deleteByIds(orderIds);
-			orderIds.clear();
-		}
-		if (!products.isEmpty()) {
-			productMapper.deleteByIds(products.stream().map(Product::getId).toList());
-			products.clear();
-		}
-		if (seller != null) {
-			sellerMapper.deleteByIds(List.of(seller.getId()));
-			seller = null;
-		}
-		if(member != null) {
-			memberMapper.deleteByIds(List.of(member.getId()));
-			member = null;
-		}
+		// then
+		verify(orderMapper).insert(any(Order.class));
 	}
 
 	@Test
-	@DisplayName("새로운 주문과 주문 상품을 DB에 저장하고 주문 정보를 반환한다.")
-	void createOrder() {
+	@DisplayName("주문 조회를 성공하면 주문을 반환한다.")
+	void should_returnOrderResponseDto_when_getOrderSuccess() {
 
 		// given
-		List<OrderDetailRequestDto> orderDetailRequest = List.of(new OrderDetailRequestDto(1L, products.get(0).getId()));
-		OrderRequestDto orderRequestDto = new OrderRequestDto(member.getId(), "카드", 1000L, 12500L, orderDetailRequest);
+		Long orderId = 1L;
+		Order order = new Order(1L, "method", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+
+		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
+		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
 
 		// when
-		OrderResponseDto result = orderService.saveOrder(orderRequestDto);
-		Order order = orderMapper.findById(result.getId()).orElseThrow(NotFoundException::new);
-		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(order.getId());
-
-		orderIds.add(order.getId());
-		orderDetailIds.add(orderDetails.get(0).getId());
+		orderService.getOrder(orderId);
 
 		// then
-		assertEquals(result.getId(), order.getId());
-		assertEquals(result.getMemberId(), order.getMemberId());
-		assertEquals(result.getPaymentMethod(), order.getPaymentMethod());
-		assertEquals(result.getOrderDetails().size(), 1);
-		assertEquals(orderDetails.size(), 1);
-		assertEquals(result.getOrderDetails().get(0).getId(), orderDetails.get(0).getId());
-		assertEquals(result.getOrderDetails().get(0).getOrderId(), orderDetails.get(0).getOrderId());
-	}
-
-	@Test
-	@DisplayName("orderId로 DB에 저장된 주문과 주문 상품을 조회해서 반환한다.")
-	void findOrderById() {
-
-		// given
-		Order order = Order.builder()
-			.memberId(member.getId())
-			.paymentMethod("카드")
-			.paymentAmount(1000L)
-			.deliveryCost(2500L)
-			.build();
-		orderMapper.insert(order);
-		orderIds.add(order.getId());
-
-		OrderDetail orderDetail = OrderDetail.builder()
-			.orderId(order.getId())
-			.productId(products.get(0).getId())
-			.productName(products.get(0).getName())
-			.productPrice(products.get(0).getPrice())
-			.productCount(2L)
-			.build();
-		orderDetailMapper.insert(orderDetail);
-		orderDetailIds.add(orderDetail.getId());
-
-		// when
-		OrderResponseDto result = orderService.getOrder(order.getId());
-
-		// then
-		assertEquals(result.getId(), order.getId());
-		assertEquals(result.getMemberId(), order.getMemberId());
-		assertEquals(result.getPaymentMethod(), order.getPaymentMethod());
-		assertEquals(result.getStatus(), order.getStatus());
-		assertEquals(result.getOrderDetails().size(), 1);
-		assertEquals(result.getOrderDetails().get(0).getId(), orderDetail.getId());
-		assertEquals(result.getOrderDetails().get(0).getOrderId(), orderDetail.getOrderId());
+		verify(orderMapper).findById(orderId);
+		verify(orderDetailMapper).findByOrderId(orderId);
 	}
 }

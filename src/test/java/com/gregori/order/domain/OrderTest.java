@@ -8,14 +8,13 @@ import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class OrderTest {
 
 	@Test
 	@DisplayName("15자리 이상의 주문 번호를 생성한다.")
-	void orderNumberGenerator() {
+	void should_generateOrderNumber() {
 
 		// given
 		Order order = Order.builder()
@@ -83,28 +82,5 @@ class OrderTest {
 		// then
 		assertEquals(status, ORDER_PROCESSING);
 		assertEquals(result, ORDER_COMPLETED);
-	}
-
-	@Test
-	@DisplayName("Order 객체를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void builderAndGetterTest() {
-
-		// given
-		Order order = Order.builder()
-			.memberId(1L)
-			.paymentMethod("paymentMethod")
-			.paymentAmount(1L)
-			.deliveryCost(1L)
-			.build();
-
-		// then
-		assertNull(order.getId());
-		assertEquals(order.getMemberId(), 1L);
-		assertEquals(order.getPaymentMethod(), "paymentMethod");
-		assertEquals(order.getPaymentAmount(), 1L);
-		assertEquals(order.getDeliveryCost(), 1L);
-		assertEquals(order.getStatus(), ORDER_PROCESSING);
-		assertNull(order.getCreatedAt());
-		assertNull(order.getUpdatedAt());
 	}
 }

@@ -8,10 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 
+import com.gregori.common.CustomMybatisTest;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.product.domain.Product;
 import com.gregori.member.domain.Member;
@@ -22,8 +20,7 @@ import com.gregori.seller.mapper.SellerMapper;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@CustomMybatisTest
 class ProductMapperTest {
 
 	@Autowired
@@ -35,9 +32,6 @@ class ProductMapperTest {
 	@Autowired
 	private ProductMapper productMapper;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
 	Member member;
 	Seller seller;
 	List<Long> itemIds = new ArrayList<>();
@@ -47,7 +41,7 @@ class ProductMapperTest {
 		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
-			.password(passwordEncoder.encode("aa11111!"))
+			.password("aa11111!")
 			.build();
 		memberMapper.insert(member);
 
@@ -72,8 +66,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 테이블에 새로운 상품을 추가한다.")
-	void insert() {
+	@DisplayName("새로운 상품을 추가한다.")
+	void should_insert() {
 
 		// given
 		Product product = Product.builder()
@@ -95,8 +89,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 테이블의 상품을 수정한다.")
-	void update() {
+	@DisplayName("상품을 수정한다.")
+	void should_update() {
 
 		// given
 		Product product = Product.builder()
@@ -123,8 +117,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 Items 테이블의 상품을 전부 삭제한다.")
-	void deleteByIds() {
+	@DisplayName("id 목록으로 상품을 삭제한다.")
+	void should_deleteByIds() {
 
 		 // given
 		Product product = Product.builder()
@@ -146,8 +140,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 테이블에서 id가 일치하는 상품을 조회한다.")
-	void findById() {
+	@DisplayName("id로 상품을 조회한다.")
+	void should_findById() {
 
 		// given
 		Product product = Product.builder()
@@ -175,8 +169,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 테이블에서 id 목록과 일치하는 상품을 전부 조회한다.")
-	void findAllById() {
+	@DisplayName("id 목록으로 상품을 조회한다.")
+	void should_findByIds() {
 
 		// given
 		Product product1 = Product.builder()
@@ -208,8 +202,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Items 테이블에서 sellerId가 일치하는 상품 목록을 조회한다.")
-	void findBySellerId() {
+	@DisplayName("sellerId로 상품을 조회한다.")
+	void should_findBySellerId() {
 
 		// given
 		Product product = Product.builder()

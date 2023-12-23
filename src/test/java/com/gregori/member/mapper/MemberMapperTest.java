@@ -36,8 +36,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에 새로운 회원을 추가한다.")
-	void should_insert_when_validMember() {
+	@DisplayName("새로운 회원을 추가한다.")
+	void should_insert() {
 
 		// given
 		Member member = new Member("name", "new email", "password");
@@ -52,8 +52,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 회원의 이름을 갱신한다.")
-	void should_updateName_when_memberIdMatch() {
+	@DisplayName("회원 이름을 갱신한다.")
+	void should_updateName() {
 
 		// given
 		Member member = new Member("name", "email", "password");
@@ -71,8 +71,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 회원의 비밀번호를 갱신한다.")
-	void should_updatePassword_when_memberIdMatch() {
+	@DisplayName("회원 비밀번호를 갱신한다.")
+	void should_updatePassword() {
 
 		// given
 		Member member = new Member("name", "email", "password");
@@ -90,8 +90,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 회원의 상태를 갱신한다.")
-	void should_updateStatus_when_memberIdMatch() {
+	@DisplayName("회원 상태를 갱신한다.")
+	void should_updateStatus() {
 
 		// given
 		Member member = new Member("name", "email", "password");
@@ -109,8 +109,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 회원의 권한을 갱신한다.")
-	void should_updateAuthority_when_memberIdMatch() {
+	@DisplayName("회원 권한을 갱신한다.")
+	void should_updateAuthority() {
 
 		// given
 		Member member = new Member("name", "email", "password");
@@ -128,8 +128,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 회원을 삭제한다.")
-	void should_delete_when_memberIdMatch() {
+	@DisplayName("id로 회원을 삭제한다.")
+	void should_deleteById() {
 
 		// given
 		Member member = new Member("name", "email", "password");
@@ -145,8 +145,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 Id 목록과 일치하는 회원을 전부 삭제한다.")
-	void should_delete_when_memberIdsMatch() {
+	@DisplayName("id 목록으로 회원을 삭제한다.")
+	void should_deleteByIds() {
 
 		// given
 		Member member1 = new Member("name", "email1", "password");
@@ -167,8 +167,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 ID가 일치하는 회원을 조회한다.")
-	void should_find_when_memberIdMatch() {
+	@DisplayName("id로 회원을 조회한다.")
+	void should_findById() {
 
 		// given
 		Member member = new Member("name", "email", "password");
@@ -184,8 +184,8 @@ class MemberMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 email이 일치하는 회원을 조회한다.")
-	void should_find_when_memberEmailMatch() {
+	@DisplayName("email로 회원을 조회한다.")
+	void should_findByEmail() {
 
 		// given
 		Member member = new Member("name", "email", "password");

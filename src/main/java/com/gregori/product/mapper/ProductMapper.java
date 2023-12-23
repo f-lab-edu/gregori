@@ -9,6 +9,7 @@ import com.gregori.product.domain.Product;
 
 @Mapper
 public interface ProductMapper {
+
 	Long insert(Product product);
 	Long update(Product product);
 	void deleteByIds(List<Long> productIds);

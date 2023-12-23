@@ -8,10 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 
+import com.gregori.common.CustomMybatisTest;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
@@ -20,8 +18,7 @@ import com.gregori.seller.domain.Seller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@CustomMybatisTest
 class SellerMapperTest {
 
 	@Autowired
@@ -29,9 +26,6 @@ class SellerMapperTest {
 
 	@Autowired
 	private SellerMapper sellerMapper;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	Member member;
 	List<Long> sellerIds = new ArrayList<>();
@@ -41,11 +35,10 @@ class SellerMapperTest {
 		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
-			.password(passwordEncoder.encode("aa11111!"))
+			.password("aa11111!")
 			.build();
 		memberMapper.insert(member);
 	}
-
 
 	@AfterEach
 	void afterEach() {
@@ -61,8 +54,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Sellers 테이블에 새로운 셀러를 추가한다.")
-	void insert() {
+	@DisplayName("새로운 판매자를 추가한다.")
+	void should_insert() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -82,8 +75,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Sellers 테이블의 상품을 수정한다.")
-	void update() {
+	@DisplayName("판매자를 수정한다.")
+	void should_update() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -107,8 +100,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 Seller 테이블의 셀러를 전부 삭제한다.")
-	void deleteByIds() {
+	@DisplayName("id 목록으로 판매자를 삭제한다.")
+	void should_deleteByIds() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -129,8 +122,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Sellers 테이블에서 memberId가 일치하는 셀러를 조회한다.")
-	void findByMemberId() {
+	@DisplayName("id로 판매자를 조회한다.")
+	void should_findById() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -150,8 +143,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Sellers 테이블에서 id가 일치하는 셀러를 조회한다.")
-	void findById() {
+	@DisplayName("memberId로 판매자를 조회한다.")
+	void should_findByMemberId() {
 
 		// given
 		Seller seller = Seller.builder()

@@ -33,8 +33,8 @@ class RefreshTokenMapperTest {
 	}
 
 	@Test
-	@DisplayName("refreshToken을 입력 받으면 새로운 리프레시 토큰을 추가한다.")
-	void should_create_when_refreshTokenInput() {
+	@DisplayName("새로운 리프레시 토큰을 추가한다.")
+	void should_insert() {
 
 		// given
 		RefreshToken refreshToken = new RefreshToken("key", "value");
@@ -48,8 +48,8 @@ class RefreshTokenMapperTest {
 	}
 
 	@Test
-	@DisplayName("refreshToken을 입력 받으면 리프레시 토큰을 갱신한다.")
-	void should_updateRefreshTokeValue_when_refreshTokenInput() {
+	@DisplayName("리프레시 토큰을 갱신한다.")
+	void should_update() {
 
 		// given
 		RefreshToken refreshToken = new RefreshToken("key", "value");
@@ -67,8 +67,8 @@ class RefreshTokenMapperTest {
 	}
 
 	@Test
-	@DisplayName("id를 입력 받으면 id와 일치하는 리프레시 토큰을 삭제한다.")
-	void should_delete_when_idInput() {
+	@DisplayName("id로 리프레시 토큰을 삭제한다.")
+	void should_deleteById() {
 
 		// given
 		RefreshToken refreshToken = new RefreshToken("key", "value");
@@ -82,8 +82,8 @@ class RefreshTokenMapperTest {
 	}
 
 	@Test
-	@DisplayName("refreshTokenKey를 입력 받으면 refreshTokenKey와 일치하는 리프레시 토큰을 조회한다.")
-	void should_find_when_refreshTokenKeyInput() {
+	@DisplayName("id로 리프레시 토큰을 조회한다.")
+	void should_findById() {
 
 		// given
 		RefreshToken refreshToken = new RefreshToken("key", "value");
@@ -99,8 +99,8 @@ class RefreshTokenMapperTest {
 	}
 
 	@Test
-	@DisplayName("id를 입력 받으면 id와 일치하는 리프레시 토큰을 조회한다.")
-	void should_find_when_idInput() {
+	@DisplayName("refreshTokenKey로 조회한다.")
+	void should_findByRefreshTokenKey() {
 
 		// given
 		RefreshToken refreshToken = new RefreshToken("key", "value");

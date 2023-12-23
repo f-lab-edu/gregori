@@ -67,7 +67,7 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("회원 이메일이 중복되면 가입을 실패한다.")
+	@DisplayName("회원 이메일이 중복되면 회원가입을 실패한다.")
 	void should_DuplicationException_when_duplicationEmail() {
 
 		// given
@@ -80,8 +80,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하면 회원 이름을 수정한다.")
-	void should_updateMemberName_when_existMember() {
+	@DisplayName("회원을 찾으면 회원 이름을 수정한다.")
+	void should_updateMemberName_when_findMember() {
 
 		// given
 		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
@@ -96,21 +96,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하지 않으면 회원 이름 수정을 실패한다.")
-	void should_NotFoundException_when_nonExistMemberUpdateName() {
-
-		// given
-		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
-
-		given(memberMapper.findById(1L)).willReturn(Optional.empty());
-
-		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(dto));
-	}
-
-	@Test
-	@DisplayName("DB에 회원이 존재하고 기존 비밀번호가 일치하면 회원 비밀번호를 수정한다.")
-	void should_updateMemberPassword_when_existMember() {
+	@DisplayName("회원을 찾고 비밀번호가 일치하면 회원 비밀번호를 수정한다.")
+	void should_updateMemberPassword_when_findMemberAndCorrectPassword() {
 
 		// given
 		Member member = new Member("name", "email", passwordEncoder.encode("password"));
@@ -126,21 +113,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하지 않으면 회원 비밀번호 변경을 실패한다.")
-	void should_NotFoundException_when_nonExistMemberUpdatePassword() {
-
-		// given
-		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "password", "newPassword");
-
-		given(memberMapper.findById(1L)).willReturn(Optional.empty());
-
-		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(dto));
-	}
-
-	@Test
-	@DisplayName("DB의 기존 비밀번호가 일치하지 않으면 회원 비밀번호 변경을 실패한다.")
-	void should_ValidationException_when_nonExistMemberUpdatePassword() {
+	@DisplayName("기존 비밀번호가 일치하지 않으면 회원 비밀번호 변경을 실패한다.")
+	void should_ValidationException_when_incorrectPassword() {
 
 		// given
 		Member member = new Member("name", "email", "aa11111!");
@@ -153,8 +127,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("일반 회원이 탈퇴 조건을 만족하면 회원을 삭제한다.")
-	void should_deleteGeneralMember_when_existMember() {
+	@DisplayName("조건을 만족하면 일반 회원을 탈퇴 처리한다.")
+	void should_deleteGeneralMember_when_meetCondition() {
 
 		// given
 		final Long memberId = 1L;
@@ -172,8 +146,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("판매자 회원이 탈퇴 조건을 만족하면 회원을 삭제한다.")
-	void should_deleteSellingMember_when_existMember() {
+	@DisplayName("조건을 만족하면 판매자 회원을 탈퇴 처리한다.")
+	void should_deleteSellingMember_when_meetCondition() {
 
 		// given
 		final Long memberId = 1L;
@@ -198,17 +172,6 @@ class MemberServiceImplTest {
 		// then
 		verify(memberMapper).updateStatus(memberId, DEACTIVATE);
 		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
-	}
-
-	@Test
-	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 삭제를 실패한다.")
-	void should_NotFoundException_when_nonExistMemberDelete() {
-
-		// given
-		given(memberMapper.findById(1L)).willReturn(Optional.empty());
-
-		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
 	}
 
 	@Test
@@ -260,8 +223,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하면 회원을 조회해서 반환한다.")
-	void getMember() {
+	@DisplayName("회원을 찾으면 회원을 반환한다.")
+	void should_getMember_when_findMemberSuccess() {
 
 		// given
 		final Long memberId = 1L;
@@ -276,13 +239,20 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 회원이 존재하지 않으면 회원 정보 조회를 실패한다.")
-	void should_NotFoundException_when_nonExistMemberGet() {
+	@DisplayName("회원을 찾지 못하면 에러가 발생한다.")
+	void should_NotFoundException_when_findMemberFailure() {
 
 		// given
+		MemberNameUpdateDto dto1 = new MemberNameUpdateDto(1L, "이름");
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
 		assertThrows(NotFoundException.class, () -> memberService.getMember(1L));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(dto1));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(dto2));
+		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
 	}
+
 }

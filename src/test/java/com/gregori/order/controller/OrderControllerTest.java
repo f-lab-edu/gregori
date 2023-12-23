@@ -18,6 +18,8 @@ import com.gregori.order.service.OrderService;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order_detail.dto.OrderDetailRequestDto;
 
+import static com.gregori.common.DeepReflectionEqMatcher.deepRefEq;
+import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,8 +38,8 @@ class OrderControllerTest {
 	OrderService orderService;
 
 	@Test
-	@DisplayName("새로운 주문을 요청하면 주문을 생성하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestCreateOrder() throws Exception {
+	@DisplayName("주문 생성을 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestCreateOrder() throws Exception {
 
 		// given
 		List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
@@ -53,14 +55,16 @@ class OrderControllerTest {
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
+
+		verify(orderService).saveOrder(deepRefEq(dto));
 	}
 
 	@Test
-	@DisplayName("클라이언트의 요청에 따라 주문을 조회한다.")
-	void getOrder() throws Exception {
+	@DisplayName("주문 조회를 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestGetOrder() throws Exception {
 
 		// given
-		Long orderId = 1L;
+		long orderId = 1L;
 
 		// when
 		ResultActions actions = mockMvc.perform(
@@ -70,5 +74,7 @@ class OrderControllerTest {
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
+
+		verify(orderService).getOrder(orderId);
 	}
 }

@@ -16,6 +16,20 @@ class MemberPasswordUpdateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
+	@DisplayName("올바른 입력값이면 MemberPasswordUpdateDto 객체 생성에 성공한다.")
+	void should_createMemberPasswordUpdateDto_when_validInput() {
+
+		// given
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "aa11111!", "aa11111!");
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
 	void should_ValidException_when_nullId() {
 
@@ -30,13 +44,13 @@ class MemberPasswordUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("password 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
+	@DisplayName("oldPassword 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankOldPassword() {
 
 		// given
-		MemberRegisterDto dto1 = new MemberRegisterDto("일호", "a@a.a", null);
-		MemberRegisterDto dto2 = new MemberRegisterDto("일호","a@a.a",  "");
-		MemberRegisterDto dto3 = new MemberRegisterDto("일호", "a@a.a", " ");
+		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(1L,null, "aa11111!");
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L,"", "aa11111!");
+		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(1L," ", "aa11111!");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -79,6 +93,26 @@ class MemberPasswordUpdateDtoTest {
 	}
 
 	@Test
+	@DisplayName("newPassword 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
+	void should_ValidException_when_blankNewPassword() {
+
+		// given
+		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(1L, "aa11111!", null);
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L, "aa11111!", "");
+		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(1L, "aa11111!", " ");
+
+		// when
+		var result1 = validator.validate(dto1);
+		var result2 = validator.validate(dto2);
+		var result3 = validator.validate(dto3);
+
+		// then
+		assertFalse(result1.isEmpty());
+		assertFalse(result2.isEmpty());
+		assertFalse(result3.isEmpty());
+	}
+
+	@Test
 	@DisplayName("newPassword 필드의 패턴이 불일치하면 에러가 발생한다.")
 	void should_ValidException_when_mismatchedNewPassword() {
 
@@ -105,19 +139,5 @@ class MemberPasswordUpdateDtoTest {
 		assertFalse(result4.isEmpty());
 		assertFalse(result5.isEmpty());
 		assertFalse(result6.isEmpty());
-	}
-
-	@Test
-	@DisplayName("올바른 입력값이면 MemberPasswordUpdateDto 객체 생성에 성공한다.")
-	void should_createMemberPasswordUpdateDto_when_validInput() {
-
-		// given
-		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "aa11111!", "aa11111!");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertTrue(result.isEmpty());
 	}
 }

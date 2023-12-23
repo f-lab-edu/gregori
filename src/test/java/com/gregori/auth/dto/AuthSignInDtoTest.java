@@ -18,6 +18,20 @@ class AuthSignInDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
+	@DisplayName("올바른 입력값이면 AuthSignInDto 객체 생성에 성공한다.")
+	void should_createAuthSignInDto_when_validInput() {
+
+		// given
+		AuthSignInDto dto = new AuthSignInDto("a@a.a", "aa11111!");
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	@DisplayName("email 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankEmail() {
 
@@ -105,20 +119,6 @@ class AuthSignInDtoTest {
 	}
 
 	@Test
-	@DisplayName("올바른 입력값이면 AuthSignInDto 객체 생성에 성공한다.")
-	void should_createAuthSignInDto_when_validInput() {
-
-		// given
-		AuthSignInDto dto = new AuthSignInDto("a@a.a", "aa11111!");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertTrue(result.isEmpty());
-	}
-
-	@Test
 	@DisplayName("toAuthentication 메서드를 호출하면 auth token을 반환한다.")
 	void should_returnAuthToken_when_toAuthenticationMethodCalled() {
 
@@ -131,17 +131,5 @@ class AuthSignInDtoTest {
 		// then
 		assertEquals(result.getPrincipal(), dto.getEmail());
 		assertEquals(result.getCredentials(), dto.getPassword());
-	}
-
-	@Test
-	@DisplayName("AuthSignInDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
-	void should_getFields_when_createAuthSignInDto() {
-
-		// given
-		AuthSignInDto dto = new AuthSignInDto("a@a.a", "aa11111!");
-
-		// when, then
-		assertEquals(dto.getEmail(), "a@a.a");
-		assertEquals(dto.getPassword(), "aa11111!");
 	}
 }

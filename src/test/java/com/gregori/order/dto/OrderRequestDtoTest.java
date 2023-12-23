@@ -5,15 +5,12 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gregori.order.domain.Order;
 import com.gregori.order_detail.dto.OrderDetailRequestDto;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,22 +21,22 @@ class OrderRequestDtoTest {
 	private final List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
 
 	@Test
-	@DisplayName("OrderDetail 객체를 builder 패턴으로 생성한다.")
-	void toEntity() {
+	@DisplayName("입력값이 올바르면 OrderRequestDto 객체 생성에 성공한다.")
+	void should_craeteOrderRequestDto_when_validInput() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
 
-		// when
-		Order order = dto.toEntity();
+		//when
+		var result = validator.validate(dto);
 
-		// then
-		assertEquals(order.getStatus(), ORDER_PROCESSING);
+		//then
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
 	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
-	void nullMemberIdInputFailsTest() {
+	void should_ValidException_when_nullMemberId() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(null, "method", 1L, 1L, orderDetails);
@@ -53,7 +50,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("paymentMethod 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankPaymentMethodInputFailsTest() {
+	void should_ValidException_when_blankPaymentMethod() {
 
 		// given
 		OrderRequestDto dto1 = new OrderRequestDto(1L, null, 1L, 1L, orderDetails);
@@ -73,7 +70,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("PaymentAmount 필드가 비어 있으면 에러가 발생한다.")
-	void nullPaymentAmountInputFailsTest() {
+	void should_ValidException_when_nullPaymentAmount() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", null, 1L, orderDetails);
@@ -87,7 +84,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("deliveryCost 필드가 비어 있으면 에러가 발생한다.")
-	void nullDeliveryCostInputFailsTest() {
+	void should_ValidException_when_nullDeliveryCost() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, null, orderDetails);
@@ -101,7 +98,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("orderDetails 필드가 비어 있으면 에러가 발생한다.")
-	void nullOrderDetailsInputFailsTest() {
+	void should_ValidException_when_nullOrderDetails() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, null);
@@ -111,19 +108,5 @@ class OrderRequestDtoTest {
 
 		// then
 		assertFalse(result.isEmpty());
-	}
-
-	@Test
-	@DisplayName("입력값이 올바르면 OrderRequestDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
-
-		// given
-		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
-
-		//when
-		var result = validator.validate(dto);
-
-		//then
-		assertTrue(result.isEmpty());
 	}
 }

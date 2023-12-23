@@ -22,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
-	private final OrderMapper orderMapper;
 	private final ProductMapper productMapper;
+	private final OrderMapper orderMapper;
 	private final OrderDetailMapper orderDetailMapper;
 
 	@Override
@@ -51,9 +51,8 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional
 	public OrderResponseDto getOrder(Long orderId) throws NotFoundException {
 
-		Order order = orderMapper.findById(orderId)
-			.orElseThrow(NotFoundException::new);
-		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(order.getId());
+		Order order = orderMapper.findById(orderId).orElseThrow(NotFoundException::new);
+		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderId);
 		if (orderDetails.isEmpty()) {
 			throw new NotFoundException();
 		}

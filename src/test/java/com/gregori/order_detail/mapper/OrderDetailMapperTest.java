@@ -8,10 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 
+import com.gregori.common.CustomMybatisTest;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.member.domain.Member;
@@ -24,8 +22,7 @@ import com.gregori.seller.mapper.SellerMapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@CustomMybatisTest
 class OrderDetailMapperTest {
 
 	@Autowired
@@ -43,9 +40,6 @@ class OrderDetailMapperTest {
 	@Autowired
 	private OrderDetailMapper orderDetailMapper;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
 	Member member;
 	Seller seller;
 	Order order;
@@ -57,7 +51,7 @@ class OrderDetailMapperTest {
 		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
-			.password(passwordEncoder.encode("aa11111!"))
+			.password("aa11111!")
 			.build();
 		memberMapper.insert(member);
 
@@ -120,8 +114,8 @@ class OrderDetailMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderDetails 테이블에 새로운 주문 상품을 삽입한다.")
-	void insert() {
+	@DisplayName("새로운 주문 상세를 추가한다.")
+	void should_insert() {
 
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
@@ -144,8 +138,8 @@ class OrderDetailMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderDetails 테이블에서 id가 일치하는 주문을 전부 삭제한다.")
-	void deleteByIds() {
+	@DisplayName("id 목록으로 주문 상세를 삭제한다.")
+	void should_deleteByIds() {
 
 		// given
 		OrderDetail orderDetail = OrderDetail.builder()
@@ -168,8 +162,8 @@ class OrderDetailMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderDetails 테이블에서 orderId가 일치하는 주문 상품을 조회한다.")
-	void findByOrderId() {
+	@DisplayName("orderId로 주문 상세를 조회한다.")
+	void should_findByOrderId() {
 
 		// given
 		OrderDetail orderDetail1 = OrderDetail.builder()
@@ -203,8 +197,8 @@ class OrderDetailMapperTest {
 	}
 
 	@Test
-	@DisplayName("OrderDetails 테이블에서 id가 일치하는 주문을 전부 조회한다.")
-	void findByIds() {
+	@DisplayName("productId로 주문 상세를 조회한다.")
+	void should_findByProductId() {
 
 		// given
 		OrderDetail orderDetail1 = OrderDetail.builder()
