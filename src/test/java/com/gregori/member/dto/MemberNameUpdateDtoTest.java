@@ -16,6 +16,20 @@ class MemberNameUpdateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
+	@DisplayName("올바른 입력값이면 MemberNameUpdateDto 객체 생성에 성공한다.")
+	void should_createMemberNameUpdateDto_when_validInput() {
+
+		// given
+		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "일호");
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
 	void should_ValidException_when_nullId() {
 
@@ -67,19 +81,5 @@ class MemberNameUpdateDtoTest {
 		assertFalse(result1.isEmpty());
 		assertFalse(result2.isEmpty());
 		assertFalse(result3.isEmpty());
-	}
-
-	@Test
-	@DisplayName("올바른 입력값이면 MemberNameUpdateDto 객체 생성에 성공한다.")
-	void should_createMemberNameUpdateDto_when_validInput() {
-
-		// given
-		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "일호");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertTrue(result.isEmpty());
 	}
 }

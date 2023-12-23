@@ -15,6 +15,20 @@ class ProductCreateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
+	@DisplayName("입력값이 올바르면 ProductCreateDto 객체 생성에 성공한다.")
+	void should_createProductCreateDto_when_validInput() {
+
+		// given
+		ProductCreateDto dto = new ProductCreateDto(1L,"name", 1L, 1L);
+
+		//when
+		var result = validator.validate(dto);
+
+		//then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	@DisplayName("sellerId 필드가 비어 있으면 에러가 발생한다.")
 	void should_ValidException_when_nullSellerId() {
 
@@ -74,19 +88,5 @@ class ProductCreateDtoTest {
 
 		// then
 		assertFalse(result.isEmpty());
-	}
-
-	@Test
-	@DisplayName("ItemCreateDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
-	void should_getFields_when_createProductCreateDto() {
-
-		// given
-		ProductCreateDto dto = new ProductCreateDto(1L,"name", 1L, 1L);
-
-		//when
-		var result = validator.validate(dto);
-
-		//then
-		assertTrue(result.isEmpty());
 	}
 }

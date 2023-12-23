@@ -17,6 +17,20 @@ class SellerUpdateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
+	@DisplayName("입력값이 올바르면 SellerUpdateDto 객체 생성에 성공한다.")
+	void should_SellerUpdateDto_when_validInput() {
+
+		// given
+		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "000-00-00000", "name");
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertTrue(result.isEmpty());
+	}
+
+	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
 	void should_ValidException_when_nullId() {
 
@@ -55,8 +69,8 @@ class SellerUpdateDtoTest {
 
 		// when
 		var result1 = validator.validate(dto1);
-		var result2 = validator.validate(dto1);
-		var result3 = validator.validate(dto1);
+		var result2 = validator.validate(dto2);
+		var result3 = validator.validate(dto3);
 
 		// then
 		assertFalse(result1.isEmpty());
@@ -96,19 +110,5 @@ class SellerUpdateDtoTest {
 		assertFalse(result1.isEmpty());
 		assertFalse(result2.isEmpty());
 		assertFalse(result3.isEmpty());
-	}
-
-	@Test
-	@DisplayName("SellerUpdateDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
-	void should_getFields_when_createSellerUpdateDto() {
-
-		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "000-00-00000", "name");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertTrue(result.isEmpty());
 	}
 }

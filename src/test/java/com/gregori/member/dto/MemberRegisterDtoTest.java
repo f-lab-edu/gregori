@@ -3,16 +3,11 @@ package com.gregori.member.dto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gregori.member.domain.Member;
-
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static com.gregori.member.domain.Member.Status.ACTIVATE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MemberRegisterDtoTest {
@@ -21,18 +16,17 @@ class MemberRegisterDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("toEntity 메서드를 호출하면 Member 객체를 builder 패턴으로 생성하는데 성공한다.")
-	void should_buildMemberSuccess_when_toEntityMethodOccurs() {
+	@DisplayName("올바른 입력값이면 MemberRegisterDto 객체 생성에 성공한다.")
+	void should_createMemberRegisterDto_when_validInput() {
 
 		// given
 		MemberRegisterDto dto = new MemberRegisterDto("이름", "a@a.a", "aa11111!");
 
 		// when
-		Member member = dto.toEntity(dto.getPassword());
+		var result = validator.validate(dto);
 
 		// then
-		assertNotNull(member);
-		assertEquals(member.getStatus(), ACTIVATE);
+		assertTrue(result.isEmpty());
 	}
 
 	@Test
@@ -160,20 +154,5 @@ class MemberRegisterDtoTest {
 		assertFalse(result4.isEmpty());
 		assertFalse(result5.isEmpty());
 		assertFalse(result6.isEmpty());
-	}
-
-
-	@Test
-	@DisplayName("올바른 입력값이면 MemberRegisterDto 객체 생성에 성공한다.")
-	void should_createMemberRegisterDto_when_validInput() {
-
-		// given
-		MemberRegisterDto dto = new MemberRegisterDto("이름", "a@a.a", "aa11111!");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertTrue(result.isEmpty());
 	}
 }
