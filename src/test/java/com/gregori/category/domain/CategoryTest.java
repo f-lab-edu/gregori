@@ -3,7 +3,7 @@ package com.gregori.category.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class CategoryTest {
 
@@ -18,6 +18,6 @@ class CategoryTest {
 		category.updateCategoryName("new name");
 
 		// then
-		assertEquals(category.getName(), "new name");
+		assertThat(category.getName()).isEqualTo("new name");
 	}
 }

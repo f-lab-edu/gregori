@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gregori.common.CustomMybatisTest;
 import com.gregori.refresh_token.domain.RefreshToken;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class RefreshTokenMapperTest {
@@ -44,7 +42,7 @@ class RefreshTokenMapperTest {
 		tokenIds.add(refreshToken.getId());
 
 		// then
-		assertNotNull(refreshToken.getId());
+		assertThat(refreshToken.getId()).isNotNull();
 	}
 
 	@Test
@@ -62,8 +60,8 @@ class RefreshTokenMapperTest {
 
 		// then
 		Optional<RefreshToken> result = refreshTokenMapper.findById(refreshToken.getId());
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getRefreshTokenValue(), "new value");
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getRefreshTokenValue()).isEqualTo("new value");
 	}
 
 	@Test
@@ -78,7 +76,7 @@ class RefreshTokenMapperTest {
 
 		// then
 		Optional<RefreshToken> result = refreshTokenMapper.findById(refreshToken.getId());
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -94,8 +92,8 @@ class RefreshTokenMapperTest {
 		Optional<RefreshToken> result = refreshTokenMapper.findByRefreshTokenKey(refreshToken.getRefreshTokenKey());
 
 		// then
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getRefreshTokenKey(), refreshToken.getRefreshTokenKey());
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getRefreshTokenKey()).isEqualTo(refreshToken.getRefreshTokenKey());
 	}
 
 	@Test
@@ -111,7 +109,7 @@ class RefreshTokenMapperTest {
 		Optional<RefreshToken> result = refreshTokenMapper.findById(refreshToken.getId());
 
 		// then
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getId(), refreshToken.getId());
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getId()).isEqualTo(refreshToken.getId());
 	}
 }

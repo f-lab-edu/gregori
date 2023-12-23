@@ -1,14 +1,13 @@
 package com.gregori.product.dto;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ProductUpdateDtoTest {
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
@@ -25,7 +24,7 @@ class ProductUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		//then
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -39,7 +38,7 @@ class ProductUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -57,9 +56,9 @@ class ProductUpdateDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -73,7 +72,7 @@ class ProductUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -87,6 +86,6 @@ class ProductUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 }

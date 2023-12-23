@@ -15,8 +15,7 @@ import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class OrderMapperTest {
@@ -70,9 +69,9 @@ class OrderMapperTest {
 		Order result = orderMapper.findById(order.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), order.getId());
-		assertEquals(result.getMemberId(), order.getMemberId());
-		assertEquals(result.getPaymentMethod(), order.getPaymentMethod());
+		assertThat(result.getId()).isEqualTo(order.getId());
+		assertThat(result.getMemberId()).isEqualTo(order.getMemberId());
+		assertThat(result.getPaymentMethod()).isEqualTo(order.getPaymentMethod());
 	}
 
 	@Test
@@ -95,7 +94,7 @@ class OrderMapperTest {
 		Order result = orderMapper.findById(order.getId()).orElse(null);
 
 		// then
-		assertNull(result);
+		assertThat(result).isNull();
 	}
 
 	@Test
@@ -117,13 +116,13 @@ class OrderMapperTest {
 		Order result = orderMapper.findById(order.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), order.getId());
-		assertEquals(result.getMemberId(), order.getMemberId());
-		assertEquals(result.getPaymentMethod(), order.getPaymentMethod());
-		assertEquals(result.getPaymentAmount(), order.getPaymentAmount());
-		assertEquals(result.getDeliveryCost(), order.getDeliveryCost());
-		assertEquals(result.getCreatedAt(), order.getCreatedAt());
-		assertEquals(result.getUpdatedAt(), order.getUpdatedAt());
+		assertThat(result.getId()).isEqualTo(order.getId());
+		assertThat(result.getMemberId()).isEqualTo(order.getMemberId());
+		assertThat(result.getPaymentMethod()).isEqualTo(order.getPaymentMethod());
+		assertThat(result.getPaymentAmount()).isEqualTo(order.getPaymentAmount());
+		assertThat(result.getDeliveryCost()).isEqualTo(order.getDeliveryCost());
+		assertThat(result.getCreatedAt()).isEqualTo(order.getCreatedAt());
+		assertThat(result.getUpdatedAt()).isEqualTo(order.getUpdatedAt());
 	}
 
 	@Test
@@ -155,6 +154,6 @@ class OrderMapperTest {
 		List<Order> result = orderMapper.findByMemberId(member.getId());
 
 		// then
-		assertEquals(result.size(), 2);
+		assertThat(result.size()).isEqualTo(2);
 	}
 }

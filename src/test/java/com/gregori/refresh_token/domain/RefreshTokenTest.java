@@ -3,7 +3,7 @@ package com.gregori.refresh_token.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class RefreshTokenTest {
 
@@ -18,6 +18,6 @@ class RefreshTokenTest {
 		refreshToken.updateRefreshTokenValue("new value");
 
 		// then
-		assertEquals(refreshToken.getRefreshTokenValue(), "new value");
+		assertThat(refreshToken.getRefreshTokenValue()).isEqualTo("new value");
 	}
 }

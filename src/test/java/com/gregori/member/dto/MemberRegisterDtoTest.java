@@ -7,8 +7,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberRegisterDtoTest {
 
@@ -26,7 +25,7 @@ class MemberRegisterDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -44,9 +43,9 @@ class MemberRegisterDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -64,9 +63,9 @@ class MemberRegisterDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -84,9 +83,9 @@ class MemberRegisterDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -103,8 +102,8 @@ class MemberRegisterDtoTest {
 
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -122,9 +121,9 @@ class MemberRegisterDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -148,11 +147,11 @@ class MemberRegisterDtoTest {
 		var result6 = validator.validate(dto6);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
-		assertFalse(result4.isEmpty());
-		assertFalse(result5.isEmpty());
-		assertFalse(result6.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
+		assertThat(result4.isEmpty()).isFalse();
+		assertThat(result5.isEmpty()).isFalse();
+		assertThat(result6.isEmpty()).isFalse();
 	}
 }

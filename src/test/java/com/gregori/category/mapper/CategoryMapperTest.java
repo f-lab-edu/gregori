@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.gregori.category.domain.Category;
 import com.gregori.common.CustomMybatisTest;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class CategoryMapperTest {
@@ -43,7 +41,7 @@ class CategoryMapperTest {
 		categoryMapper.insert(category);
 
 		// then
-		assertNotNull(category.getId());
+		assertThat(category.getId()).isNotNull();
 	}
 
 	@Test
@@ -61,8 +59,8 @@ class CategoryMapperTest {
 
 		// then
 		Optional<Category> result = categoryMapper.findById(category.getId());
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getName(), "new name");
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getName()).isEqualTo("new name");
 	}
 
 	@Test
@@ -78,7 +76,7 @@ class CategoryMapperTest {
 
 		// then
 		Optional<Category> result = categoryMapper.findById(category.getId());
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -93,8 +91,8 @@ class CategoryMapperTest {
 		Optional<Category> result = categoryMapper.findById(category.getId());
 
 		// then
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getId(), category.getId());
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getId()).isEqualTo(category.getId());
 	}
 
 	@Test
@@ -118,6 +116,6 @@ class CategoryMapperTest {
 		List<Category> result = categoryMapper.find(10, 0);
 
 		// then
-		assertEquals(result.size(), 3);
+		assertThat(result.size()).isEqualTo(3);
 	}
 }
