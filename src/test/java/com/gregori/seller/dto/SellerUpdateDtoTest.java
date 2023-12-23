@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class SellerUpdateDtoTest {
 
 	private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-	private final Validator validator = factory.getValidator();
 
 	@Test
 	@DisplayName("입력값이 올바르면 SellerUpdateDto 객체 생성에 성공한다.")

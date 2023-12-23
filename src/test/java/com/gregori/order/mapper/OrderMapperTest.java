@@ -53,8 +53,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에 새로운 주문을 삽입한다.")
-	void should_insert_when_validOrder() {
+	@DisplayName("새로운 주문을 추가한다.")
+	void should_insert() {
 
 		// given
 		Order order = Order.builder()
@@ -76,8 +76,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 주문을 삭제한다.")
-	void should_delete_when_idMatch() {
+	@DisplayName("id 목록으로 주문을 삭제한다.")
+	void should_deleteByIds() {
 
 		// given
 		Order order = Order.builder()
@@ -99,8 +99,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에 id가 일치하는 주문을 조회한다.")
-	void should_find_when_idMatch() {
+	@DisplayName("id로 주문을 조회한다.")
+	void should_findById() {
 
 		// given
 		Order order = Order.builder()
@@ -127,8 +127,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에 memberId가 일치하는 주문을 조회한다.")
-	void should_find_when_memberIdMatch() {
+	@DisplayName("memberId로 주문을 조회한다.")
+	void should_findByMemberId() {
 
 		// given
 		Order order1 = Order.builder()

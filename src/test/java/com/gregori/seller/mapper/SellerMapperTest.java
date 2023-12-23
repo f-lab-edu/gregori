@@ -40,7 +40,6 @@ class SellerMapperTest {
 		memberMapper.insert(member);
 	}
 
-
 	@AfterEach
 	void afterEach() {
 		if (!sellerIds.isEmpty()) {
@@ -55,8 +54,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에 새로운 셀러를 추가한다.")
-	void should_insert_when_validSeller() {
+	@DisplayName("새로운 판매자를 추가한다.")
+	void should_insert() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -76,8 +75,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB의 상품을 수정한다.")
-	void should_update_when_idMatch() {
+	@DisplayName("판매자를 수정한다.")
+	void should_update() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -101,8 +100,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 Seller 테이블의 셀러를 전부 삭제한다.")
-	void should_delete_when_idMatch() {
+	@DisplayName("id 목록으로 판매자를 삭제한다.")
+	void should_deleteByIds() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -123,8 +122,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 memberId가 일치하는 셀러를 조회한다.")
-	void should_find_when_memberIdMatch() {
+	@DisplayName("id로 판매자를 조회한다.")
+	void should_findById() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -144,8 +143,8 @@ class SellerMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 셀러를 조회한다.")
-	void should_find_when_idMatch() {
+	@DisplayName("memberId로 판매자를 조회한다.")
+	void should_findByMemberId() {
 
 		// given
 		Seller seller = Seller.builder()

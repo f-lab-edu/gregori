@@ -66,8 +66,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에 새로운 상품을 추가한다.")
-	void should_insert_when_validProduct() {
+	@DisplayName("새로운 상품을 추가한다.")
+	void should_insert() {
 
 		// given
 		Product product = Product.builder()
@@ -89,8 +89,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB의 상품을 수정한다.")
-	void should_update_when_idMatch() {
+	@DisplayName("상품을 수정한다.")
+	void should_update() {
 
 		// given
 		Product product = Product.builder()
@@ -117,8 +117,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("Id 목록과 일치하는 DB의 상품을 전부 삭제한다.")
-	void should_delete_when_IdMatch() {
+	@DisplayName("id 목록으로 상품을 삭제한다.")
+	void should_deleteByIds() {
 
 		 // given
 		Product product = Product.builder()
@@ -140,8 +140,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id가 일치하는 상품을 조회한다.")
-	void should_find_when_idMatch() {
+	@DisplayName("id로 상품을 조회한다.")
+	void should_findById() {
 
 		// given
 		Product product = Product.builder()
@@ -169,8 +169,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 id 목록과 일치하는 상품을 전부 조회한다.")
-	void should_find_when_ids_match() {
+	@DisplayName("id 목록으로 상품을 조회한다.")
+	void should_findByIds() {
 
 		// given
 		Product product1 = Product.builder()
@@ -202,8 +202,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("DB에서 sellerId가 일치하는 상품 목록을 조회한다.")
-	void shoud_find_when_sellerIdMatch() {
+	@DisplayName("sellerId로 상품을 조회한다.")
+	void should_findBySellerId() {
 
 		// given
 		Product product = Product.builder()
