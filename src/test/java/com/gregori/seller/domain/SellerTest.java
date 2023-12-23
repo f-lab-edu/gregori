@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.gregori.seller.domain.Seller.Status.CLOSED;
 import static com.gregori.seller.domain.Seller.Status.OPERATING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SellerTest {
 	@Test
@@ -23,8 +23,8 @@ class SellerTest {
 		seller.updateSellerInfo("222-22-22222", "business name update");
 
 		// then
-		assertEquals(seller.getBusinessNumber(), "222-22-22222");
-		assertEquals(seller.getBusinessName(), "business name update");
+		assertThat(seller.getBusinessNumber()).isEqualTo("222-22-22222");
+		assertThat(seller.getBusinessName()).isEqualTo("business name update");
 	}
 
 	@Test
@@ -40,8 +40,8 @@ class SellerTest {
 		seller.operating();
 
 		// then
-		assertEquals(status, CLOSED);
-		assertEquals(seller.getStatus(), OPERATING);
+		assertThat(status).isEqualTo(CLOSED);
+		assertThat(seller.getStatus()).isEqualTo(OPERATING);
 	}
 
 	@Test
@@ -56,7 +56,7 @@ class SellerTest {
 		seller.closed();
 
 		// then
-		assertEquals(status, OPERATING);
-		assertEquals(seller.getStatus(), CLOSED);
+		assertThat(status).isEqualTo(OPERATING);
+		assertThat(seller.getStatus()).isEqualTo(CLOSED);
 	}
 }

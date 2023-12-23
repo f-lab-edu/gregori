@@ -20,7 +20,7 @@ import com.gregori.order_detail.domain.OrderDetail;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class OrderDetailMapperTest {
@@ -132,9 +132,9 @@ class OrderDetailMapperTest {
 		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
 
 		// then
-		assertEquals(result.size(), 1);
-		assertEquals(result.get(0).getId(), orderDetail.getId());
-		assertEquals(result.get(0).getProductCount(), orderDetail.getProductCount());
+		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.get(0).getId()).isEqualTo(orderDetail.getId());
+		assertThat(result.get(0).getProductCount()).isEqualTo(orderDetail.getProductCount());
 	}
 
 	@Test
@@ -158,7 +158,7 @@ class OrderDetailMapperTest {
 		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
 
 		// then
-		assertEquals(result.size(), 0);
+		assertThat(result.size()).isEqualTo(0);
 	}
 
 	@Test
@@ -190,10 +190,10 @@ class OrderDetailMapperTest {
 		List<OrderDetail> result = orderDetailMapper.findByOrderId(order.getId());
 
 		// then
-		assertEquals(result.get(0).getId(), orderDetail1.getId());
-		assertEquals(result.get(0).getProductCount(), orderDetail1.getProductCount());
-		assertEquals(result.get(1).getId(), orderDetail2.getId());
-		assertEquals(result.get(1).getProductCount(), orderDetail2.getProductCount());
+		assertThat(result.get(0).getId()).isEqualTo(orderDetail1.getId());
+		assertThat(result.get(0).getProductCount()).isEqualTo(orderDetail1.getProductCount());
+		assertThat(result.get(1).getId()).isEqualTo(orderDetail2.getId());
+		assertThat(result.get(1).getProductCount()).isEqualTo(orderDetail2.getProductCount());
 	}
 
 	@Test
@@ -225,9 +225,9 @@ class OrderDetailMapperTest {
 		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail1.getId(), orderDetail2.getId()));
 
 		// then
-		assertEquals(result.get(0).getId(), orderDetail1.getId());
-		assertEquals(result.get(0).getProductCount(), orderDetail1.getProductCount());
-		assertEquals(result.get(1).getId(), orderDetail2.getId());
-		assertEquals(result.get(1).getProductCount(), orderDetail2.getProductCount());
+		assertThat(result.get(0).getId()).isEqualTo(orderDetail1.getId());
+		assertThat(result.get(0).getProductCount()).isEqualTo(orderDetail1.getProductCount());
+		assertThat(result.get(1).getId()).isEqualTo(orderDetail2.getId());
+		assertThat(result.get(1).getProductCount()).isEqualTo(orderDetail2.getProductCount());
 	}
 }

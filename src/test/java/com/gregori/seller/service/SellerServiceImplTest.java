@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gregori.common.exception.AccessDeniedException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
@@ -19,8 +18,6 @@ import com.gregori.seller.domain.Seller;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
-
-import jakarta.validation.Validation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;

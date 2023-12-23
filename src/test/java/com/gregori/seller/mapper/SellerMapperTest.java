@@ -15,8 +15,7 @@ import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class SellerMapperTest {
@@ -70,8 +69,8 @@ class SellerMapperTest {
 		Seller result = sellerMapper.findById(seller.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
+		assertThat(result.getId()).isEqualTo(seller.getId());
+		assertThat(result.getBusinessNumber()).isEqualTo(seller.getBusinessNumber());
 	}
 
 	@Test
@@ -94,9 +93,9 @@ class SellerMapperTest {
 		Seller result = sellerMapper.findById(seller.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
-		assertEquals(result.getBusinessName(), seller.getBusinessName());
+		assertThat(result.getId()).isEqualTo(seller.getId());
+		assertThat(result.getBusinessNumber()).isEqualTo(seller.getBusinessNumber());
+		assertThat(result.getBusinessName()).isEqualTo(seller.getBusinessName());
 	}
 
 	@Test
@@ -118,7 +117,7 @@ class SellerMapperTest {
 		Seller result = sellerMapper.findById(seller.getId()).orElse(null);
 
 		// then
-		assertNull(result);
+		assertThat(result).isNull();
 	}
 
 	@Test
@@ -139,7 +138,7 @@ class SellerMapperTest {
 		List<Seller> result = sellerMapper.findByMemberId(seller.getMemberId());
 
 		// then
-		assertEquals(result.size(), 1);
+		assertThat(result.size()).isEqualTo(1);
 	}
 
 	@Test
@@ -160,8 +159,8 @@ class SellerMapperTest {
 		Seller result = sellerMapper.findById(seller.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
-		assertEquals(result.getBusinessName(), seller.getBusinessName());
+		assertThat(result.getId()).isEqualTo(seller.getId());
+		assertThat(result.getBusinessNumber()).isEqualTo(seller.getBusinessNumber());
+		assertThat(result.getBusinessName()).isEqualTo(seller.getBusinessName());
 	}
 }

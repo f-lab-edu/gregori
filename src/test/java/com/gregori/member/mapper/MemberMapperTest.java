@@ -16,8 +16,7 @@ import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.member.domain.Member.Status.ACTIVATE;
 import static com.gregori.member.domain.Member.Status.DEACTIVATE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class MemberMapperTest {
@@ -48,7 +47,7 @@ class MemberMapperTest {
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
-		assertTrue(result.isPresent());
+		assertThat(result.isPresent()).isTrue();
 	}
 
 	@Test
@@ -65,9 +64,9 @@ class MemberMapperTest {
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
-		assertTrue(result.isPresent());
-		assertEquals(member.getName(), "name");
-		assertEquals(result.get().getName(), "new name");
+		assertThat(result.isPresent()).isTrue();
+		assertThat(member.getName()).isEqualTo("name");
+		assertThat(result.get().getName()).isEqualTo("new name");
 	}
 
 	@Test
@@ -84,9 +83,9 @@ class MemberMapperTest {
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
-		assertTrue(result.isPresent());
-		assertEquals(member.getPassword(), "password");
-		assertEquals(result.get().getPassword(), "new password");
+		assertThat(result.isPresent()).isTrue();
+		assertThat(member.getPassword()).isEqualTo("password");
+		assertThat(result.get().getPassword()).isEqualTo("new password");
 	}
 
 	@Test
@@ -103,9 +102,9 @@ class MemberMapperTest {
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
-		assertTrue(result.isPresent());
-		assertEquals(member.getStatus(), ACTIVATE);
-		assertEquals(result.get().getStatus(), DEACTIVATE);
+		assertThat(result.isPresent()).isTrue();
+		assertThat(member.getStatus()).isEqualTo(ACTIVATE);
+		assertThat(result.get().getStatus()).isEqualTo(DEACTIVATE);
 	}
 
 	@Test
@@ -122,9 +121,9 @@ class MemberMapperTest {
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
-		assertTrue(result.isPresent());
-		assertEquals(member.getAuthority(), GENERAL_MEMBER);
-		assertEquals(result.get().getAuthority(), SELLING_MEMBER);
+		assertThat(result.isPresent()).isTrue();
+		assertThat(member.getAuthority()).isEqualTo(GENERAL_MEMBER);
+		assertThat(result.get().getAuthority()).isEqualTo(SELLING_MEMBER);
 	}
 
 	@Test
@@ -141,7 +140,7 @@ class MemberMapperTest {
 
 		// then
 		Optional<Member> result = memberMapper.findById(member.getId());
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -162,8 +161,8 @@ class MemberMapperTest {
 		// then
 		Optional<Member> result1 = memberMapper.findById(member1.getId());
 		Optional<Member> result2 = memberMapper.findById(member2.getId());
-		assertTrue(result1.isEmpty());
-		assertTrue(result2.isEmpty());
+		assertThat(result1.isEmpty()).isTrue();
+		assertThat(result2.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -179,8 +178,8 @@ class MemberMapperTest {
 		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getId(), member.getId());
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getId()).isEqualTo(member.getId());
 	}
 
 	@Test
@@ -196,7 +195,7 @@ class MemberMapperTest {
 		Optional<Member> result = memberMapper.findByEmail(member.getEmail());
 
 		// then
-		assertTrue(result.isPresent());
-		assertEquals(result.get().getEmail(), member.getEmail());
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getEmail()).isEqualTo(member.getEmail());
 	}
 }

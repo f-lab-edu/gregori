@@ -7,7 +7,7 @@ import static com.gregori.order_detail.domain.OrderDetail.Status.DELIVERED;
 import static com.gregori.order_detail.domain.OrderDetail.Status.PAYMENT_COMPLETED;
 import static com.gregori.order_detail.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
 import static com.gregori.order_detail.domain.OrderDetail.Status.SHIPPED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderDetailTest {
 
@@ -24,8 +24,8 @@ class OrderDetailTest {
 		orderDetail.paymentCompleted();
 
 		// then
-		assertEquals(status, SHIPMENT_PREPARATION);
-		assertEquals(orderDetail.getStatus(), PAYMENT_COMPLETED);
+		assertThat(status).isEqualTo(SHIPMENT_PREPARATION);
+		assertThat(orderDetail.getStatus()).isEqualTo(PAYMENT_COMPLETED);
 	}
 
 	@Test
@@ -40,8 +40,8 @@ class OrderDetailTest {
 		orderDetail.shipmentPreparation();
 
 		// then
-		assertEquals(status, PAYMENT_COMPLETED);
-		assertEquals(orderDetail.getStatus(), SHIPMENT_PREPARATION);
+		assertThat(status).isEqualTo(PAYMENT_COMPLETED);
+		assertThat(orderDetail.getStatus()).isEqualTo(SHIPMENT_PREPARATION);
 	}
 
 	@Test
@@ -56,8 +56,8 @@ class OrderDetailTest {
 		orderDetail.shipped();
 
 		// then
-		assertEquals(status, PAYMENT_COMPLETED);
-		assertEquals(orderDetail.getStatus(), SHIPPED);
+		assertThat(status).isEqualTo(PAYMENT_COMPLETED);
+		assertThat(orderDetail.getStatus()).isEqualTo(SHIPPED);
 	}
 
 	@Test
@@ -72,7 +72,7 @@ class OrderDetailTest {
 		orderDetail.deliveryCost();
 
 		// then
-		assertEquals(status, PAYMENT_COMPLETED);
-		assertEquals(orderDetail.getStatus(), DELIVERED);
+		assertThat(status).isEqualTo(PAYMENT_COMPLETED);
+		assertThat(orderDetail.getStatus()).isEqualTo(DELIVERED);
 	}
 }

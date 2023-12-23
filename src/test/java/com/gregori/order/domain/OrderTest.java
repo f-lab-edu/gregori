@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 import static com.gregori.order.domain.Order.Status.ORDER_CANCELLED;
 import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderTest {
 
@@ -25,9 +23,9 @@ class OrderTest {
 			.build();
 
 		// then
-		assertNotNull(order.getOrderNumber());
-		assertTrue(order.getOrderNumber().startsWith("ORD_"));
-		assertTrue(order.getOrderNumber().length() > 15);
+		assertThat(order.getOrderNumber()).isNotNull();
+		assertThat(order.getOrderNumber().startsWith("ORD_")).isTrue();
+		assertThat(order.getOrderNumber().length() > 15).isTrue();
 	}
 
 	@Test
@@ -44,8 +42,8 @@ class OrderTest {
 		Order.Status result = order.getStatus();
 
 		// then
-		assertEquals(status, ORDER_PROCESSING);
-		assertEquals(result, ORDER_CANCELLED);
+		assertThat(status).isEqualTo(ORDER_PROCESSING);
+		assertThat(result).isEqualTo(ORDER_CANCELLED);
 	}
 
 	@Test
@@ -62,8 +60,8 @@ class OrderTest {
 		Order.Status result = order.getStatus();
 
 		// then
-		assertEquals(status, ORDER_COMPLETED);
-		assertEquals(result, ORDER_PROCESSING);
+		assertThat(status).isEqualTo(ORDER_COMPLETED);
+		assertThat(result).isEqualTo(ORDER_PROCESSING);
 	}
 
 	@Test
@@ -80,7 +78,7 @@ class OrderTest {
 		Order.Status result = order.getStatus();
 
 		// then
-		assertEquals(status, ORDER_PROCESSING);
-		assertEquals(result, ORDER_COMPLETED);
+		assertThat(status).isEqualTo(ORDER_PROCESSING);
+		assertThat(result).isEqualTo(ORDER_COMPLETED);
 	}
 }

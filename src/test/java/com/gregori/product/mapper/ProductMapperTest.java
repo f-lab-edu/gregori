@@ -17,8 +17,7 @@ import com.gregori.member.mapper.MemberMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
 class ProductMapperTest {
@@ -83,9 +82,9 @@ class ProductMapperTest {
 		Product result = productMapper.findById(product.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), product.getId());
-		assertEquals(result.getSellerId(), product.getSellerId());
-		assertEquals(result.getName(), product.getName());
+		assertThat(result.getId()).isEqualTo(product.getId());
+		assertThat(result.getSellerId()).isEqualTo(product.getSellerId());
+		assertThat(result.getName()).isEqualTo(product.getName());
 	}
 
 	@Test
@@ -109,11 +108,11 @@ class ProductMapperTest {
 		Product result = productMapper.findById(product.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), product.getId());
-		assertEquals(result.getSellerId(), product.getSellerId());
-		assertEquals(result.getName(), "아이템 수정");
-		assertEquals(result.getPrice(), 999L);
-		assertEquals(result.getInventory(), 9L);
+		assertThat(result.getId()).isEqualTo(product.getId());
+		assertThat(result.getSellerId()).isEqualTo(product.getSellerId());
+		assertThat(result.getName()).isEqualTo("아이템 수정");
+		assertThat(result.getPrice()).isEqualTo(999L);
+		assertThat(result.getInventory()).isEqualTo(9L);
 	}
 
 	@Test
@@ -136,7 +135,7 @@ class ProductMapperTest {
 		Product result = productMapper.findById(product.getId()).orElse(null);
 
 		// then
-		assertNull(result);
+		assertThat(result).isNull();
 	}
 
 	@Test
@@ -158,14 +157,14 @@ class ProductMapperTest {
 		Product result = productMapper.findById(product.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), product.getId());
-		assertEquals(result.getSellerId(), product.getSellerId());
-		assertEquals(result.getName(), product.getName());
-		assertEquals(result.getPrice(), product.getPrice());
-		assertEquals(result.getInventory(), product.getInventory());
-		assertEquals(result.getStatus(), product.getStatus());
-		assertEquals(result.getCreatedAt(), product.getCreatedAt());
-		assertEquals(result.getUpdatedAt(), product.getUpdatedAt());
+		assertThat(result.getId()).isEqualTo(product.getId());
+		assertThat(result.getSellerId()).isEqualTo(product.getSellerId());
+		assertThat(result.getName()).isEqualTo(product.getName());
+		assertThat(result.getPrice()).isEqualTo(product.getPrice());
+		assertThat(result.getInventory()).isEqualTo(product.getInventory());
+		assertThat(result.getStatus()).isEqualTo(product.getStatus());
+		assertThat(result.getCreatedAt()).isEqualTo(product.getCreatedAt());
+		assertThat(result.getUpdatedAt()).isEqualTo(product.getUpdatedAt());
 	}
 
 	@Test
@@ -195,10 +194,10 @@ class ProductMapperTest {
 		List<Product> result = productMapper.findByIds(itemIds);
 
 		// then
-		assertEquals(result.get(0).getId(), product1.getId());
-		assertEquals(result.get(0).getName(), product1.getName());
-		assertEquals(result.get(1).getId(), product2.getId());
-		assertEquals(result.get(1).getName(), product2.getName());
+		assertThat(result.get(0).getId()).isEqualTo(product1.getId());
+		assertThat(result.get(0).getName()).isEqualTo(product1.getName());
+		assertThat(result.get(1).getId()).isEqualTo(product2.getId());
+		assertThat(result.get(1).getName()).isEqualTo(product2.getName());
 	}
 
 	@Test
@@ -220,14 +219,13 @@ class ProductMapperTest {
 		Product result = productMapper.findById(product.getId()).orElseThrow(NotFoundException::new);
 
 		// then
-		assertEquals(result.getId(), product.getId());
-		assertEquals(result.getSellerId(), product.getSellerId());
-		assertEquals(result.getName(), product.getName());
-		assertEquals(result.getPrice(), product.getPrice());
-		assertEquals(result.getInventory(), product.getInventory());
-		assertEquals(result.getStatus(), product.getStatus());
-		assertEquals(result.getCreatedAt(), product.getCreatedAt());
-		assertEquals(result.getUpdatedAt(), product.getUpdatedAt());
+		assertThat(result.getId()).isEqualTo(product.getId());
+		assertThat(result.getSellerId()).isEqualTo(product.getSellerId());
+		assertThat(result.getName()).isEqualTo(product.getName());
+		assertThat(result.getPrice()).isEqualTo(product.getPrice());
+		assertThat(result.getInventory()).isEqualTo(product.getInventory());
+		assertThat(result.getStatus()).isEqualTo(product.getStatus());
+		assertThat(result.getCreatedAt()).isEqualTo(product.getCreatedAt());
+		assertThat(result.getUpdatedAt()).isEqualTo(product.getUpdatedAt());
 	}
-
 }

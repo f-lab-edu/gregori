@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static com.gregori.member.domain.Member.Status.ACTIVATE;
 import static com.gregori.member.domain.Member.Status.DEACTIVATE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberTest {
 
@@ -23,8 +23,8 @@ class MemberTest {
 		Member.Status result = member.getStatus();
 
 		// then
-		assertEquals(status, DEACTIVATE);
-		assertEquals(result, ACTIVATE);
+		assertThat(status).isEqualTo(DEACTIVATE);
+		assertThat(result).isEqualTo(ACTIVATE);
 
 	}
 
@@ -41,7 +41,7 @@ class MemberTest {
 		Member.Status result = member.getStatus();
 
 		// then
-		assertEquals(status, ACTIVATE);
-		assertEquals(result, DEACTIVATE);
+		assertThat(status).isEqualTo(ACTIVATE);
+		assertThat(result).isEqualTo(DEACTIVATE);
 	}
 }

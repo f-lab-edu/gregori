@@ -8,8 +8,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class SellerUpdateDtoTest {
 
@@ -27,7 +26,7 @@ class SellerUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -41,7 +40,7 @@ class SellerUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -55,7 +54,7 @@ class SellerUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -73,9 +72,9 @@ class SellerUpdateDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -89,7 +88,7 @@ class SellerUpdateDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -107,8 +106,8 @@ class SellerUpdateDtoTest {
 		var result3 = validator.validate(dto3);
 
 		// then
-		assertFalse(result1.isEmpty());
-		assertFalse(result2.isEmpty());
-		assertFalse(result3.isEmpty());
+		assertThat(result1.isEmpty()).isFalse();
+		assertThat(result2.isEmpty()).isFalse();
+		assertThat(result3.isEmpty()).isFalse();
 	}
 }

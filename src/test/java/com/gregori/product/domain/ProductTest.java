@@ -3,7 +3,7 @@ package com.gregori.product.domain;
 import static com.gregori.product.domain.Product.Status.END_OF_SALE;
 import static com.gregori.product.domain.Product.Status.ON_SALE;
 import static com.gregori.product.domain.Product.Status.PRE_SALE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,9 +26,9 @@ class ProductTest {
 		product.updateProductInfo("name update", 9L, 99L);
 
 		// then
-		assertEquals(product.getName(), "name update");
-		assertEquals(product.getPrice(), 9L);
-		assertEquals(product.getInventory(), 99L);
+		assertThat(product.getName()).isEqualTo("name update");
+		assertThat(product.getPrice()).isEqualTo(9L);
+		assertThat(product.getInventory()).isEqualTo(99L);
 	}
 
 	@Test
@@ -49,8 +49,8 @@ class ProductTest {
 		product.preSale();
 
 		// then
-		assertEquals(status, ON_SALE);
-		assertEquals(product.getStatus(), PRE_SALE);
+		assertThat(status).isEqualTo(ON_SALE);
+		assertThat(product.getStatus()).isEqualTo(PRE_SALE);
 	}
 
 	@Test
@@ -70,8 +70,8 @@ class ProductTest {
 		product.onSale();
 
 		// then
-		assertEquals(status, PRE_SALE);
-		assertEquals(product.getStatus(), ON_SALE);
+		assertThat(status).isEqualTo(PRE_SALE);
+		assertThat(product.getStatus()).isEqualTo(ON_SALE);
 	}
 
 	@Test
@@ -90,7 +90,7 @@ class ProductTest {
 		product.endOfSale();
 
 		// then
-		assertEquals(status, PRE_SALE);
-		assertEquals(product.getStatus(), END_OF_SALE);
+		assertThat(status).isEqualTo(PRE_SALE);
+		assertThat(product.getStatus()).isEqualTo(END_OF_SALE);
 	}
 }

@@ -7,8 +7,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderDetailRequestDtoTest {
 
@@ -26,7 +25,7 @@ class OrderDetailRequestDtoTest {
 		var result = validator.validate(dto);
 
 		//then
-		assertTrue(result.isEmpty());
+		assertThat(result.isEmpty()).isTrue();
 	}
 
 	@Test
@@ -40,7 +39,7 @@ class OrderDetailRequestDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 
 	@Test
@@ -54,6 +53,6 @@ class OrderDetailRequestDtoTest {
 		var result = validator.validate(dto);
 
 		// then
-		assertFalse(result.isEmpty());
+		assertThat(result.isEmpty()).isFalse();
 	}
 }

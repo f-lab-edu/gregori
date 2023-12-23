@@ -19,7 +19,7 @@ import com.gregori.config.jwt.TokenProvider;
 import com.gregori.refresh_token.domain.RefreshToken;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -56,7 +56,7 @@ class AuthServiceImplTest {
 		TokenDto result = authService.signIn(authSignInDto);
 
 		// then
-		assertEquals(result, tokenDto);
+		assertThat(result).isEqualTo(tokenDto);
 
 		verify(authManager).authenticate(authToken);
 		verify(tokenProvider).generateToken(authentication);
