@@ -38,8 +38,8 @@ class OrderControllerTest {
 	OrderService orderService;
 
 	@Test
-	@DisplayName("새로운 주문을 요청하면 주문을 생성하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestCreateOrder() throws Exception {
+	@DisplayName("주문 생성을 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestCreateOrder() throws Exception {
 
 		// given
 		List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
@@ -60,8 +60,8 @@ class OrderControllerTest {
 	}
 
 	@Test
-	@DisplayName("클라이언트의 요청에 따라 주문을 조회한다.")
-	void should_responseSuccess_when_requestGetOrder() throws Exception {
+	@DisplayName("주문 조회를 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestGetOrder() throws Exception {
 
 		// given
 		long orderId = 1L;

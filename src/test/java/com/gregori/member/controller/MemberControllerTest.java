@@ -44,8 +44,8 @@ class MemberControllerTest {
 	MemberRegisterDto memberRegisterDto;
 
 	@Test
-	@DisplayName("회원가입을 요청하면 회원가입을 실행하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestRegister() throws Exception {
+	@DisplayName("회원가입을 요청하면 OK 응답을 반환한다.")
+	void should_responseCreated_when_requestRegister() throws Exception {
 
 		// given
 		memberRegisterDto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
@@ -64,8 +64,8 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 이름 수정을 요청하면 회원 정보를 갱신하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestUpdateMemberName() throws Exception {
+	@DisplayName("회원 이름 수정을 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestUpdateMemberName() throws Exception {
 
 		// given
 		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
@@ -89,8 +89,8 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 비밀번호 수정을 요청하면 회원 정보를 갱신하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestUpdateMemberPassword() throws Exception {
+	@DisplayName("회원 비밀번호 수정을 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestUpdateMemberPassword() throws Exception {
 
 		// given
 		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "aa11111!", "aa11111!");
@@ -114,8 +114,8 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 탈퇴를 요청하면 회원 계정을 탈퇴하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestDeleteMember() throws Exception {
+	@DisplayName("회원 탈퇴를 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestDeleteMember() throws Exception {
 
 		// given
 		Authentication authentication = mock(Authentication.class);
@@ -137,8 +137,8 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 조회를 요청하면 회원 정보를 조회하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestGetMember() throws Exception {
+	@DisplayName("회원 조회를 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestGetMember() throws Exception {
 
 		// given
 		Authentication authentication = mock(Authentication.class);
@@ -160,7 +160,7 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 id가 토큰 id과 불일치하면 AccessDeniedException이 발생한다.")
+	@DisplayName("회원 id가 토큰 id와 불일치하면 AccessDeniedException이 발생한다.")
 	void should_AccessDeniedException_when_invalidMemberId() throws Exception {
 
 		// given

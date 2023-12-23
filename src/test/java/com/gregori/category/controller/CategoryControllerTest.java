@@ -29,8 +29,8 @@ class CategoryControllerTest {
 	CategoryService categoryService;
 
 	@Test
-	@DisplayName("카테고리 생성을 요청하면 카테고리를 생성하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestSaveCategory() throws Exception {
+	@DisplayName("카테고리 생성을 요청하면 Created 응답을 반환한다.")
+	void should_responseCreated_when_requestSaveCategory() throws Exception {
 
 		// given
 		String categoryName = "name";
@@ -48,8 +48,8 @@ class CategoryControllerTest {
 	}
 
 	@Test
-	@DisplayName("카테고리 수정을 요청하면 카테고리 정보를 갱신하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestUpdateCategory() throws Exception {
+	@DisplayName("카테고리 이름 수정을 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestUpdateCategoryName() throws Exception {
 
 		// given
 		Long categoryId = 1L;
@@ -68,8 +68,8 @@ class CategoryControllerTest {
 	}
 
 	@Test
-	@DisplayName("카테고리 삭제를 요청하면 카테고리를 삭제하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestDeleteCategory() throws Exception {
+	@DisplayName("카테고리 삭제를 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestDeleteCategory() throws Exception {
 
 		// given
 		Long categoryId = 1L;
@@ -86,8 +86,8 @@ class CategoryControllerTest {
 	}
 
 	@Test
-	@DisplayName("카테고리 조회를 요청하면  카테고리 정보를 조회하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestGetCategory() throws Exception {
+	@DisplayName("카테고리 조회를 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestGetCategory() throws Exception {
 
 		// given
 		Long categoryId = 1L;
@@ -104,8 +104,8 @@ class CategoryControllerTest {
 	}
 
 	@Test
-	@DisplayName("카테고리 전체 조회를 요청하면 카테고리 정보를 전부 조회하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestGetCategories() throws Exception {
+	@DisplayName("카테고리 전체 조회를 요청하면 카테고리 정보를 전부 조회하고 OK 응답을 반환한다.")
+	void should_responseOk_when_requestGetCategories() throws Exception {
 
 		// given, when
 		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get("/category?limit=1&offset=0")

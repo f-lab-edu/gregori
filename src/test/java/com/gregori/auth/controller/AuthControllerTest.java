@@ -35,8 +35,8 @@ class AuthControllerTest {
 	AuthService authService;
 
 	@Test
-	@DisplayName("로그인을 요청하면 로그인을 실행하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestSignIn() throws Exception {
+	@DisplayName("로그인을 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestSignIn() throws Exception {
 
 		// given
 		AuthSignInDto authSignInDto = new AuthSignInDto("a@a.a", "aa11111!");
@@ -55,8 +55,8 @@ class AuthControllerTest {
 	}
 
 	@Test
-	@DisplayName("로그아웃을 요쳥하면 로그아웃을 실행하고 성공 응답을 반환한다.")
-	void should_responseSuccess_when_requestSignOut() throws Exception {
+	@DisplayName("로그아웃을 요쳥하면 OK 응답을 반환한다.")
+	void should_responseOk_when_requestSignOut() throws Exception {
 
 		// given
 		TokenRequestDto tokenRequestDto = new TokenRequestDto("access_token", "refresh_token");
