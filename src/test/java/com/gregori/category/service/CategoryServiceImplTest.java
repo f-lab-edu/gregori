@@ -100,8 +100,8 @@ class CategoryServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 카테고리가 존재하지 않으면 카테고리 삭제를 실패한다.")
-	void should_NotFoundException_when_nonExistCategoryGet() {
+	@DisplayName("카테고리를 찾지 못하면 카테고리 삭제를 실패한다.")
+	void should_NotFoundException_when_categoryGetFailure() {
 
 		// given
 		given(categoryMapper.findById(1L)).willReturn(Optional.empty());

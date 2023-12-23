@@ -11,18 +11,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gregori.order.domain.Order;
-import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order_detail.domain.OrderDetail;
-import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.order_detail.dto.OrderDetailRequestDto;
 import com.gregori.order_detail.mapper.OrderDetailMapper;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,8 +37,8 @@ class OrderServiceImplTest {
 	private OrderServiceImpl orderService;
 
 	@Test
-	@DisplayName("새로운 주문과 주문 상품을 DB에 저장하고 주문 정보를 반환한다.")
-	void should_createOrder() {
+	@DisplayName("주문 생성을 성공하면 주문을 반환한다.")
+	void should_returnOrderResponseDto_when_saveOrderSuccess() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "paymentMethod", 1L, 1L, List.of());
@@ -55,8 +51,8 @@ class OrderServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("orderId로 DB에 저장된 주문과 주문 상품을 조회해서 반환한다.")
-	void should_find_when_idMatch() {
+	@DisplayName("주문 조회를 성공하면 주문을 반환한다.")
+	void should_returnOrderResponseDto_when_getOrderSuccess() {
 
 		// given
 		Long orderId = 1L;

@@ -30,8 +30,8 @@ class ProductServiceImplTest {
 	private ProductServiceImpl productService;
 
 	@Test
-	@DisplayName("새로운 상품을 저장하고 id를 반환한다.")
-	void should_saveProduct() {
+	@DisplayName("상품 생성을 성공하면 id를 반환한다.")
+	void should_returnId_when_saveProductSuccess() {
 
 		// given
 		ProductCreateDto dto = new ProductCreateDto(1L, "name", 1L, 1L);
@@ -44,8 +44,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 저장된 상품을 수정하고 id를 반환한다.")
-	void should_updateProduct() {
+	@DisplayName("상품 갱신을 성공하면 id를 반환한다.")
+	void should_returnId_when_updateProductSuccess() {
 
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, 1L);
@@ -60,8 +60,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("DB에 저장된 상품의 상태를 변경하고 id를 반환한다.")
-	void should_updateItemStatus() {
+	@DisplayName("상품 상태 갱신을 성공하면 id를 반환한다.")
+	void should_returnId_when_updateProductStatusSuccess() {
 
 		// given
 		Long productId = 1L;
@@ -76,8 +76,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("상품의 id로 DB에 저장된 상품을 조회해서 반환한다.")
-	void should_getProduct() {
+	@DisplayName("상품 조회를 성공하면 상품을 반환한다.")
+	void should_returnProduct_when_getProductSuccess() {
 
 		// given
 		Long productId = 1L;
@@ -92,8 +92,8 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("상품 id 목록으로 DB에 저장된 상품을 전부 조회해서 반환한다.")
-	void should_getProducts() {
+	@DisplayName("상품 목록을 반환한다.")
+	void should_returnProducts() {
 
 		// given
 		List<Long> productIds = List.of(1L);
