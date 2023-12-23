@@ -24,22 +24,8 @@ class OrderRequestDtoTest {
 	private final List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
 
 	@Test
-	@DisplayName("OrderDetail 객체를 builder 패턴으로 생성한다.")
-	void toEntity() {
-
-		// given
-		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
-
-		// when
-		Order order = dto.toEntity();
-
-		// then
-		assertEquals(order.getStatus(), ORDER_PROCESSING);
-	}
-
-	@Test
 	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
-	void nullMemberIdInputFailsTest() {
+	void should_ValidException_when_nullMemberId() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(null, "method", 1L, 1L, orderDetails);
@@ -53,7 +39,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("paymentMethod 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankPaymentMethodInputFailsTest() {
+	void should_ValidException_when_blankPaymentMethod() {
 
 		// given
 		OrderRequestDto dto1 = new OrderRequestDto(1L, null, 1L, 1L, orderDetails);
@@ -73,7 +59,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("PaymentAmount 필드가 비어 있으면 에러가 발생한다.")
-	void nullPaymentAmountInputFailsTest() {
+	void should_ValidException_when_nullPaymentAmount() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", null, 1L, orderDetails);
@@ -87,7 +73,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("deliveryCost 필드가 비어 있으면 에러가 발생한다.")
-	void nullDeliveryCostInputFailsTest() {
+	void should_ValidException_when_nullDeliveryCost() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, null, orderDetails);
@@ -101,7 +87,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("orderDetails 필드가 비어 있으면 에러가 발생한다.")
-	void nullOrderDetailsInputFailsTest() {
+	void should_ValidException_when_nullOrderDetails() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, null);
@@ -115,7 +101,7 @@ class OrderRequestDtoTest {
 
 	@Test
 	@DisplayName("입력값이 올바르면 OrderRequestDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	void should_craeteOrderRequestDto_when_validInput() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
@@ -125,5 +111,19 @@ class OrderRequestDtoTest {
 
 		//then
 		assertTrue(result.isEmpty());
+	}
+
+	@Test
+	@DisplayName("AuthSignInDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
+	void should_getFields_when_createAuthSignInDto() {
+
+		// given
+		OrderRequestDto dto = new OrderRequestDto(1L, "method", 1L, 1L, orderDetails);
+
+		// when
+		Order order = dto.toEntity();
+
+		// then
+		assertEquals(order.getStatus(), ORDER_PROCESSING);
 	}
 }

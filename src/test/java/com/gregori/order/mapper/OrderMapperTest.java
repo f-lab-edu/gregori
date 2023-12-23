@@ -8,10 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
 
+import com.gregori.common.CustomMybatisTest;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
@@ -20,8 +19,7 @@ import com.gregori.order.domain.Order;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@CustomMybatisTest
 class OrderMapperTest {
 
 	@Autowired
@@ -29,9 +27,6 @@ class OrderMapperTest {
 
 	@Autowired
 	private OrderMapper orderMapper;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	Member member;
 	List<Long> orderIds = new ArrayList<>();
@@ -41,7 +36,7 @@ class OrderMapperTest {
 		member = Member.builder()
 			.email("a@a.a")
 			.name("일호")
-			.password(passwordEncoder.encode("aa11111!"))
+			.password("aa11111!")
 			.build();
 		memberMapper.insert(member);
 	}
@@ -60,7 +55,7 @@ class OrderMapperTest {
 
 	@Test
 	@DisplayName("Orders 테이블에 새로운 주문을 삽입한다.")
-	void insert() {
+	void should_insert_when_validOrder() {
 
 		// given
 		Order order = Order.builder()
@@ -82,8 +77,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Orders 테이블에서 id가 일치하는 주문을 삭제한다.")
-	void deleteByIds() {
+	@DisplayName("DB에서 id가 일치하는 주문을 삭제한다.")
+	void should_delete_when_idMatch() {
 
 		// given
 		Order order = Order.builder()
@@ -105,8 +100,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Orders 테이블에서 id가 일치하는 주문을 조회한다.")
-	void findById() {
+	@DisplayName("DB에 id가 일치하는 주문을 조회한다.")
+	void should_find_when_idMatch() {
 
 		// given
 		Order order = Order.builder()
@@ -133,8 +128,8 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Orders 테이블에서 memberId가 일치하는 주문을 조회한다.")
-	void findByMemberId() {
+	@DisplayName("DB에 memberId가 일치하는 주문을 조회한다.")
+	void should_find_when_memberIdMatch() {
 
 		// given
 		Order order1 = Order.builder()
