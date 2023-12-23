@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gregori.common.exception.AccessDeniedException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.product.mapper.ProductMapper;
@@ -18,6 +19,8 @@ import com.gregori.seller.domain.Seller;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
+
+import jakarta.validation.Validation;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -82,8 +85,8 @@ class SellerServiceImplTest {
 		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
 
 		// when, then
-		assertThrows(AccessDeniedException.class, () -> sellerService.saveSeller(dto));
-		assertThrows(AccessDeniedException.class, () -> sellerService.updateSeller(sellerUpdateDto));
+		assertThrows(ValidationException.class, () -> sellerService.saveSeller(dto));
+		assertThrows(ValidationException.class, () -> sellerService.updateSeller(sellerUpdateDto));
 	}
 
 	@Test
