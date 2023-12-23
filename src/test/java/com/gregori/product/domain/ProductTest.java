@@ -13,7 +13,7 @@ class ProductTest {
 
 	@Test
 	@DisplayName("Item 객체의 필드를 수정한다.")
-	void updateItemInfo() {
+	void should_updateItemInfo() {
 
 		// given
 		Product product = Product.builder()
@@ -34,7 +34,7 @@ class ProductTest {
 
 	@Test
 	@DisplayName("Item 객체의 상태를 'PRE_SALE'로 변경한다.")
-	void preSale() {
+	void should_preSale() {
 
 		// given
 		Product product = Product.builder()
@@ -56,7 +56,7 @@ class ProductTest {
 
 	@Test
 	@DisplayName("Item 객체의 상태를 'ON_SALE'로 변경한다.")
-	void onSale() {
+	void should_onSale() {
 
 		// given
 		Product product = Product.builder()
@@ -77,7 +77,7 @@ class ProductTest {
 
 	@Test
 	@DisplayName("Item 객체의 상태를 'END_OF_SALE'로 변경한다.")
-	void endOfSale() {
+	void should_endOfSale() {
 
 		// given
 		Product product = Product.builder()
@@ -96,29 +96,12 @@ class ProductTest {
 	}
 
 	@Test
-	@DisplayName("Item 객체의 필드를 getter 메서드로 조회한다.")
-	void getterTest() {
-
-		// given
-		Product product = new Product(1L, "name", 1L, 10L);
-
-		// then
-		assertNull(product.getId());
-		assertEquals(product.getSellerId(), 1L);
-		assertEquals(product.getName(), "name");
-		assertEquals(product.getPrice(), 1L);
-		assertEquals(product.getInventory(), 10L);
-		assertEquals(product.getStatus().toString(), "PRE_SALE");
-		assertNull(product.getCreatedAt());
-		assertNull(product.getUpdatedAt());
-	}
-
-	@Test
-	@DisplayName("Item 객체를 builder 패턴으로 생성한다.")
-	void builder() {
+	@DisplayName("Product 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
+	void should_getFields_when_buildProduct() {
 
 		// given
 		Product product = Product.builder()
+			.sellerId(1L)
 			.name("name")
 			.price(1L)
 			.inventory(10L)
@@ -126,6 +109,7 @@ class ProductTest {
 
 		// then
 		assertNull(product.getId());
+		assertEquals(product.getSellerId(), 1L);
 		assertEquals(product.getName(), "name");
 		assertEquals(product.getPrice(), 1L);
 		assertEquals(product.getInventory(), 10L);

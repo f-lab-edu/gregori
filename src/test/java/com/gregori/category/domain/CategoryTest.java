@@ -24,7 +24,7 @@ class CategoryTest {
 
 	@Test
 	@DisplayName("Category 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void should_getFields_when_buildMember() {
+	void should_getFields_when_buildCategory() {
 
 		// given
 		Category category = Category.builder()

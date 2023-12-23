@@ -23,8 +23,8 @@ class RefreshTokenTest {
 	}
 
 	@Test
-	@DisplayName("Member 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void should_getFields_when_buildMember() {
+	@DisplayName("RefreshToken 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
+	void should_getFields_when_buildRefreshToken() {
 
 		// given
 		RefreshToken refreshToken = RefreshToken.builder()

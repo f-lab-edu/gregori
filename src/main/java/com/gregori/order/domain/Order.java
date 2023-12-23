@@ -37,14 +37,14 @@ public class Order extends AbstractEntity {
 	@Builder
 	public Order(Long memberId, String paymentMethod, Long paymentAmount, Long deliveryCost) {
 		this.memberId = memberId;
-		this.orderNumber = orderNumberGenerator();
+		this.orderNumber = generateOrderNumber();
 		this.paymentMethod = paymentMethod;
 		this.paymentAmount = paymentAmount;
 		this.deliveryCost = deliveryCost;
 		this.status = Status.ORDER_PROCESSING;
 	}
 
-	private String orderNumberGenerator() {
+	private String generateOrderNumber() {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		String datetime = LocalDateTime.now().format(formatter);
 

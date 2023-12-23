@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 class SellerTest {
 	@Test
 	@DisplayName("Seller 객체의 필드를 수정한다.")
-	void updateSellerInfo() {
+	void should_updateSellerInfo() {
 
 		// given
 		Seller seller = Seller.builder()
@@ -30,13 +30,10 @@ class SellerTest {
 
 	@Test
 	@DisplayName("Seller 객체의 Status를 'OPERATING'로 변경한다.")
-	void statusTest() {
+	void should_operating() {
 
 		// given
-		Seller seller = Seller.builder()
-			.businessNumber("123-45-67890")
-			.businessName("business name")
-			.build();
+		Seller seller = new Seller(1L, "123-45-67890", "businessName");
 		seller.closed();
 		Seller.Status status = seller.getStatus();
 
@@ -50,24 +47,23 @@ class SellerTest {
 
 	@Test
 	@DisplayName("Seller 객체의 Status를 'CLOSED'로 변경한다.")
-	void closed() {
+	void should_closed() {
 
 		// given
-		Seller seller = Seller.builder()
-			.businessNumber("123-45-67890")
-			.businessName("business name")
-			.build();
+		Seller seller = new Seller(1L, "123-45-67890", "businessName");
+		Seller.Status status = seller.getStatus();
 
 		// when
 		seller.closed();
 
 		// then
+		assertEquals(status, OPERATING);
 		assertEquals(seller.getStatus(), CLOSED);
 	}
 
 	@Test
 	@DisplayName("Seller 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void getterTest() {
+	void should_getFields_when_buildSeller() {
 
 		// given
 		Seller seller = Seller.builder()

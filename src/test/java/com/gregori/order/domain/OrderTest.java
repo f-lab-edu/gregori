@@ -15,7 +15,7 @@ class OrderTest {
 
 	@Test
 	@DisplayName("15자리 이상의 주문 번호를 생성한다.")
-	void orderNumberGenerator() {
+	void should_generateOrderNumber() {
 
 		// given
 		Order order = Order.builder()
@@ -87,7 +87,7 @@ class OrderTest {
 
 	@Test
 	@DisplayName("Order 객체를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void builderAndGetterTest() {
+	void should_getFields_when_buildOrder() {
 
 		// given
 		Order order = Order.builder()
