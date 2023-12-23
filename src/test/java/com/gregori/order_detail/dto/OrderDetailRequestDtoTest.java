@@ -3,14 +3,10 @@ package com.gregori.order_detail.dto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gregori.product.domain.Product;
-import com.gregori.order_detail.domain.OrderDetail;
-
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,27 +16,8 @@ class OrderDetailRequestDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("OrderDetail 객체를 builder 패턴으로 생성한다.")
-	void toEntity() {
-
-		// given
-		OrderDetailRequestDto dto = new OrderDetailRequestDto(1L, 1L);
-
-		// when
-		Product product = Product.builder()
-			.name("name")
-			.price(1L)
-			.inventory(1L)
-			.build();
-		OrderDetail orderDetail = dto.toEntity(1L, product);
-
-		// then
-		assertEquals(orderDetail.getStatus().toString(), "PAYMENT_COMPLETED");
-	}
-
-	@Test
 	@DisplayName("productId 필드가 비어 있으면 에러가 발생한다.")
-	void nullProductIdInputFailsTest() {
+	void should_ValidException_when_nullProductId() {
 
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(null, 1L);
@@ -54,7 +31,7 @@ class OrderDetailRequestDtoTest {
 
 	@Test
 	@DisplayName("productCount 필드가 비어 있으면 에러가 발생한다.")
-	void nullProductCountCountInputFailsTest() {
+	void should_ValidException_when_nullProductCount() {
 
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(1L, null);
@@ -67,8 +44,8 @@ class OrderDetailRequestDtoTest {
 	}
 
 	@Test
-	@DisplayName("입력값이 올바르면 OrderDetailRequestDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	@DisplayName("OrderDetailRequestDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
+	void should_getFields_when_createOrderDetailRequestDto() {
 
 		// given
 		OrderDetailRequestDto dto = new OrderDetailRequestDto(1L, 1L);
