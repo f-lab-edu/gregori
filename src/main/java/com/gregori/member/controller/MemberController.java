@@ -4,6 +4,7 @@ import java.net.URI;
 
 import com.gregori.common.exception.AccessDeniedException;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
+
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberNameUpdateDto;
