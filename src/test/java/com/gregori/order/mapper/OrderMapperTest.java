@@ -53,7 +53,7 @@ class OrderMapperTest {
 	}
 
 	@Test
-	@DisplayName("Orders 테이블에 새로운 주문을 삽입한다.")
+	@DisplayName("DB에 새로운 주문을 삽입한다.")
 	void should_insert_when_validOrder() {
 
 		// given

@@ -16,7 +16,7 @@ class ProductUpdateDtoTest {
 
 	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
-	void nullIdInputFailsTest() {
+	void should_ValidException_when_nullId() {
 
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(null, "name", 1L, 1L);
@@ -30,7 +30,7 @@ class ProductUpdateDtoTest {
 
 	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankNameInputFailsTest() {
+	void should_ValidException_when_blankName() {
 
 		// given
 		ProductUpdateDto dto1 = new ProductUpdateDto(1L, null, 1L, 1L);
@@ -50,7 +50,7 @@ class ProductUpdateDtoTest {
 
 	@Test
 	@DisplayName("price 필드가 비어 있으면 에러가 발생한다.")
-	void nullPriceInputFailsTest() {
+	void should_ValidException_when_nullPrice() {
 
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", null, 1L);
@@ -64,7 +64,7 @@ class ProductUpdateDtoTest {
 
 	@Test
 	@DisplayName("inventory 필드가 비어 있으면 에러가 발생한다.")
-	void nullInventoryInputFailsTest() {
+	void should_ValidException_when_nullInventory() {
 
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, null);
@@ -77,8 +77,8 @@ class ProductUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("입력값이 올바르면 ItemUpdateDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	@DisplayName("ProductUpdateDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
+	void should_getFields_when_createProductUpdateDto() {
 
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, 1L);

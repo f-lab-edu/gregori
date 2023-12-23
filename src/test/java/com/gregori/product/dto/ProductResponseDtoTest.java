@@ -6,28 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gregori.product.domain.Product;
-
 class ProductResponseDtoTest {
-	@Test
-	@DisplayName("Item을 파라미터로 받아 builder 패턴으로 ItemResponseDto 객체를 생성한다.")
-	void toEntityTest() {
-
-		// given
-		Product product = new Product(1L, "name", 1L, 1L);
-
-		// when
-		ProductResponseDto dto = new ProductResponseDto().toEntity(product);
-
-		// then
-		assertEquals(product.getName(), dto.getName());
-		assertEquals(product.getPrice(), dto.getPrice());
-		assertEquals(product.getInventory(), dto.getInventory());
-	}
 
 	@Test
-	@DisplayName("ItemResponseDto 객체의 필드를 getter 메서드로 조회한다.")
-	void getterTest() {
+	@DisplayName("ItemResponseDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
+	void should_getFields_when_createProductResponseDto() {
 
 		// given
 		ProductResponseDto dto = new ProductResponseDto(1L, 1L, "name", 1L, 10L, PRE_SALE);

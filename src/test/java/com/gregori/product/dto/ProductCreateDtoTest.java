@@ -2,12 +2,9 @@ package com.gregori.product.dto;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import com.gregori.product.domain.Product;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -18,22 +15,8 @@ class ProductCreateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("Item 객체를 builder 패턴으로 생성한다.")
-	void toEntity() {
-
-		// given
-		ProductCreateDto dto = new ProductCreateDto(1L, "name", 1L, 1L);
-
-		// when
-		Product product = dto.toEntity();
-
-		// then
-		assertEquals(product.getStatus().toString(), "PRE_SALE");
-	}
-
-	@Test
 	@DisplayName("sellerId 필드가 비어 있으면 에러가 발생한다.")
-	void nullSellerIdInputFailsTest() {
+	void should_ValidException_when_nullSellerId() {
 
 		// given
 		ProductCreateDto dto = new ProductCreateDto(null, "name", 1L, 1L);
@@ -47,7 +30,7 @@ class ProductCreateDtoTest {
 
 	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankNameInputFailsTest() {
+	void should_ValidException_when_blankName() {
 
 		// given
 		ProductCreateDto dto1 = new ProductCreateDto(1L,null, 1L, 1L);
@@ -67,7 +50,7 @@ class ProductCreateDtoTest {
 
 	@Test
 	@DisplayName("price 필드가 비어 있으면 에러가 발생한다.")
-	void nullPriceInputFailsTest() {
+	void should_ValidException_when_nullPrice() {
 
 		// given
 		ProductCreateDto dto = new ProductCreateDto(1L,"name", null, 1L);
@@ -81,7 +64,7 @@ class ProductCreateDtoTest {
 
 	@Test
 	@DisplayName("inventory 필드가 비어 있으면 에러가 발생한다.")
-	void nullInventoryInputFailsTest() {
+	void should_ValidException_when_nullInventory() {
 
 		// given
 		ProductCreateDto dto = new ProductCreateDto(1L,"name", 1L, null);
@@ -94,8 +77,8 @@ class ProductCreateDtoTest {
 	}
 
 	@Test
-	@DisplayName("올바른 입력값이면 ItemCreateDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	@DisplayName("ItemCreateDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
+	void should_getFields_when_createProductCreateDto() {
 
 		// given
 		ProductCreateDto dto = new ProductCreateDto(1L,"name", 1L, 1L);

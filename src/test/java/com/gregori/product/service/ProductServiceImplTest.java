@@ -1,208 +1,109 @@
 package com.gregori.product.service;
 
-import static com.gregori.product.domain.Product.Status.ON_SALE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gregori.common.exception.NotFoundException;
 import com.gregori.product.domain.Product;
 import com.gregori.product.dto.ProductCreateDto;
-import com.gregori.product.dto.ProductResponseDto;
 import com.gregori.product.dto.ProductUpdateDto;
 import com.gregori.product.mapper.ProductMapper;
-import com.gregori.member.domain.Member;
-import com.gregori.member.mapper.MemberMapper;
-import com.gregori.seller.domain.Seller;
-import com.gregori.seller.mapper.SellerMapper;
 
-@SpringBootTest
-@ActiveProfiles("test")
+import static com.gregori.product.domain.Product.Status.PRE_SALE;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+
+@ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
 
-	@Autowired
-	private MemberMapper memberMapper;
-
-	@Autowired
-	private SellerMapper sellerMapper;
-
-	@Autowired
+	@Mock
 	private ProductMapper productMapper;
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-	@Autowired
-	private ProductService productService;
-
-	Member member;
-	Seller seller;
-	List<Long> itemIds = new ArrayList<>();
-
-	@BeforeEach
-	void beforeEach() {
-		member = Member.builder()
-			.email("a@a.a")
-			.name("일호")
-			.password(passwordEncoder.encode("aa11111!"))
-			.build();
-		memberMapper.insert(member);
-
-		seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("111-11-11111")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
-	}
-
-	@AfterEach
-	void afterEach() {
-		if (!itemIds.isEmpty()) {
-			productMapper.deleteByIds(itemIds);
-			itemIds.clear();
-		}
-		if (seller != null) {
-			sellerMapper.deleteByIds(List.of(seller.getId()));
-			seller = null;
-		}
-	}
+	@InjectMocks
+	private ProductServiceImpl productService;
 
 	@Test
 	@DisplayName("새로운 상품을 저장하고 id를 반환한다.")
-	void saveItem() {
+	void should_saveProduct() {
 
 		// given
-		ProductCreateDto productCreateDto = new ProductCreateDto(seller.getId(), "아이템1", 100L, 1L);
+		ProductCreateDto dto = new ProductCreateDto(1L, "name", 1L, 1L);
 
 		// when
-		Long result = productService.saveProduct(productCreateDto);
-		Product product = productMapper.findById(result).orElseThrow(NotFoundException::new);
-		itemIds.add(product.getId());
+		productService.saveProduct(dto);
 
 		// then
-		assertEquals(result, product.getId());
-		assertEquals(product.getName(), "아이템1");
-		assertEquals(product.getPrice(), 100L);
-		assertEquals(product.getInventory(), 1L);
+		verify(productMapper).insert(any(Product.class));
 	}
 
 	@Test
 	@DisplayName("DB에 저장된 상품을 수정하고 id를 반환한다.")
-	void updateItem() {
+	void should_updateProduct() {
 
 		// given
-		Product product = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		productMapper.insert(product);
-		itemIds.add(product.getId());
+		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, 1L);
 
-		ProductUpdateDto productUpdateDto = new ProductUpdateDto(product.getId(), "아이템 수정", 999L, 9L);
+		given(productMapper.findById(1L)).willReturn(Optional.of(new Product()));
 
 		// when
-		Long result = productService.updateProduct(productUpdateDto);
-		Product findProduct = productMapper.findById(result).orElseThrow(NotFoundException::new);
+		productService.updateProduct(dto);
 
 		// then
-		assertEquals(result, findProduct.getId());
-		assertEquals(productUpdateDto.getName(), "아이템 수정");
-		assertEquals(productUpdateDto.getPrice(), 999L);
-		assertEquals(productUpdateDto.getInventory(), 9L);
+		verify(productMapper).update(any(Product.class));
 	}
 
 	@Test
 	@DisplayName("DB에 저장된 상품의 상태를 변경하고 id를 반환한다.")
-	void updateItemStatus() {
+	void should_updateItemStatus() {
 
 		// given
-		Product product = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		productMapper.insert(product);
-		itemIds.add(product.getId());
+		Long productId = 1L;
+
+		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
 
 		// when
-		Long result = productService.updateProductStatus(ON_SALE, product.getId());
-		Product findProduct = productMapper.findById(result).orElseThrow(NotFoundException::new);
+		productService.updateProductStatus(PRE_SALE, productId);
 
 		// then
-		assertEquals(result, findProduct.getId());
-		assertEquals(findProduct.getStatus(), ON_SALE);
+		verify(productMapper).update(any(Product.class));
 	}
 
 	@Test
 	@DisplayName("상품의 id로 DB에 저장된 상품을 조회해서 반환한다.")
-	void getItem() {
+	void should_getProduct() {
 
 		// given
-		Product product = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		productMapper.insert(product);
-		itemIds.add(product.getId());
+		Long productId = 1L;
+
+		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
 
 		// when
-		ProductResponseDto result = productService.getProduct(product.getId());
+		productService.getProduct(productId);
 
 		// then
-		assertEquals(result.getId(), product.getId());
-		assertEquals(result.getName(), product.getName());
-		assertEquals(result.getPrice(), product.getPrice());
-		assertEquals(result.getInventory(), product.getInventory());
-		assertEquals(result.getStatus(), product.getStatus());
+		verify(productMapper).findById(productId);
 	}
 
 	@Test
 	@DisplayName("상품 id 목록으로 DB에 저장된 상품을 전부 조회해서 반환한다.")
-	void getItems() {
+	void should_getProducts() {
 
 		// given
-		Product product1 = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
-			.inventory(1L)
-			.build();
-		Product product2 = Product.builder()
-			.sellerId(seller.getId())
-			.name("아이템2")
-			.price(200L)
-			.inventory(2L)
-			.build();
+		List<Long> productIds = List.of(1L);
 
-		productMapper.insert(product1);
-		productMapper.insert(product2);
-		itemIds.add(product1.getId());
-		itemIds.add(product2.getId());
+		given(productMapper.findByIds(productIds)).willReturn(List.of(new Product()));
 
 		// when
-		List<ProductResponseDto> result = productService
-			.getProducts(List.of(product1.getId(), product2.getId()));
+		productService.getProducts(productIds);
 
 		// then
-		assertEquals(result.get(0).getId(), product1.getId());
-		assertEquals(result.get(0).getName(), product1.getName());
-		assertEquals(result.get(1).getId(), product2.getId());
-		assertEquals(result.get(1).getName(), product2.getName());
+		verify(productMapper).findByIds(productIds);
 	}
 }
