@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 public class Category extends AbstractEntity {
 
-	Long id;
-	String name;
+	private Long id;
+	private String name;
 
 	@Builder
 	public Category(String name) {
