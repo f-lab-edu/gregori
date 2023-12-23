@@ -9,20 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 class MemberTest {
-	@Test
-	@DisplayName("Member 객체의 필드를 수정한다.")
-	void should_updateMemberInfo() {
-
-		// given
-		Member member = new Member("name", "email", "password");
-
-		// when
-		member.updateMemberInfo("new name", "new password");
-
-		// then
-		assertEquals(member.getName(), "new name");
-		assertEquals(member.getPassword(), "new password");
-	}
 
 	@Test
 	@DisplayName("Member 객체의 상태를 'ACTIAVTE'로 변경한다.")

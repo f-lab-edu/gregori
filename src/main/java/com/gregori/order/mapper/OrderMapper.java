@@ -13,4 +13,5 @@ public interface OrderMapper {
 	Long insert(Order order);
 	void deleteByIds(List<Long> orderIds);
 	Optional<Order> findById(Long orderId);
+	List<Order> findByMemberId(Long memberId);
 }

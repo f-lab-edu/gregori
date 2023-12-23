@@ -24,4 +24,10 @@
         FROM orders
         WHERE id = #{id}
     </select>
+
+    <select id="findByMemberId" resultType="com.gregori.order.domain.Order" parameterType="Long">
+        SELECT id, member_id, order_number, payment_method, payment_amount, delivery_cost, status
+        FROM orders
+        WHERE member_id = #{memberId}
+    </select>
 </mapper>

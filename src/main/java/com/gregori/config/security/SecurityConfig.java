@@ -12,6 +12,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import com.gregori.config.jwt.JwtSecurityConfig;
 import com.gregori.config.jwt.TokenProvider;
+import com.gregori.member.mapper.MemberMapper;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class SecurityConfig {
 	private final String[] allowedURL = { "/", "/member/register", "/auth/**", "/items", "/order", "/seller/register" };
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenMapper refreshTokenMapper;
+	private final MemberMapper memberMapper;
 
 	@Bean
 	@Profile("test")
@@ -48,7 +50,7 @@ public class SecurityConfig {
 
 			.securityMatcher(toH2Console())
 
-			.apply(new JwtSecurityConfig(tokenProvider, refreshTokenMapper));
+			.apply(new JwtSecurityConfig(tokenProvider, refreshTokenMapper, memberMapper));
 
 		return http.build();
 	}
@@ -72,7 +74,7 @@ public class SecurityConfig {
 				.requestMatchers("/category/**").hasRole(ADMIN_MEMBER.toString())
 				.anyRequest().authenticated())
 
-			.apply(new JwtSecurityConfig(tokenProvider, refreshTokenMapper));
+			.apply(new JwtSecurityConfig(tokenProvider, refreshTokenMapper, memberMapper));
 
 		return http.build();
 	}

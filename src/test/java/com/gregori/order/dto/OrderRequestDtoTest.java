@@ -12,6 +12,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +34,7 @@ class OrderRequestDtoTest {
 		Order order = dto.toEntity();
 
 		// then
-		assertEquals(order.getStatus().toString(), "ORDER_COMPLETED");
+		assertEquals(order.getStatus(), ORDER_PROCESSING);
 	}
 
 	@Test

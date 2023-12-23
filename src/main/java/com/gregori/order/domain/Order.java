@@ -27,8 +27,9 @@ public class Order extends AbstractEntity {
 	@RequiredArgsConstructor
 	public enum Status {
 
-		ORDER_COMPLETED("주문 완료"),
-		ORDER_CANCELLED("주문 취소");
+		ORDER_CANCELLED("주문 취소"),
+		ORDER_PROCESSING("주문 진행중"),
+		ORDER_COMPLETED("주문 완료");
 
 		private final String description;
 	}
@@ -40,7 +41,7 @@ public class Order extends AbstractEntity {
 		this.paymentMethod = paymentMethod;
 		this.paymentAmount = paymentAmount;
 		this.deliveryCost = deliveryCost;
-		this.status = Status.ORDER_COMPLETED;
+		this.status = Status.ORDER_PROCESSING;
 	}
 
 	private String orderNumberGenerator() {
@@ -53,11 +54,15 @@ public class Order extends AbstractEntity {
 		return "ORD_" + datetime + memberId + randomNumber;
 	}
 
-	public void orderCompleted() {
-		this.status = Status.ORDER_COMPLETED;
-	}
-
 	public void orderCancelled() {
 		this.status = Status.ORDER_CANCELLED;
+	}
+
+	public void orderProcessing() {
+		this.status = Status.ORDER_PROCESSING;
+	}
+
+	public void orderCompleted() {
+		this.status = Status.ORDER_COMPLETED;
 	}
 }

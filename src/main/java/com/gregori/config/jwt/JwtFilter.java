@@ -7,7 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.UnauthorizedException;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
 import com.gregori.refresh_token.mapper.RefreshTokenMapper;
 
 import jakarta.servlet.FilterChain;
@@ -17,6 +20,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gregori.member.domain.Member.Status.DEACTIVATE;
+import static java.lang.Long.parseLong;
+
 @Slf4j
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
@@ -25,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
 	public static final String BEARER_PREFIX = "Bearer";
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenMapper refreshTokenMapper;
+	private final MemberMapper memberMapper;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
@@ -33,10 +40,16 @@ public class JwtFilter extends OncePerRequestFilter {
 		String requestURI = request.getRequestURI();
 		String jwt = resolveToken(request);
 
-
 		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 			Authentication authentication = tokenProvider.getAuthentication(jwt);
-			refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
+			String username = authentication.getName();
+			Member member = memberMapper.findById(parseLong(username)).orElseThrow(NotFoundException::new);
+
+			if (member.getStatus() == DEACTIVATE) {
+				throw new UnauthorizedException("탈퇴한 사용자입니다.");
+			}
+
+			refreshTokenMapper.findByRefreshTokenKey(username)
 				.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
 
 			SecurityContextHolder.getContext().setAuthentication(authentication);
