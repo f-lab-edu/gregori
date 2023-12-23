@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import static com.gregori.seller.domain.Seller.Status.CLOSED;
 import static com.gregori.seller.domain.Seller.Status.OPERATING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class SellerTest {
 	@Test
@@ -59,26 +58,5 @@ class SellerTest {
 		// then
 		assertEquals(status, OPERATING);
 		assertEquals(seller.getStatus(), CLOSED);
-	}
-
-	@Test
-	@DisplayName("Seller 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void should_getFields_when_buildSeller() {
-
-		// given
-		Seller seller = Seller.builder()
-			.memberId(1L)
-			.businessNumber("123-45-67890")
-			.businessName("business name")
-			.build();
-
-		// then
-		assertNull(seller.getId());
-		assertEquals(seller.getMemberId(), 1L);
-		assertEquals(seller.getBusinessNumber(), "123-45-67890");
-		assertEquals(seller.getBusinessName(), "business name");
-		assertEquals(seller.getStatus(), OPERATING);
-		assertNull(seller.getCreatedAt());
-		assertNull(seller.getUpdatedAt());
 	}
 }

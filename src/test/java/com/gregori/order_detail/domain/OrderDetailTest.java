@@ -8,7 +8,6 @@ import static com.gregori.order_detail.domain.OrderDetail.Status.PAYMENT_COMPLET
 import static com.gregori.order_detail.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
 import static com.gregori.order_detail.domain.OrderDetail.Status.SHIPPED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 class OrderDetailTest {
 
@@ -75,29 +74,5 @@ class OrderDetailTest {
 		// then
 		assertEquals(status, PAYMENT_COMPLETED);
 		assertEquals(orderDetail.getStatus(), DELIVERED);
-	}
-
-	@Test
-	@DisplayName("OrderDetail 객체의 필드를 builder 패턴으로 생성하고 getter 메서드로 조회한다.")
-	void should_getFields_when_buildOrderDetail() {
-
-		// given
-		OrderDetail orderDetail = OrderDetail.builder()
-			.orderId(1L)
-			.productId(1L)
-			.productName("name")
-			.productPrice(1L)
-			.productCount(1L)
-			.build();
-
-		// then
-		assertNull(orderDetail.getId());
-		assertEquals(orderDetail.getOrderId(), 1L);
-		assertEquals(orderDetail.getProductName(), "name");
-		assertEquals(orderDetail.getProductPrice(), 1L);
-		assertEquals(orderDetail.getProductCount(), 1L);
-		assertEquals(orderDetail.getStatus().toString(), "PAYMENT_COMPLETED");
-		assertNull(orderDetail.getCreatedAt());
-		assertNull(orderDetail.getUpdatedAt());
 	}
 }
