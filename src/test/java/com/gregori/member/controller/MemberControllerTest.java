@@ -177,6 +177,6 @@ class MemberControllerTest {
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isForbidden()).andDo(print());
 	}
 }
