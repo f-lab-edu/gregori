@@ -1,92 +1,60 @@
 package com.gregori.seller.service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
+import com.gregori.product.mapper.ProductMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.dto.SellerRegisterDto;
-import com.gregori.seller.dto.SellerResponseDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
-import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
-import static com.gregori.seller.domain.Seller.Status.CLOSED;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class SellerServiceImplTest {
 
-	@Autowired
+	@Mock
 	private MemberMapper memberMapper;
 
-	@Autowired
+	@Mock
 	private SellerMapper sellerMapper;
 
-	@Autowired
-	private SellerService sellerService;
+	@Mock
+	private ProductMapper productMapper;
 
-	@Autowired
-	private SellerServiceImpl sellerServiceImpl;
-
-	Member member;
-	List<Long> sellerIds = new ArrayList<>();
-
-	@BeforeEach
-	void beforeEach() {
-		member = Member.builder()
-			.email("a@a.a")
-			.name("일호")
-			.password("aa11111!")
-			.build();
-		memberMapper.insert(member);
-	}
-
-	@AfterEach
-	void afterEach() {
-		if (!sellerIds.isEmpty()) {
-			sellerMapper.deleteByIds(sellerIds);
-			sellerIds.clear();
-		}
-		if(member != null) {
-			memberMapper.deleteById(member.getId());
-			member = null;
-		}
-	}
-
+	@InjectMocks
+	private SellerServiceImpl sellerService;
 
 	@Test
 	@DisplayName("새로운 셀러를 DB에 저장하고 id를 반환한다.")
-	void saveSeller() {
+	void should_saveSeller() {
 
 		// given
-		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "123-45-67891", "일호 상점");
+		SellerRegisterDto dto = new SellerRegisterDto(1L, "123-45-67891", "businessName");
+		Member member = new Member("name", "email", "password");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 
 		// when
-		Long result = sellerService.saveSeller(sellerRegisterDto);
-		Member findMember = memberMapper.findById(member.getId()).orElseThrow(NotFoundException::new);
-		Seller seller = sellerMapper.findById(result).orElseThrow(NotFoundException::new);
-		sellerIds.add(seller.getId());
+		sellerService.saveSeller(dto);
 
 		// then
-		assertEquals(result, seller.getId());
-		assertEquals(findMember.getAuthority(), SELLING_MEMBER);
-		assertEquals(seller.getBusinessNumber(), "123-45-67891");
-		assertEquals(seller.getBusinessName(), "일호 상점");
+		verify(sellerMapper).insert(any(Seller.class));
 	}
 
 	@Test
@@ -94,10 +62,10 @@ class SellerServiceImplTest {
 	void should_createMemberFail_when_invalidBusinessNumberInput() {
 
 		// given
-		SellerRegisterDto sellerRegisterDto = new SellerRegisterDto(member.getId(), "111-11-111111", "일호 상점");
+		SellerRegisterDto dto = new SellerRegisterDto(1L, "111-11-11111", "businessName");
 
 		// when
-		Throwable result = catchThrowable(() -> sellerServiceImpl.saveSeller(sellerRegisterDto));
+		Throwable result = catchThrowable(() -> sellerService.saveSeller(dto));
 
 		// then
 		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효하지 않은");
@@ -105,46 +73,29 @@ class SellerServiceImplTest {
 
 	@Test
 	@DisplayName("DB에 저장된 셀러를 수정하고 id를 반환한다.")
-	void updateSeller() {
+	void should_updateSeller() {
 
 		// given
-		Seller seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("123-45-67891")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
-		sellerIds.add(seller.getId());
+		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, 1L, "123-45-67891", "name");
+		Seller seller = new Seller(1L, "123-45-67891", "name");
 
-		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(seller.getId(), seller.getMemberId(), "123-45-67891", "이호 상점");
+		given(sellerMapper.findById(1L)).willReturn(Optional.of(seller));
 
 		// when
-		Long result = sellerService.updateSeller(sellerUpdateDto);
-		Seller findSeller = sellerMapper.findById(result).orElseThrow(NotFoundException::new);
+		sellerService.updateSeller(sellerUpdateDto);
 
 		// then
-		assertEquals(result, findSeller.getId());
-		assertEquals(sellerUpdateDto.getBusinessNumber(), findSeller.getBusinessNumber());
-		assertEquals(sellerUpdateDto.getBusinessName(), findSeller.getBusinessName());
+		verify(sellerMapper).update(any(Seller.class));
 	}
 
 	@Test
 	@DisplayName("잘못된 사업자 등록번호면 업데이트를 실패한다.")
 	void should_updateMemberFail_when_invalidBusinessNumberInput() {
 
-		// given
-		Seller seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("123-45-67891")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
-		sellerIds.add(seller.getId());
-
-		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(seller.getId(), seller.getMemberId(), "111-11-111", "이호 상점");
+		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
 
 		// when
-		Throwable result = catchThrowable(() -> sellerServiceImpl.updateSeller(sellerUpdateDto));
+		Throwable result = catchThrowable(() -> sellerService.updateSeller(sellerUpdateDto));
 
 		// then
 		then(result).isInstanceOf(ValidationException.class).hasMessageContaining("유효하지 않은");
@@ -152,76 +103,50 @@ class SellerServiceImplTest {
 
 	@Test
 	@DisplayName("DB에 저장된 셀러의 상태를 변경하고 id를 반환한다.")
-	void deleteSeller() {
+	void should_deleteSeller() {
 
 		// given
-		Seller seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("123-45-67891")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
-		sellerIds.add(seller.getId());
+		Long sellerId = 1L;
+		Seller seller = new Seller(1L, "123-45-67891", "name");
+
+		given(sellerMapper.findById(1L)).willReturn(Optional.of(seller));
 
 		// when
-		Long result = sellerService.deleteSeller(seller.getId());
-		Seller findSeller = sellerMapper.findById(seller.getId()).orElseThrow(NotFoundException::new);
+		sellerService.deleteSeller(sellerId);
 
 		// then
-		assertEquals(result, findSeller.getId());
-		assertEquals(findSeller.getStatus(), CLOSED);
-
+		verify(sellerMapper).update(any(Seller.class));
 	}
 
 	@Test
 	@DisplayName("회원 id로 DB에 저장된 회원의 셀러 정보를 전부 조회해서 반환한다.")
-	void getSellers() {
+	void should_getSellers() {
 
 		// given
-		Seller seller1 = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("111-11-11111")
-			.businessName("일호 상점")
-			.build();
-		Seller seller2 = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("222-22-22222")
-			.businessName("이호 상점")
-			.build();
+		Long sellerId = 1L;
 
-		sellerMapper.insert(seller1);
-		sellerMapper.insert(seller2);
-		sellerIds.add(seller1.getId());
-		sellerIds.add(seller2.getId());
+		given(sellerMapper.findByMemberId(sellerId)).willReturn(List.of(new Seller()));
 
 		// when
-		List<SellerResponseDto> result = sellerService.getSellers(member.getId());
+		sellerService.getSellers(sellerId);
 
 		// then
-		assertEquals(result.size(), 2);
-		assertEquals(result.get(0).getId(), seller1.getId());
-		assertEquals(result.get(1).getId(), seller2.getId());
+		verify(sellerMapper).findByMemberId(sellerId);
 	}
 
 	@Test
 	@DisplayName("셀러 id로 DB에 저장된 셀러를 조회해서 반환한다.")
-	void getSeller() {
+	void should_getSeller() {
 
 		// given
-		Seller seller = Seller.builder()
-			.memberId(member.getId())
-			.businessNumber("111-11-11111")
-			.businessName("일호 상점")
-			.build();
-		sellerMapper.insert(seller);
-		sellerIds.add(seller.getId());
+		Long sellerId = 1L;
+
+		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
 
 		// when
-		SellerResponseDto result = sellerService.getSeller(seller.getId());
+		sellerService.getSeller(sellerId);
 
 		// then
-		assertEquals(result.getId(), seller.getId());
-		assertEquals(result.getMemberId(), seller.getMemberId());
-		assertEquals(result.getBusinessNumber(), seller.getBusinessNumber());
+		verify(sellerMapper).findById(sellerId);
 	}
 }

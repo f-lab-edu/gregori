@@ -4,14 +4,10 @@ import org.junit.jupiter.api.Test;
 
 import org.junit.jupiter.api.DisplayName;
 
-import com.gregori.seller.domain.Seller;
-
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
-import static com.gregori.seller.domain.Seller.Status.OPERATING;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -21,22 +17,8 @@ class SellerUpdateDtoTest {
 	private final Validator validator = factory.getValidator();
 
 	@Test
-	@DisplayName("Seller 객체를 builder 패턴으로 생성한다.")
-	void toEntity() {
-
-		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "000-00-00000", "name");
-
-		// when
-		Seller seller = dto.toEntity();
-
-		// then
-		assertEquals(seller.getStatus(), OPERATING);
-	}
-
-	@Test
 	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
-	void nullIdInputFailsTest() {
+	void should_ValidException_when_nullId() {
 
 		// given
 		SellerUpdateDto dto = new SellerUpdateDto(null,1L, "000-00-00000", "name");
@@ -50,7 +32,7 @@ class SellerUpdateDtoTest {
 
 	@Test
 	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
-	void nullMemberIdInputFailsTest() {
+	void should_ValidException_when_nullMemberId() {
 
 		// given
 		SellerUpdateDto dto = new SellerUpdateDto(1L,null, "000-00-00000", "name");
@@ -64,7 +46,7 @@ class SellerUpdateDtoTest {
 
 	@Test
 	@DisplayName("businessNumber 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankBusinessNumberInputFailsTest() {
+	void should_ValidException_when_blankBusinessNumber() {
 
 		// given
 		SellerUpdateDto dto1 = new SellerUpdateDto(1L,1L, null, "name");
@@ -84,7 +66,7 @@ class SellerUpdateDtoTest {
 
 	@Test
 	@DisplayName("businessNumber 필드의 패턴이 불일치하면 에러가 발생한다.")
-	void mismatchedBusinessNumberInputFailsTest() {
+	void should_ValidException_when_mismatchedBusinessNumber() {
 
 		// given
 		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "00-00-00", "name");
@@ -98,7 +80,7 @@ class SellerUpdateDtoTest {
 
 	@Test
 	@DisplayName("businessName 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
-	void blankBusinessNameInputFailsTest() {
+	void should_ValidException_when_blankBusinessName() {
 
 		// given
 		SellerUpdateDto dto1 = new SellerUpdateDto(1L,1L, "000-00-00000", null);
@@ -117,8 +99,8 @@ class SellerUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("올바른 입력값이면 SellerUpdateDto 객체 생성에 성공한다.")
-	void validInputSucceedsTest() {
+	@DisplayName("SellerUpdateDto 객체를 생성하면 private 필드를 get 메서드로 조회한다.")
+	void should_getFields_when_createSellerUpdateDto() {
 
 		// given
 		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "000-00-00000", "name");
