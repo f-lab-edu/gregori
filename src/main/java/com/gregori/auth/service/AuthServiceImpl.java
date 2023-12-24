@@ -49,12 +49,12 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public Long signOut(TokenRequestDto tokenRequestDto) {
+	public void signOut(TokenRequestDto tokenRequestDto) {
 
 		Authentication authentication = getAuthentication(tokenRequestDto);
 		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
 
-		return refreshTokenMapper.deleteById(refreshToken.getId());
+		refreshTokenMapper.deleteById(refreshToken.getId());
 	}
 
 	@Override

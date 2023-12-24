@@ -42,27 +42,27 @@ public class MemberController {
     }
 
     @PostMapping("/name")
-    public ResponseEntity<Long> updateMemberName(@RequestBody @Valid MemberNameUpdateDto dto) {
+    public ResponseEntity<Void> updateMemberName(@RequestBody @Valid MemberNameUpdateDto dto) {
 
-        authorizationCheck(dto.getId());
+        checkAuthorization(dto.getId());
         memberService.updateMemberName(dto);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/password")
-    public ResponseEntity<Long> updateMemberPassword(@RequestBody @Valid MemberPasswordUpdateDto dto) {
+    public ResponseEntity<Void> updateMemberPassword(@RequestBody @Valid MemberPasswordUpdateDto dto) {
 
-        authorizationCheck(dto.getId());
+        checkAuthorization(dto.getId());
         memberService.updateMemberPassword(dto);
 
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<?> deleteMember(@PathVariable Long memberId) {
+    public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
 
-        authorizationCheck(memberId);
+        checkAuthorization(memberId);
 
         memberService.deleteMember(memberId);
 
@@ -72,14 +72,14 @@ public class MemberController {
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberResponseDto> getMember(@PathVariable Long memberId) {
 
-        authorizationCheck(memberId);
+        checkAuthorization(memberId);
 
         MemberResponseDto response = memberService.getMember(memberId);
 
         return ResponseEntity.ok().body(response);
     }
 
-    private void authorizationCheck(Long memberId) {
+    private void checkAuthorization(Long memberId) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         long currentMemberId = parseLong(authentication.getName());

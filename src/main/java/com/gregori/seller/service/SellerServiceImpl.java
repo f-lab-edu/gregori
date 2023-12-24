@@ -21,6 +21,7 @@ import com.gregori.seller.mapper.SellerMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.product.domain.Product.Status.ON_SALE;
 
 @Slf4j
@@ -39,8 +40,10 @@ public class SellerServiceImpl implements SellerService {
 		businessNumberValidationCheck(sellerRegisterDto.getBusinessNumber());
 
 		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
-		member.sellingMember();
-		memberMapper.updateAuthority(member.getId(), member.getAuthority());
+		if (member.getAuthority() == GENERAL_MEMBER) {
+			member.sellingMember();
+			memberMapper.updateAuthority(member.getId(), member.getAuthority());
+		}
 
 		Seller seller = sellerRegisterDto.toEntity();
 		sellerMapper.insert(seller);
@@ -50,20 +53,18 @@ public class SellerServiceImpl implements SellerService {
 
 	@Override
 	@Transactional
-	public Long updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
+	public void updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
 
 		businessNumberValidationCheck(sellerUpdateDto.getBusinessNumber());
 
 		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
 		seller.updateSellerInfo(sellerUpdateDto.getBusinessNumber(), sellerUpdateDto.getBusinessName());
 		sellerMapper.update(seller);
-
-		return seller.getId();
 	}
 
 	@Override
 	@Transactional
-	public Long deleteSeller(Long sellerId) {
+	public void deleteSeller(Long sellerId) throws NotFoundException {
 
 		List<Product> products = productMapper.findBySellerId(sellerId);
 		for (Product product : products) {
@@ -75,8 +76,6 @@ public class SellerServiceImpl implements SellerService {
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 		seller.closed();
 		sellerMapper.update(seller);
-
-		return seller.getId();
 	}
 
 	@Override
@@ -88,7 +87,7 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
-	public SellerResponseDto getSeller(Long sellerId) {
+	public SellerResponseDto getSeller(Long sellerId) throws NotFoundException {
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 

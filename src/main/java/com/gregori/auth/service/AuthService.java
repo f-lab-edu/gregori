@@ -6,7 +6,7 @@ import com.gregori.auth.dto.TokenRequestDto;
 
 public interface AuthService {
 
-	TokenDto signIn(AuthSignInDto memberSignInDto);
-	Long signOut(TokenRequestDto tokenRequestDto);
+	TokenDto signIn(AuthSignInDto authSignInDto);
+	void signOut(TokenRequestDto tokenRequestDto);
 	TokenDto refresh(TokenRequestDto tokenRequestDto);
 }
