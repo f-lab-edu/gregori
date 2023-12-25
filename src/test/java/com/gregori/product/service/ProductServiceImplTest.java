@@ -78,22 +78,6 @@ class ProductServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("상품 목록을 반환한다.")
-	void should_returnProducts() {
-
-		// given
-		List<Long> productIds = List.of(1L);
-
-		given(productMapper.findByIds(productIds)).willReturn(List.of(new Product()));
-
-		// when
-		productService.getProducts(productIds);
-
-		// then
-		verify(productMapper).findByIds(productIds);
-	}
-
-	@Test
 	@DisplayName("검색어로 상품 목록을 반환한다.")
 	void should_returnProductsByKeyword() {
 

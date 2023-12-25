@@ -48,16 +48,6 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductResponseDto> getProducts(List<Long> productIds) {
-
-		var products = productMapper.findByIds(productIds);
-
-		return products.stream()
-			.map(product -> new ProductResponseDto().toEntity(product))
-			.toList();
-	}
-
-	@Override
 	public List<ProductResponseDto> getProductsByKeyword(String keyword, int page, Sorter sorter) {
 
 		int limit = 10;
