@@ -26,13 +26,13 @@
     </update>
 
     <select id="findById" resultType="com.gregori.product.domain.Product" parameterType="Long">
-        SELECT id, seller_id, category_id, name, price, inventory, status
+        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
         FROM products
         WHERE id = #{id}
     </select>
 
     <select id="findByIds" resultType="com.gregori.product.domain.Product" parameterType="List">
-        SELECT id, seller_id, category_id, name, price, inventory, status
+        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
         FROM products
         WHERE id IN
         <foreach collection="list" item="id" open="(" separator="," close=")">
@@ -41,16 +41,38 @@
     </select>
 
     <select id="findBySellerId" resultType="com.gregori.product.domain.Product" parameterType="Long">
-        SELECT id, seller_id, category_id, name, price, inventory, status
+        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
         FROM products
         WHERE seller_id = #{sellerId}
     </select>
 
-    <select id="find" resultType="com.gregori.product.domain.Product">
-        SELECT id, seller_id, category_id, name, price, inventory, status
+    <select id="findByKeyword" resultType="com.gregori.product.domain.Product">
+        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
+        FROM products
+        WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY <include refid="orderBy"/>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findByCategory" resultType="com.gregori.product.domain.Product">
+        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
         FROM products
         WHERE category_id = #{categoryId}
+        ORDER BY <include refid="orderBy"/>
         LIMIT #{limit} OFFSET #{offset}
-        ORDER BY ASC
     </select>
+
+    <sql id="orderBy">
+        <choose>
+            <when test="sorter == 'CREATED_AT_DESC'">
+                created_at DESC
+            </when>
+            <when test="sorter == 'PRICE_DESC'">
+                price DESC
+            </when>
+            <when test="sorter == 'PRICE_ASC'">
+                price ASC
+            </when>
+        </choose>
+    </sql>
 </mapper>

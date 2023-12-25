@@ -8,5 +8,4 @@
         <setting name="mapUnderscoreToCamelCase" value="true" />
         <setting name="argNameBasedConstructorAutoMapping" value="true" />
     </settings>
-
 </configuration>

@@ -3,6 +3,7 @@ package com.gregori.product.service;
 import java.util.List;
 
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductResponseDto;
 import com.gregori.product.dto.ProductUpdateDto;
@@ -13,4 +14,6 @@ public interface ProductService {
 	void updateProduct(ProductUpdateDto productUpdateDto) throws NotFoundException;
 	ProductResponseDto getProduct(Long productId) throws NotFoundException;
 	List<ProductResponseDto> getProducts(List<Long> productIds);
+	List<ProductResponseDto> getProductsByKeyword(String keyword, int page, Sorter sorter);
+	List<ProductResponseDto> getProductsByCategory(Long category, int page, Sorter sorter);
 }

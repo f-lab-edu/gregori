@@ -11,11 +11,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gregori.product.domain.Product;
+import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductUpdateDto;
 import com.gregori.product.mapper.ProductMapper;
 
 import static com.gregori.product.domain.Product.Status.PRE_SALE;
+import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -89,5 +91,37 @@ class ProductServiceImplTest {
 
 		// then
 		verify(productMapper).findByIds(productIds);
+	}
+
+	@Test
+	@DisplayName("검색어로 상품 목록을 반환한다.")
+	void should_returnProductsByKeyword() {
+
+		// given
+		String keyword = "keyword";
+		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
+
+		// when
+		productService.getProductsByKeyword(keyword, page, sorter);
+
+		// then
+		verify(productMapper).findByKeyword(keyword, 10, 0, sorter.toString());
+	}
+
+	@Test
+	@DisplayName("카테고리로 상품 목록을 반환한다.")
+	void should_returnProductsByCategory() {
+
+		// given
+		Long categoryId = 1L;
+		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
+
+		// when
+		productService.getProductsByCategory(categoryId, page, sorter);
+
+		// then
+		verify(productMapper).findByCategory(categoryId, 10, 0, sorter.toString());
 	}
 }

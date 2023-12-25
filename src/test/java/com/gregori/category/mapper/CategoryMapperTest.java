@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gregori.category.domain.Category;
 import com.gregori.common.CustomMybatisTest;
-import com.gregori.product.domain.Product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

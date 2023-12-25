@@ -16,4 +16,6 @@ public interface ProductMapper {
 	Optional<Product> findById(Long productId);
 	List<Product> findByIds(List<Long> productIds);
 	List<Product> findBySellerId(Long sellerId);
+	List<Product> findByKeyword(String keyword, int limit, int offset, String sorter);
+	List<Product> findByCategory(Long categoryId, int limit, int offset, String sorter);
 }

@@ -1,6 +1,7 @@
 package com.gregori.product.controller;
 
 import java.net.URI;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductResponseDto;
 import com.gregori.product.dto.ProductUpdateDto;
@@ -46,6 +49,28 @@ public class ProductController {
 	public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId) {
 
 		ProductResponseDto response = productService.getProduct(productId);
+
+		return ResponseEntity.ok().body(response);
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<List<ProductResponseDto>> getProducts(
+		@RequestParam String keyword,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "CREATED_AT_DESC") Sorter sorter) {
+
+		List<ProductResponseDto> response = productService.getProductsByKeyword(keyword, page, sorter);
+
+		return ResponseEntity.ok().body(response);
+	}
+
+	@GetMapping("/category")
+	public ResponseEntity<List<ProductResponseDto>> getProducts(
+		@RequestParam Long categoryId,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "CREATED_AT_DESC") Sorter sorter) {
+
+		List<ProductResponseDto> response = productService.getProductsByCategory(categoryId, page, sorter);
 
 		return ResponseEntity.ok().body(response);
 	}

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.product.domain.Product;
+import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductResponseDto;
 import com.gregori.product.dto.ProductUpdateDto;
@@ -52,6 +53,30 @@ public class ProductServiceImpl implements ProductService {
 		var products = productMapper.findByIds(productIds);
 
 		return products.stream()
+			.map(product -> new ProductResponseDto().toEntity(product))
+			.toList();
+	}
+
+	@Override
+	public List<ProductResponseDto> getProductsByKeyword(String keyword, int page, Sorter sorter) {
+
+		int limit = 10;
+		int offset = (page - 1) * limit;
+
+		return productMapper.findByKeyword(keyword, limit, offset, sorter.toString())
+			.stream()
+			.map(product -> new ProductResponseDto().toEntity(product))
+			.toList();
+	}
+
+	@Override
+	public List<ProductResponseDto> getProductsByCategory(Long category, int page, Sorter sorter) {
+
+		int limit = 10;
+		int offset = (page - 1) * limit;
+
+		return productMapper.findByCategory(category, limit, offset, sorter.toString())
+			.stream()
 			.map(product -> new ProductResponseDto().toEntity(product))
 			.toList();
 	}
