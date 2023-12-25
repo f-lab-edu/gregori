@@ -44,15 +44,17 @@ CREATE TABLE sellers (
 );
 
 CREATE TABLE products (
-    id         BIGINT       AUTO_INCREMENT PRIMARY KEY NOT NULL                            COMMENT '상품 인덱스',
-    seller_id  BIGINT       NOT NULL                                                       COMMENT '셀러 인덱스',
-    name       VARCHAR(255) NOT NULL                                                       COMMENT '상품 이름',
-    price      BIGINT       NOT NULL                                                       COMMENT '상품 가격',
-    inventory  BIGINT       NOT NULL                                                       COMMENT '상품 재고',
-    status     VARCHAR(255) NOT NULL                                                       COMMENT '상품 상태',
-    created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '상품 생성 날짜',
-    updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜',
-    CONSTRAINT fk_products_seller_id FOREIGN KEY (seller_id) REFERENCES sellers(id)
+    id          BIGINT       AUTO_INCREMENT PRIMARY KEY NOT NULL                            COMMENT '상품 인덱스',
+    seller_id   BIGINT       NOT NULL                                                       COMMENT '셀러 인덱스',
+    category_id BIGINT       NOT NULL                                                       COMMENT '카테고리 인덱스',
+    name        VARCHAR(255) NOT NULL                                                       COMMENT '상품 이름',
+    price       BIGINT       NOT NULL                                                       COMMENT '상품 가격',
+    inventory   BIGINT       NOT NULL                                                       COMMENT '상품 재고',
+    status      VARCHAR(255) NOT NULL                                                       COMMENT '상품 상태',
+    created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '상품 생성 날짜',
+    updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜',
+    CONSTRAINT fk_products_seller_id FOREIGN KEY (seller_id) REFERENCES sellers(id),
+    CONSTRAINT fk_products_category_id FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
 CREATE TABLE orders (

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gregori.category.domain.Category;
 import com.gregori.common.CustomMybatisTest;
+import com.gregori.product.domain.Product;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,9 +40,12 @@ class CategoryMapperTest {
 
 		// when
 		categoryMapper.insert(category);
+		categoryIds.add(category.getId());
+		Optional<Category> result = categoryMapper.findById(category.getId());
 
 		// then
 		assertThat(category.getId()).isNotNull();
+		assertThat(result.isPresent()).isTrue();
 	}
 
 	@Test

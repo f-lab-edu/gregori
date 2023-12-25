@@ -6,13 +6,13 @@
 <mapper namespace="com.gregori.product.mapper.ProductMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.product.domain.Product">
-        INSERT INTO products (seller_id, name, price, inventory, status)
-        VALUES (#{sellerId}, #{name}, #{price}, #{inventory}, #{status})
+        INSERT INTO products (seller_id, category_id, name, price, inventory, status)
+        VALUES (#{sellerId}, #{categoryId}, #{name}, #{price}, #{inventory}, #{status})
     </insert>
 
     <update id="update">
         UPDATE products
-        SET name = #{name}, price = #{price}, inventory = #{inventory}, status = #{status}
+        SET category_id = #{categoryId}, name = #{name}, price = #{price}, inventory = #{inventory}, status = #{status}
         WHERE id = #{id}
     </update>
 
@@ -26,13 +26,13 @@
     </update>
 
     <select id="findById" resultType="com.gregori.product.domain.Product" parameterType="Long">
-        SELECT id, seller_id, name, price, inventory, status
+        SELECT id, seller_id, category_id, name, price, inventory, status
         FROM products
         WHERE id = #{id}
     </select>
 
     <select id="findByIds" resultType="com.gregori.product.domain.Product" parameterType="List">
-        SELECT id, seller_id, name, price, inventory, status
+        SELECT id, seller_id, category_id, name, price, inventory, status
         FROM products
         WHERE id IN
         <foreach collection="list" item="id" open="(" separator="," close=")">
@@ -41,8 +41,16 @@
     </select>
 
     <select id="findBySellerId" resultType="com.gregori.product.domain.Product" parameterType="Long">
-        SELECT id, seller_id, name, price, inventory, status
+        SELECT id, seller_id, category_id, name, price, inventory, status
         FROM products
         WHERE seller_id = #{sellerId}
+    </select>
+
+    <select id="find" resultType="com.gregori.product.domain.Product">
+        SELECT id, seller_id, category_id, name, price, inventory, status
+        FROM products
+        WHERE category_id = #{categoryId}
+        LIMIT #{limit} OFFSET #{offset}
+        ORDER BY ASC
     </select>
 </mapper>

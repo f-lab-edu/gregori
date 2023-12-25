@@ -48,28 +48,12 @@ class ProductServiceImplTest {
 	void should_returnId_when_updateProductSuccess() {
 
 		// given
-		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, 1L);
+		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, 1L, PRE_SALE);
 
 		given(productMapper.findById(1L)).willReturn(Optional.of(new Product()));
 
 		// when
 		productService.updateProduct(dto);
-
-		// then
-		verify(productMapper).update(any(Product.class));
-	}
-
-	@Test
-	@DisplayName("상품 상태 갱신을 성공하면 id를 반환한다.")
-	void should_returnId_when_updateProductStatusSuccess() {
-
-		// given
-		Long productId = 1L;
-
-		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
-
-		// when
-		productService.updateProductStatus(PRE_SALE, productId);
 
 		// then
 		verify(productMapper).update(any(Product.class));

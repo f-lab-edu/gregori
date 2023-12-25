@@ -44,9 +44,10 @@ class MemberMapperTest {
 		// when
 		memberMapper.insert(member);
 		memberIds.add(member.getId());
+		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		Optional<Member> result = memberMapper.findById(member.getId());
+		assertThat(member.getId()).isNotNull();
 		assertThat(result.isPresent()).isTrue();
 	}
 

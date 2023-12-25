@@ -13,6 +13,7 @@ public class Product extends AbstractEntity {
 
 	private Long id;
 	private Long sellerId;
+	private Long categoryId;
 	private String name;
 	private Long price;
 	private Long inventory;
@@ -30,31 +31,22 @@ public class Product extends AbstractEntity {
 	}
 
 	@Builder
-	public Product(Long sellerId, String name, Long price, Long inventory) {
+	public Product(Long sellerId, Long categoryId, String name, Long price, Long inventory) {
 
 		this.sellerId = sellerId;
+		this.categoryId = categoryId;
 		this.name = name;
 		this.price = price;
 		this.inventory = inventory;
 		this.status = Status.PRE_SALE;
 	}
 
-	public void updateProductInfo(String name, Long price, Long inventory) {
+	public void updateProductInfo(Long categoryId, String name, Long price, Long inventory, Status status) {
 
+		this.categoryId = categoryId;
 		this.name = name;
 		this.price = price;
 		this.inventory = inventory;
-	}
-
-	public void preSale() {
-		this.status = Status.PRE_SALE;
-	}
-
-	public void onSale() {
-		this.status = Status.ON_SALE;
-	}
-
-	public void endOfSale() {
-		this.status = Status.END_OF_SALE;
+		this.status = status;
 	}
 }

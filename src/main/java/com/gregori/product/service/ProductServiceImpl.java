@@ -14,10 +14,6 @@ import com.gregori.product.mapper.ProductMapper;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.gregori.product.domain.Product.Status.END_OF_SALE;
-import static com.gregori.product.domain.Product.Status.ON_SALE;
-import static com.gregori.product.domain.Product.Status.PRE_SALE;
-
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
@@ -25,9 +21,9 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductMapper productMapper;
 
 	@Override
-	public Long saveProduct(ProductCreateDto productCreateDto) {
+	public Long saveProduct(ProductCreateDto dto) {
 
-		Product product = productCreateDto.toEntity();
+		Product product = dto.toEntity();
 		productMapper.insert(product);
 
 		return product.getId();
@@ -35,30 +31,10 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public Long updateProduct(ProductUpdateDto productUpdateDto) throws NotFoundException {
+	public Long updateProduct(ProductUpdateDto dto) throws NotFoundException {
 
-		Product product = productMapper.findById(productUpdateDto.getId()).orElseThrow(NotFoundException::new);
-		product.updateProductInfo(productUpdateDto.getName(), productUpdateDto.getPrice(),
-			productUpdateDto.getInventory());
-		productMapper.update(product);
-
-		return product.getId();
-	}
-
-	@Override
-	@Transactional
-	public Long updateProductStatus(Product.Status status, Long productId) throws NotFoundException {
-
-		Product product = productMapper.findById(productId).orElseThrow(NotFoundException::new);
-
-		if (status == PRE_SALE) {
-			product.preSale();
-		} else if (status == ON_SALE) {
-			product.onSale();
-		} else if (status == END_OF_SALE) {
-			product.endOfSale();
-		}
-
+		Product product = productMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+		product.updateProductInfo(dto.getCategoryId(), dto.getName(), dto.getPrice(), dto.getInventory(), dto.getStatus());
 		productMapper.update(product);
 
 		return product.getId();
