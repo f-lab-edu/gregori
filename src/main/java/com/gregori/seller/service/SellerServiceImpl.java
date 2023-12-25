@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.product.domain.Product.Status.ON_SALE;
+import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 
 @Slf4j
 @Service
@@ -66,7 +67,7 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public void deleteSeller(Long sellerId) throws NotFoundException {
 
-		List<Product> products = productMapper.findBySellerId(sellerId);
+		List<Product> products = productMapper.findBySellerId(sellerId, null, null, CREATED_AT_DESC.toString());
 		for (Product product : products) {
 			if (product.getStatus() == ON_SALE) {
 				throw new BusinessRuleViolationException("판매 중인 상품이 있으면 폐업 신청이 불가합니다.");

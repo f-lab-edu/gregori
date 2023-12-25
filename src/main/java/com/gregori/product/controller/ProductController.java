@@ -64,13 +64,23 @@ public class ProductController {
 		return ResponseEntity.ok().body(response);
 	}
 
-	@GetMapping("/category")
+	@GetMapping
 	public ResponseEntity<List<ProductResponseDto>> getProducts(
-		@RequestParam Long categoryId,
+		@RequestParam(required = false) Long categoryId,
+		@RequestParam(required = false) Long sellerId,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "CREATED_AT_DESC") Sorter sorter) {
 
-		List<ProductResponseDto> response = productService.getProductsByCategory(categoryId, page, sorter);
+		if (categoryId == null && sellerId == null) {
+			return ResponseEntity.badRequest().build();
+		}
+
+		List<ProductResponseDto> response;
+		if (categoryId != null) {
+			response = productService.getProductsByCategoryId(categoryId, page, sorter);
+		} else {
+			response = productService.getProductsBySellerId(sellerId, page, sorter);
+		}
 
 		return ResponseEntity.ok().body(response);
 	}

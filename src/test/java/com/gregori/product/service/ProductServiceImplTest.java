@@ -1,6 +1,5 @@
 package com.gregori.product.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -95,7 +94,7 @@ class ProductServiceImplTest {
 
 	@Test
 	@DisplayName("카테고리로 상품 목록을 반환한다.")
-	void should_returnProductsByCategory() {
+	void should_returnProductsByCategoryId() {
 
 		// given
 		Long categoryId = 1L;
@@ -103,9 +102,25 @@ class ProductServiceImplTest {
 		Sorter sorter = CREATED_AT_DESC;
 
 		// when
-		productService.getProductsByCategory(categoryId, page, sorter);
+		productService.getProductsByCategoryId(categoryId, page, sorter);
 
 		// then
-		verify(productMapper).findByCategory(categoryId, 10, 0, sorter.toString());
+		verify(productMapper).findByCategoryId(categoryId, 10, 0, sorter.toString());
+	}
+
+	@Test
+	@DisplayName("카테고리로 상품 목록을 반환한다.")
+	void should_returnProductsBySellerId() {
+
+		// given
+		Long sellerId = 1L;
+		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
+
+		// when
+		productService.getProductsBySellerId(sellerId, page, sorter);
+
+		// then
+		verify(productMapper).findBySellerId(sellerId, 10, 0, sorter.toString());
 	}
 }

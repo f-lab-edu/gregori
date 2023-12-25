@@ -117,7 +117,7 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@DisplayName("카테고리 id와 함께 상품 목록 조회를 요청하면 OK 응답을 반환한다.")
+	@DisplayName("categoryId와 함께 상품 목록 조회를 요청하면 OK 응답을 반환한다.")
 	void should_responseOk_when_request_getProductsWithCategoryId() throws Exception {
 
 		// given
@@ -127,13 +127,52 @@ class ProductControllerTest {
 
 		// when
 		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product/category?categoryId=" + 1L + "&page=" + page + "&sorter=" + sorter)
+			.get("/product?categoryId=" + categoryId + "&sellerId=&page=" + page + "&sorter=" + sorter)
 			.with(csrf())
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
 
-		verify(productService).getProductsByCategory(categoryId, page, sorter);
+		verify(productService).getProductsByCategoryId(categoryId, page, sorter);
+	}
+
+	@Test
+	@DisplayName("sellerId와 함께 상품 목록 조회를 요청하면 OK 응답을 반환한다.")
+	void should_responseOk_when_request_getProductsWithSellerId() throws Exception {
+
+		// given
+		Long sellerId = 1L;
+		Sorter sorter = CREATED_AT_DESC;
+		int page = 1;
+
+		// when
+		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
+			.get("/product?categoryId=&sellerId=" + sellerId + "&page=" + page + "&sorter=" + sorter)
+			.with(csrf())
+			.contentType(MediaType.APPLICATION_JSON));
+
+		// then
+		actions.andExpect(status().isOk()).andDo(print());
+
+		verify(productService).getProductsBySellerId(sellerId, page, sorter);
+	}
+
+	@Test
+	@DisplayName("id 없이 상품 목록 조회를 요청하면 BadRequest 응답을 반환한다.")
+	void should_responseBadRequest_when_request_getProductsWithNoIds() throws Exception {
+
+		// given
+		Sorter sorter = CREATED_AT_DESC;
+		int page = 1;
+
+		// when
+		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
+			.get("/product?categoryId=&sellerId=&page=" + page + "&sorter=" + sorter)
+			.with(csrf())
+			.contentType(MediaType.APPLICATION_JSON));
+
+		// then
+		actions.andExpect(status().isBadRequest()).andDo(print());
 	}
 }

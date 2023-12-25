@@ -23,6 +23,7 @@ import com.gregori.seller.mapper.SellerMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.product.domain.Product.Status.ON_SALE;
+import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 import static com.gregori.product.domain.Sorter.PRICE_ASC;
 import static com.gregori.product.domain.Sorter.PRICE_DESC;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -194,65 +195,7 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("id 목록으로 상품을 조회한다.")
-	void should_findByIds() {
-
-		// given
-		Product product1 = Product.builder()
-			.sellerId(seller.getId())
-			.categoryId(categoryIds.get(0))
-			.name("name")
-			.price(1L)
-			.inventory(1L)
-			.build();
-		Product product2 = Product.builder()
-			.sellerId(seller.getId())
-			.categoryId(categoryIds.get(0))
-			.name("name")
-			.price(2L)
-			.inventory(2L)
-			.build();
-
-		productMapper.insert(product1);
-		productMapper.insert(product2);
-		productIds.add(product1.getId());
-		productIds.add(product2.getId());
-
-		// when
-		List<Product> result = productMapper.findByIds(productIds);
-
-		// then
-		assertThat(result.size()).isEqualTo(2);
-		assertThat(result.get(0).getId()).isEqualTo(product1.getId());
-		assertThat(result.get(1).getId()).isEqualTo(product2.getId());
-	}
-
-	@Test
-	@DisplayName("sellerId로 상품을 조회한다.")
-	void should_findBySellerId() {
-
-		// given
-		Product product = Product.builder()
-			.sellerId(seller.getId())
-			.categoryId(categoryIds.get(0))
-			.name("name")
-			.price(1L)
-			.inventory(1L)
-			.build();
-
-		productMapper.insert(product);
-		productIds.add(product.getId());
-
-		// when
-		Optional<Product> result = productMapper.findById(product.getId());
-
-		// then
-		assertThat(result.isPresent()).isTrue();
-		assertThat(result.get().getId()).isEqualTo(product.getId());
-	}
-
-	@Test
-	@DisplayName("낮은 가격순으로 keyword 상품을 조회한다.")
+	@DisplayName("낮은 가격순으로 keyword와 일치하는 상품을 조회한다.")
 	void should_findByKeyword_when_priceAsc() {
 
 		// given
@@ -277,7 +220,7 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("높은 가격순으로 카테고리 상품을 조회한다.")
+	@DisplayName("높은 가격순으로 categoryId와 일치하는 상품을 조회한다.")
 	void should_findByCategory_when_priceDesc() {
 
 		// given
@@ -291,13 +234,36 @@ class ProductMapperTest {
 		}
 
 		// when
-		List<Product> result = productMapper.findByCategory(categoryIds.get(1), 5, 0, PRICE_DESC.toString());
+		List<Product> result = productMapper.findByCategoryId(categoryIds.get(1), 5, 0, PRICE_DESC.toString());
 
 		// then
 		assertThat(result.size()).isEqualTo(5);
 		for (int i = 0; i < result.size() - 1; i++) {
 			assertThat(result.get(i).getCategoryId()).isEqualTo(categoryIds.get(1));
 			assertThat(result.get(i).getPrice() > result.get(i + 1).getPrice()).isTrue();
+		}
+	}
+
+	@Test
+	@DisplayName("최신 등록 순으로 sellerId와 일치하는 상품을 조회한다.")
+	void should_findBySellerId_when_createdAtDesc() {
+
+		// given
+		Random random = new Random();
+		for (int i = 0; i < 10; i++) {
+			Long price = random.nextLong(0, 999);
+			Product product = new Product(seller.getId(), categoryIds.get(0), "name"+i, price, (long)i);
+			productMapper.insert(product);
+			productIds.add(product.getId());
+		}
+
+		// when
+		List<Product> result = productMapper.findBySellerId(seller.getId(), 5, 0, CREATED_AT_DESC.toString());
+
+		// then
+		assertThat(result.size()).isEqualTo(5);
+		for (int i = 0; i < result.size() - 1; i++) {
+			assertThat(result.get(i).getSellerId()).isEqualTo(seller.getId());
 		}
 	}
 }

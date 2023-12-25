@@ -60,12 +60,24 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductResponseDto> getProductsByCategory(Long category, int page, Sorter sorter) {
+	public List<ProductResponseDto> getProductsByCategoryId(Long categoryId, int page, Sorter sorter) {
 
 		int limit = 10;
 		int offset = (page - 1) * limit;
 
-		return productMapper.findByCategory(category, limit, offset, sorter.toString())
+		return productMapper.findByCategoryId(categoryId, limit, offset, sorter.toString())
+			.stream()
+			.map(product -> new ProductResponseDto().toEntity(product))
+			.toList();
+	}
+
+	@Override
+	public List<ProductResponseDto> getProductsBySellerId(Long sellerId, int page, Sorter sorter) {
+
+		int limit = 10;
+		int offset = (page - 1) * limit;
+
+		return productMapper.findBySellerId(sellerId, limit, offset, sorter.toString())
 			.stream()
 			.map(product -> new ProductResponseDto().toEntity(product))
 			.toList();
