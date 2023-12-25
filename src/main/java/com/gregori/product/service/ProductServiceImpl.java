@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.product.domain.Product;
 import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
@@ -24,6 +25,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Long saveProduct(ProductCreateDto dto) {
 
+		checkPriceAndInventoryValidation(dto.getPrice(), dto.getInventory());
+
 		Product product = dto.toEntity();
 		productMapper.insert(product);
 
@@ -34,7 +37,10 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public void updateProduct(ProductUpdateDto dto) throws NotFoundException {
 
+		checkPriceAndInventoryValidation(dto.getPrice(), dto.getInventory());
+
 		Product product = productMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+
 		product.updateProductInfo(dto.getCategoryId(), dto.getName(), dto.getPrice(), dto.getInventory(), dto.getStatus());
 		productMapper.update(product);
 	}
@@ -57,5 +63,12 @@ public class ProductServiceImpl implements ProductService {
 			.stream()
 			.map(product -> new ProductResponseDto().toEntity(product))
 			.toList();
+	}
+
+	private void checkPriceAndInventoryValidation(Long price, Long inventory) {
+
+		if (price < 0 || inventory < 0) {
+			throw new ValidationException("가격과 재고는 마이너스가 될 수 없습니다.");
+		}
 	}
 }

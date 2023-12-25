@@ -111,7 +111,7 @@ class OrderDetailMapperTest {
 			order = null;
 		}
 		if (!products.isEmpty()) {
-			productMapper.deleteByIds(products.stream().map(Product::getId).toList());
+			products.forEach(product -> productMapper.deleteById(product.getId()));
 			products.clear();
 		}
 		if (category != null) {

@@ -76,7 +76,7 @@ class ProductMapperTest {
 	@AfterEach
 	void afterEach() {
 		if (!productIds.isEmpty()) {
-			productMapper.deleteByIds(productIds);
+			productIds.forEach(id -> productMapper.deleteById(id));
 			productIds.clear();
 		}
 		if (!categoryIds.isEmpty()) {
@@ -147,8 +147,8 @@ class ProductMapperTest {
 	}
 
 	@Test
-	@DisplayName("id 목록으로 상품을 삭제한다.")
-	void should_deleteByIds() {
+	@DisplayName("id로 상품을 삭제한다.")
+	void should_deleteById() {
 
 		 // given
 		Product product = Product.builder()
@@ -163,7 +163,7 @@ class ProductMapperTest {
 		productIds.add(product.getId());
 
 		// when
-		productMapper.deleteByIds(List.of(product.getId()));
+		productMapper.deleteById(product.getId());
 		Product result = productMapper.findById(product.getId()).orElse(null);
 
 		// then

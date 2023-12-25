@@ -12,7 +12,7 @@ public interface ProductMapper {
 
 	Long insert(Product product);
 	Long update(Product product);
-	void deleteByIds(List<Long> productIds);
+	void deleteById(Long productId);
 	Optional<Product> findById(Long productId);
 	List<Product> find(String keyword, Long categoryId, Long sellerId, Integer limit, Integer offset, String sorter);
 }

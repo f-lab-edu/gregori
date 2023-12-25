@@ -16,13 +16,9 @@
         WHERE id = #{id}
     </update>
 
-    <update id="deleteByIds" parameterType="map">
+    <update id="deleteById">
         DELETE FROM products
-        WHERE id IN (
-        <foreach collection="list" item="item" separator=",">
-            #{item}
-        </foreach>
-        )
+        WHERE id = #{id}
     </update>
 
     <select id="findById" resultType="com.gregori.product.domain.Product" parameterType="Long">
