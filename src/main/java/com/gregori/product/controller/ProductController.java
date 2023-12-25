@@ -3,6 +3,7 @@ package com.gregori.product.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,34 +54,15 @@ public class ProductController {
 		return ResponseEntity.ok().body(response);
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<List<ProductResponseDto>> getProducts(
-		@RequestParam String keyword,
-		@RequestParam(defaultValue = "0") int page,
-		@RequestParam(defaultValue = "CREATED_AT_DESC") Sorter sorter) {
-
-		List<ProductResponseDto> response = productService.getProductsByKeyword(keyword, page, sorter);
-
-		return ResponseEntity.ok().body(response);
-	}
-
 	@GetMapping
 	public ResponseEntity<List<ProductResponseDto>> getProducts(
+		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long categoryId,
 		@RequestParam(required = false) Long sellerId,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "CREATED_AT_DESC") Sorter sorter) {
 
-		if (categoryId == null && sellerId == null) {
-			return ResponseEntity.badRequest().build();
-		}
-
-		List<ProductResponseDto> response;
-		if (categoryId != null) {
-			response = productService.getProductsByCategoryId(categoryId, page, sorter);
-		} else {
-			response = productService.getProductsBySellerId(sellerId, page, sorter);
-		}
+		List<ProductResponseDto> response = productService.getProducts(keyword, categoryId, sellerId, page, sorter);
 
 		return ResponseEntity.ok().body(response);
 	}

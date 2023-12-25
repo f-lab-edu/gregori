@@ -209,7 +209,7 @@ class ProductMapperTest {
 		}
 
 		// when
-		List<Product> result = productMapper.findByKeyword("one", 5, 0, PRICE_ASC.toString());
+		List<Product> result = productMapper.find("one", null, null, 5, 0, PRICE_ASC.toString());
 
 		// then
 		assertThat(result.size()).isEqualTo(5);
@@ -234,7 +234,7 @@ class ProductMapperTest {
 		}
 
 		// when
-		List<Product> result = productMapper.findByCategoryId(categoryIds.get(1), 5, 0, PRICE_DESC.toString());
+		List<Product> result = productMapper.find(null, categoryIds.get(1), null,5, 0, PRICE_DESC.toString());
 
 		// then
 		assertThat(result.size()).isEqualTo(5);
@@ -258,7 +258,7 @@ class ProductMapperTest {
 		}
 
 		// when
-		List<Product> result = productMapper.findBySellerId(seller.getId(), 5, 0, CREATED_AT_DESC.toString());
+		List<Product> result = productMapper.find(null, null, seller.getId(), 5, 0, CREATED_AT_DESC.toString());
 
 		// then
 		assertThat(result.size()).isEqualTo(5);

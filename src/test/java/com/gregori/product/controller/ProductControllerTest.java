@@ -106,14 +106,14 @@ class ProductControllerTest {
 
 		// when
 		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product/search?keyword=" + keyword + "&page=" + page + "&sorter=" + sorter)
+			.get("/product?keyword=" + keyword + "&page=" + page + "&sorter=" + sorter)
 			.with(csrf())
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
 
-		verify(productService).getProductsByKeyword(keyword, page, sorter);
+		verify(productService).getProducts(keyword, null, null, page, sorter);
 	}
 
 	@Test
@@ -127,14 +127,14 @@ class ProductControllerTest {
 
 		// when
 		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product?categoryId=" + categoryId + "&sellerId=&page=" + page + "&sorter=" + sorter)
+			.get("/product?categoryId=" + categoryId + "&page=" + page + "&sorter=" + sorter)
 			.with(csrf())
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
 
-		verify(productService).getProductsByCategoryId(categoryId, page, sorter);
+		verify(productService).getProducts(null, categoryId, null, page, sorter);
 	}
 
 	@Test
@@ -148,31 +148,13 @@ class ProductControllerTest {
 
 		// when
 		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product?categoryId=&sellerId=" + sellerId + "&page=" + page + "&sorter=" + sorter)
+			.get("/product?&sellerId=" + sellerId + "&page=" + page + "&sorter=" + sorter)
 			.with(csrf())
 			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
 
-		verify(productService).getProductsBySellerId(sellerId, page, sorter);
-	}
-
-	@Test
-	@DisplayName("id 없이 상품 목록 조회를 요청하면 BadRequest 응답을 반환한다.")
-	void should_responseBadRequest_when_request_getProductsWithNoIds() throws Exception {
-
-		// given
-		Sorter sorter = CREATED_AT_DESC;
-		int page = 1;
-
-		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product?categoryId=&sellerId=&page=" + page + "&sorter=" + sorter)
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON));
-
-		// then
-		actions.andExpect(status().isBadRequest()).andDo(print());
+		verify(productService).getProducts(null, null, sellerId, page, sorter);
 	}
 }

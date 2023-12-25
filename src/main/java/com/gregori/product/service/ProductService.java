@@ -13,7 +13,5 @@ public interface ProductService {
 	Long saveProduct(ProductCreateDto productCreateDto);
 	void updateProduct(ProductUpdateDto productUpdateDto) throws NotFoundException;
 	ProductResponseDto getProduct(Long productId) throws NotFoundException;
-	List<ProductResponseDto> getProductsByKeyword(String keyword, int page, Sorter sorter);
-	List<ProductResponseDto> getProductsByCategoryId(Long categoryId, int page, Sorter sorter);
-	List<ProductResponseDto> getProductsBySellerId(Long sellerId, int page, Sorter sorter);
+	List<ProductResponseDto> getProducts(String keyword, Long categoryId, Long sellerId, int page, Sorter sorter);
 }

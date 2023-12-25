@@ -86,41 +86,9 @@ class ProductServiceImplTest {
 		Sorter sorter = CREATED_AT_DESC;
 
 		// when
-		productService.getProductsByKeyword(keyword, page, sorter);
+		productService.getProducts(keyword, null, null, page, sorter);
 
 		// then
-		verify(productMapper).findByKeyword(keyword, 10, 0, sorter.toString());
-	}
-
-	@Test
-	@DisplayName("카테고리로 상품 목록을 반환한다.")
-	void should_returnProductsByCategoryId() {
-
-		// given
-		Long categoryId = 1L;
-		int page = 1;
-		Sorter sorter = CREATED_AT_DESC;
-
-		// when
-		productService.getProductsByCategoryId(categoryId, page, sorter);
-
-		// then
-		verify(productMapper).findByCategoryId(categoryId, 10, 0, sorter.toString());
-	}
-
-	@Test
-	@DisplayName("카테고리로 상품 목록을 반환한다.")
-	void should_returnProductsBySellerId() {
-
-		// given
-		Long sellerId = 1L;
-		int page = 1;
-		Sorter sorter = CREATED_AT_DESC;
-
-		// when
-		productService.getProductsBySellerId(sellerId, page, sorter);
-
-		// then
-		verify(productMapper).findBySellerId(sellerId, 10, 0, sorter.toString());
+		verify(productMapper).find(keyword,  null, null,10, 0, sorter.toString());
 	}
 }

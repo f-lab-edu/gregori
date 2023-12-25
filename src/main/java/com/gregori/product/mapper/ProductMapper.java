@@ -14,7 +14,5 @@ public interface ProductMapper {
 	Long update(Product product);
 	void deleteByIds(List<Long> productIds);
 	Optional<Product> findById(Long productId);
-	List<Product> findByKeyword(String keyword, Integer limit, Integer offset, String sorter);
-	List<Product> findByCategoryId(Long categoryId, Integer limit, Integer offset, String sorter);
-	List<Product> findBySellerId(Long sellerId, Integer limit, Integer offset, String sorter);
+	List<Product> find(String keyword, Long categoryId, Long sellerId, Integer limit, Integer offset, String sorter);
 }

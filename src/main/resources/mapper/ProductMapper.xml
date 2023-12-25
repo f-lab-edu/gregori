@@ -31,46 +31,26 @@
         WHERE id = #{id}
     </select>
 
-    <select id="findByIds" resultType="com.gregori.product.domain.Product" parameterType="List">
+    <select id="find" resultType="com.gregori.product.domain.Product" parameterType="Long">
         SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
         FROM products
-        WHERE id IN
-        <foreach collection="list" item="id" open="(" separator="," close=")">
-            #{id}
-        </foreach>
-    </select>
-
-    <select id="findByKeyword" resultType="com.gregori.product.domain.Product">
-        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
-        FROM products
-        WHERE name LIKE CONCAT('%', #{keyword}, '%')
+        <include refid="where"/>
         <include refid="orderBy"/>
         <include refid="limitAndOffset"/>
     </select>
 
-    <select id="findByCategoryId" resultType="com.gregori.product.domain.Product">
-        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
-        FROM products
-        WHERE category_id = #{categoryId}
-        <include refid="orderBy"/>
-        <include refid="limitAndOffset"/>
-    </select>
-
-    <select id="findBySellerId" resultType="com.gregori.product.domain.Product" parameterType="Long">
-        SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
-        FROM products
-        WHERE seller_id = #{sellerId}
-        <include refid="orderBy"/>
-        <include refid="limitAndOffset"/>
-    </select>
-
-    <sql id="limitAndOffset">
-        <if test="limit != null">
-            LIMIT #{limit}
-        </if>
-        <if test="offset != null">
-            OFFSET #{offset}
-        </if>
+    <sql id="where">
+        <choose>
+            <when test="keyword != null">
+                WHERE name LIKE CONCAT('%', #{keyword}, '%')
+            </when>
+            <when test="categoryId != null">
+                WHERE category_id = #{categoryId}
+            </when>
+            <when test="sellerId != null">
+                WHERE seller_id = #{sellerId}
+            </when>
+        </choose>
     </sql>
 
     <sql id="orderBy">
@@ -85,5 +65,14 @@
                 ORDER BY price ASC
             </when>
         </choose>
+    </sql>
+
+    <sql id="limitAndOffset">
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
     </sql>
 </mapper>
