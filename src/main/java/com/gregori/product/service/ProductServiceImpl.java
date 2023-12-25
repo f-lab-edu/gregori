@@ -31,13 +31,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public Long updateProduct(ProductUpdateDto dto) throws NotFoundException {
+	public void updateProduct(ProductUpdateDto dto) throws NotFoundException {
 
 		Product product = productMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
 		product.updateProductInfo(dto.getCategoryId(), dto.getName(), dto.getPrice(), dto.getInventory(), dto.getStatus());
 		productMapper.update(product);
-
-		return product.getId();
 	}
 
 	@Override

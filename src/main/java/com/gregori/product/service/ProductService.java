@@ -10,7 +10,7 @@ import com.gregori.product.dto.ProductUpdateDto;
 public interface ProductService {
 
 	Long saveProduct(ProductCreateDto productCreateDto);
-	Long updateProduct(ProductUpdateDto productUpdateDto) throws NotFoundException;
+	void updateProduct(ProductUpdateDto productUpdateDto) throws NotFoundException;
 	ProductResponseDto getProduct(Long productId) throws NotFoundException;
 	List<ProductResponseDto> getProducts(List<Long> productIds);
 }
