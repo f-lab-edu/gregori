@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +40,14 @@ public class OrderController {
 		return ResponseEntity.created(URI.create("/order/" + orderId)).build();
 	}
 
+	@PatchMapping("/{orderId}")
+	public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
+
+		orderService.cancelOrder(getMemberId(), orderId);
+
+		return ResponseEntity.noContent().build();
+	}
+
 	@GetMapping("/{orderId}")
 	public ResponseEntity<OrderResponseDto> getOrder(@PathVariable Long orderId) {
 
@@ -49,11 +59,13 @@ public class OrderController {
 	@GetMapping
 	public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestParam(defaultValue = "1") int page) {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		long memberId = parseLong(authentication.getName());
-
-		List<OrderResponseDto> response = orderService.getOrders(memberId, page);
+		List<OrderResponseDto> response = orderService.getOrders(getMemberId(), page);
 
 		return ResponseEntity.ok().body(response);
+	}
+
+	private Long getMemberId() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return parseLong(authentication.getName());
 	}
 }
