@@ -93,10 +93,10 @@ class CategoryServiceImplTest {
 	void should_returnCategories() {
 
 		// given, when
-		categoryService.getCategories(1, 1);
+		categoryService.getCategories(1);
 
 		// then
-		verify(categoryMapper).find(1, 1);
+		verify(categoryMapper).find(10, 0);
 	}
 
 	@Test
