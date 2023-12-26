@@ -11,8 +11,8 @@ import com.gregori.category.domain.Category;
 public interface CategoryMapper {
 
 	Long insert(Category category);
-	Long updateName(Category category);
-	Long deleteById(Long categoryId);
-	Optional<Category> findById(Long categoryId);
+	void updateName(Category category);
+	void deleteById(Long id);
+	Optional<Category> findById(Long id);
 	List<Category> find(int limit, int offset);
 }
