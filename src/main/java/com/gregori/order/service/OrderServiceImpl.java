@@ -77,16 +77,25 @@ public class OrderServiceImpl implements OrderService {
 			throw new NotFoundException("주문한 상품을 찾을 수 없습니다.");
 		}
 
-		orderDetails.forEach(orderDetail -> {
-			if (orderDetail.getStatus() == SHIPMENT_PREPARATION ||
-				orderDetail.getStatus() == SHIPPED ||
-				orderDetail.getStatus() == DELIVERED) {
-				throw new BusinessRuleViolationException("운송이 시작된 주문 상품은 취소할 수 없습니다.");
-			}
+		orderDetails.forEach(this::cancelOrderDetail);
+	}
 
-			orderDetail.paymentCanceled();
-			orderDetailMapper.updateStatus(orderDetail.getId(), orderDetail.getStatus());
-		});
+	@Override
+	public void cancelOrderDetail(Long memberId, Long orderDetailId) throws NotFoundException {
+
+		OrderDetail orderDetail = orderDetailMapper.findById(orderDetailId).orElseThrow(NotFoundException::new);
+		cancelOrderDetail(orderDetail);
+	}
+
+	private void cancelOrderDetail(OrderDetail orderDetail) {
+		if (orderDetail.getStatus() == SHIPMENT_PREPARATION ||
+			orderDetail.getStatus() == SHIPPED ||
+			orderDetail.getStatus() == DELIVERED) {
+			throw new BusinessRuleViolationException("운송이 시작된 주문 상품은 취소할 수 없습니다.");
+		}
+
+		orderDetail.paymentCanceled();
+		orderDetailMapper.updateStatus(orderDetail.getId(), orderDetail.getStatus());
 	}
 
 	@Override

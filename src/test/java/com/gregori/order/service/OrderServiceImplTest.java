@@ -152,6 +152,7 @@ class OrderServiceImplTest {
 		// given
 		Long memberId = 1L;
 		Long orderId = 1L;
+		Long orderDetailId = 1L;
 		Member member = new Member("name", "email", "password");
 		Order order = new Order(1L, "method", 1L, 1L);
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
@@ -160,9 +161,11 @@ class OrderServiceImplTest {
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
 		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
+		given(orderDetailMapper.findById(orderDetailId)).willReturn(Optional.of(orderDetail));
 
 		// when, then
 		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrder(memberId, orderId));
+		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrderDetail(memberId, orderDetailId));
 	}
 
 	@Test

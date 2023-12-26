@@ -93,6 +93,33 @@ class OrderControllerTest {
 	}
 
 	@Test
+	@DisplayName("주문 상세 취소를 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestCancelOrderDetail() throws Exception {
+
+		// given
+		Long memberId = 1L;
+		Long orderrDetailId = 1L;
+
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+
+		given(securityContext.getAuthentication()).willReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		given(authentication.getName()).willReturn(memberId.toString());
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.patch("/order/detail/" + orderrDetailId)
+				.with(csrf())
+				.contentType(APPLICATION_JSON));
+
+		// then
+		actions.andExpect(status().isNoContent()).andDo(print());
+
+		verify(orderService).cancelOrderDetail(memberId, orderrDetailId);
+	}
+
+	@Test
 	@DisplayName("주문 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestGetOrder() throws Exception {
 

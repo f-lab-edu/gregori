@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +43,14 @@ public class OrderController {
 	public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
 
 		orderService.cancelOrder(getMemberId(), orderId);
+
+		return ResponseEntity.noContent().build();
+	}
+
+	@PatchMapping("/detail/{orderDetailId}")
+	public ResponseEntity<Void> cancelOrderDetail(@PathVariable Long orderDetailId) {
+
+		orderService.cancelOrderDetail(getMemberId(), orderDetailId);
 
 		return ResponseEntity.noContent().build();
 	}
