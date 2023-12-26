@@ -33,7 +33,7 @@ public class SellerController {
 	private final SellerService sellerService;
 
 	@PostMapping
-	public ResponseEntity<Long> createSeller(@RequestBody @Valid SellerRegisterDto sellerRegisterDto) {
+	public ResponseEntity<Void> createSeller(@RequestBody @Valid SellerRegisterDto sellerRegisterDto) {
 
 		Long sellerId = sellerService.saveSeller(sellerRegisterDto);
 
@@ -56,6 +56,14 @@ public class SellerController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@GetMapping("/{sellerId}")
+	public ResponseEntity<SellerResponseDto> getSeller(@PathVariable Long sellerId) {
+
+		SellerResponseDto response = sellerService.getSeller(sellerId);
+
+		return ResponseEntity.ok().body(response);
+	}
+
 	@GetMapping
 	public ResponseEntity<List<SellerResponseDto>> getSellers() {
 
@@ -63,14 +71,6 @@ public class SellerController {
 		long memberId = parseLong(authentication.getName());
 
 		List<SellerResponseDto> response = sellerService.getSellers(memberId);
-
-		return ResponseEntity.ok().body(response);
-	}
-
-	@GetMapping("/{sellerId}")
-	public ResponseEntity<SellerResponseDto> getSeller(@PathVariable Long sellerId) {
-
-		SellerResponseDto response = sellerService.getSeller(sellerId);
 
 		return ResponseEntity.ok().body(response);
 	}
