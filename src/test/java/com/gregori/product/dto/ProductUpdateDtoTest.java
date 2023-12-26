@@ -7,6 +7,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
 
+import static com.gregori.product.domain.Product.Status.PRE_SALE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProductUpdateDtoTest {
@@ -18,7 +19,7 @@ class ProductUpdateDtoTest {
 	void should_createProductUpdateDto_when_validInput() {
 
 		// given
-		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, 1L);
+		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, 1L, PRE_SALE);
 
 		//when
 		var result = validator.validate(dto);
@@ -32,7 +33,21 @@ class ProductUpdateDtoTest {
 	void should_ValidException_when_nullId() {
 
 		// given
-		ProductUpdateDto dto = new ProductUpdateDto(null, "name", 1L, 1L);
+		ProductUpdateDto dto = new ProductUpdateDto(null, 1L, "name", 1L, 1L, PRE_SALE);
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertThat(result.isEmpty()).isFalse();
+	}
+
+	@Test
+	@DisplayName("categoryId 필드가 비어 있으면 에러가 발생한다.")
+	void should_ValidException_when_nullCategoryId() {
+
+		// given
+		ProductUpdateDto dto = new ProductUpdateDto(1L, null, "name", 1L, 1L, PRE_SALE);
 
 		// when
 		var result = validator.validate(dto);
@@ -46,9 +61,9 @@ class ProductUpdateDtoTest {
 	void should_ValidException_when_blankName() {
 
 		// given
-		ProductUpdateDto dto1 = new ProductUpdateDto(1L, null, 1L, 1L);
-		ProductUpdateDto dto2 = new ProductUpdateDto(1L, "", 1L, 1L);
-		ProductUpdateDto dto3 = new ProductUpdateDto(1L, " ", 1L, 1L);
+		ProductUpdateDto dto1 = new ProductUpdateDto(1L, 1L, null, 1L, 1L, PRE_SALE);
+		ProductUpdateDto dto2 = new ProductUpdateDto(1L, 1L, "", 1L, 1L, PRE_SALE);
+		ProductUpdateDto dto3 = new ProductUpdateDto(1L, 1L, " ", 1L, 1L, PRE_SALE);
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -66,7 +81,7 @@ class ProductUpdateDtoTest {
 	void should_ValidException_when_nullPrice() {
 
 		// given
-		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", null, 1L);
+		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", null, 1L, PRE_SALE);
 
 		// when
 		var result = validator.validate(dto);
@@ -80,7 +95,21 @@ class ProductUpdateDtoTest {
 	void should_ValidException_when_nullInventory() {
 
 		// given
-		ProductUpdateDto dto = new ProductUpdateDto(1L, "name", 1L, null);
+		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, null, PRE_SALE);
+
+		// when
+		var result = validator.validate(dto);
+
+		// then
+		assertThat(result.isEmpty()).isFalse();
+	}
+
+	@Test
+	@DisplayName("status 필드가 비어 있으면 에러가 발생한다.")
+	void should_ValidException_when_nullStatus() {
+
+		// given
+		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, 1L, null);
 
 		// when
 		var result = validator.validate(dto);

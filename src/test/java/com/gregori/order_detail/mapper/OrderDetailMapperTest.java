@@ -1,7 +1,7 @@
 package com.gregori.order_detail.mapper;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.gregori.category.domain.Category;
+import com.gregori.category.mapper.CategoryMapper;
 import com.gregori.common.CustomMybatisTest;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
@@ -32,6 +34,9 @@ class OrderDetailMapperTest {
 	private SellerMapper sellerMapper;
 
 	@Autowired
+	private CategoryMapper categoryMapper;
+
+	@Autowired
 	private ProductMapper productMapper;
 
 	@Autowired
@@ -42,9 +47,10 @@ class OrderDetailMapperTest {
 
 	Member member;
 	Seller seller;
+	Category category;
 	Order order;
-	List<Product> products = new ArrayList<>();
-	List<Long> orderDetailIds = new ArrayList<>();
+	List<Product> products = new CopyOnWriteArrayList<>();
+	List<Long> orderDetailIds = new CopyOnWriteArrayList<>();
 
 	@BeforeEach
 	void beforeEach() {
@@ -62,16 +68,21 @@ class OrderDetailMapperTest {
 			.build();
 		sellerMapper.insert(seller);
 
+		category = new Category("name");
+		categoryMapper.insert(category);
+
 		Product product1 = Product.builder()
 			.sellerId(seller.getId())
-			.name("아이템1")
-			.price(100L)
+			.categoryId(category.getId())
+			.name("name")
+			.price(1L)
 			.inventory(1L)
 			.build();
 		Product product2 = Product.builder()
 			.sellerId(seller.getId())
-			.name("아이템2")
-			.price(200L)
+			.categoryId(category.getId())
+			.name("name")
+			.price(2L)
 			.inventory(2L)
 			.build();
 
@@ -100,8 +111,12 @@ class OrderDetailMapperTest {
 			order = null;
 		}
 		if (!products.isEmpty()) {
-			productMapper.deleteByIds(products.stream().map(Product::getId).toList());
+			products.forEach(product -> productMapper.deleteById(product.getId()));
 			products.clear();
+		}
+		if (category != null) {
+			categoryMapper.deleteById(category.getId());
+			category = null;
 		}
 		if (seller != null) {
 			sellerMapper.deleteByIds(List.of(seller.getId()));
@@ -123,7 +138,7 @@ class OrderDetailMapperTest {
 			.productId(products.get(0).getId())
 			.productName(products.get(0).getName())
 			.productPrice(products.get(0).getPrice())
-			.productCount(2L)
+			.productCount(1L)
 			.build();
 
 		// when

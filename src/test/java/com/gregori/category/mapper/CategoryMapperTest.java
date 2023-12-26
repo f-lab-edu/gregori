@@ -39,9 +39,12 @@ class CategoryMapperTest {
 
 		// when
 		categoryMapper.insert(category);
+		categoryIds.add(category.getId());
+		Optional<Category> result = categoryMapper.findById(category.getId());
 
 		// then
 		assertThat(category.getId()).isNotNull();
+		assertThat(result.isPresent()).isTrue();
 	}
 
 	@Test
