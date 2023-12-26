@@ -38,8 +38,8 @@ class OrderControllerTest {
 	OrderService orderService;
 
 	@Test
-	@DisplayName("주문 생성을 요청하면 OK 응답을 반환한다.")
-	void should_responseOk_when_requestCreateOrder() throws Exception {
+	@DisplayName("주문 생성을 요청하면 Created 응답을 반환한다.")
+	void should_responseCreated_when_requestCreateOrder() throws Exception {
 
 		// given
 		List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
@@ -54,7 +54,7 @@ class OrderControllerTest {
 		);
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isCreated()).andDo(print());
 
 		verify(orderService).saveOrder(deepRefEq(dto));
 	}

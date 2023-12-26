@@ -28,23 +28,18 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public OrderResponseDto saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
+	public Long saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
 
 		Order order = orderRequestDto.toEntity();
 		orderMapper.insert(order);
-		List<OrderDetailResponseDto> orderDetails = orderRequestDto.getOrderDetails()
-			.stream()
-			.map(orderDetailRequestDto -> {
-				Product product = productMapper.findById(orderDetailRequestDto.getProductId())
-					.orElseThrow(NotFoundException::new);
+		orderRequestDto.getOrderDetails()
+			.forEach(orderDetailRequestDto -> {
+				Product product = productMapper.findById(orderDetailRequestDto.getProductId()).orElseThrow(NotFoundException::new);
 				OrderDetail initOrderDetail = orderDetailRequestDto.toEntity(order.getId(), product);
 				orderDetailMapper.insert(initOrderDetail);
+			});
 
-				return new OrderDetailResponseDto().toEntity(initOrderDetail);
-			})
-			.toList();
-
-		return new OrderResponseDto().toEntity(order, orderDetails);
+		return order.getId();
 	}
 
 	@Override

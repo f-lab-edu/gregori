@@ -6,6 +6,6 @@ import com.gregori.order.dto.OrderResponseDto;
 
 public interface OrderService {
 
-	OrderResponseDto saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException;
+	Long saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException;
 	OrderResponseDto getOrder(Long orderId) throws NotFoundException;
 }
