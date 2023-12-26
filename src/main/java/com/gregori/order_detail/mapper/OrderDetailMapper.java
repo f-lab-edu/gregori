@@ -13,5 +13,5 @@ public interface OrderDetailMapper {
 	void deleteByIds(List<Long> orderDetailIds);
 	List<OrderDetail> findByOrderId(Long orderId);
 	List<OrderDetail> findByProductId(Long productId);
-	List<OrderDetail> findByIds(List<Long> orderDetailIds);
+	List<OrderDetail> findByIds(List<Long> ids);
 }

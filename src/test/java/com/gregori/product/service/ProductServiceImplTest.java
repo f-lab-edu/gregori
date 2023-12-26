@@ -89,16 +89,16 @@ class ProductServiceImplTest {
 	void should_deleteProductSuccess() {
 
 		// given
-		Long id = 1L;
+		Long productId = 1L;
 
-		given(productMapper.findById(id)).willReturn(Optional.of(new Product()));
-		given(orderDetailMapper.findByProductId(id)).willReturn(List.of());
+		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
+		given(orderDetailMapper.findByProductId(productId)).willReturn(List.of());
 
 		// when
-		productService.deleteProduct(id);
+		productService.deleteProduct(productId);
 
 		// then
-		verify(productMapper).updateIsDeleted(id, TRUE);
+		verify(productMapper).updateIsDeleted(productId, TRUE);
 	}
 
 	@Test
@@ -106,14 +106,14 @@ class ProductServiceImplTest {
 	void should_BusinessRuleViolationException_when_orderDetailIsDeliveredFalse() {
 
 		// given
-		Long id = 1L;
+		Long productId = 1L;
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
 
-		given(productMapper.findById(id)).willReturn(Optional.of(new Product()));
-		given(orderDetailMapper.findByProductId(id)).willReturn(List.of(orderDetail));
+		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
+		given(orderDetailMapper.findByProductId(productId)).willReturn(List.of(orderDetail));
 
 		// when, then
-		assertThrows(BusinessRuleViolationException.class, () -> productService.deleteProduct(id));
+		assertThrows(BusinessRuleViolationException.class, () -> productService.deleteProduct(productId));
 	}
 
 	@Test
@@ -121,35 +121,19 @@ class ProductServiceImplTest {
 	void should_returnProduct_when_getProductSuccess() {
 
 		// given
-		Long id = 1L;
+		Long productId = 1L;
 
-		given(productMapper.findById(id)).willReturn(Optional.of(new Product()));
+		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
 
 		// when
-		productService.getProduct(id);
+		productService.getProduct(productId);
 
 		// then
-		verify(productMapper).findById(id);
+		verify(productMapper).findById(productId);
 	}
 
 	@Test
-	@DisplayName("검색어로 상품 목록을 반환한다.")
-	void should_returnProductsByKeyword() {
-
-		// given
-		String keyword = "keyword";
-		int page = 1;
-		Sorter sorter = CREATED_AT_DESC;
-
-		// when
-		productService.getProducts(keyword, null, null, page, sorter);
-
-		// then
-		verify(productMapper).find(keyword,  null, null,10, 0, sorter.toString());
-	}
-
-	@Test
-	@DisplayName("상품을 찾지 못하면 에러가 발생한다.")
+	@DisplayName("상품 조회를 실패하면 에러가 발생한다.")
 	void should_NotFoundException_when_findProductFailure() {
 
 		// given
@@ -161,5 +145,21 @@ class ProductServiceImplTest {
 		assertThrows(NotFoundException.class, () -> productService.updateProduct(dto));
 		assertThrows(NotFoundException.class, () -> productService.deleteProduct(1L));
 		assertThrows(NotFoundException.class, () -> productService.getProduct(1L));
+	}
+
+	@Test
+	@DisplayName("상품 목록 조회를 성공하면 상품 목록을 반환한다.")
+	void should_returnProducts_when_getProductsSuccess() {
+
+		// given
+		String keyword = "keyword";
+		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
+
+		// when
+		productService.getProducts(keyword, null, null, page, sorter);
+
+		// then
+		verify(productMapper).find(keyword,  null, null,10, 0, sorter.toString());
 	}
 }

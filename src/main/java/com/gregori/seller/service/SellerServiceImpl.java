@@ -80,19 +80,19 @@ public class SellerServiceImpl implements SellerService {
 	}
 
 	@Override
-	public List<SellerResponseDto> getSellers(Long memberId) {
-
-		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
-
-		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
-	}
-
-	@Override
 	public SellerResponseDto getSeller(Long sellerId) throws NotFoundException {
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 
 		return new SellerResponseDto().toEntity(seller);
+	}
+
+	@Override
+	public List<SellerResponseDto> getSellers(Long memberId) {
+
+		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
+
+		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
 	}
 
 	private void checkBusinessNumberValidation(String businessNumber) {

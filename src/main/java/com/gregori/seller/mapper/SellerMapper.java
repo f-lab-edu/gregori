@@ -12,7 +12,7 @@ public interface SellerMapper {
 
 	Long insert(Seller seller);
 	Long update(Seller seller);
-	void deleteByIds(List<Long> id);
-	Optional<Seller> findById(Long sellerId);
+	void deleteByIds(List<Long> ids);
+	Optional<Seller> findById(Long id);
 	List<Seller> findByMemberId(Long memberId);
 }

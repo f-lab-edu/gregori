@@ -11,7 +11,7 @@ public interface RefreshTokenMapper {
 
 	Long insert(RefreshToken refreshToken);
 	Long update(RefreshToken refreshToken);
-	Long deleteById(Long tokenId);
-	Optional<RefreshToken> findById(Long tokenId);
+	Long deleteById(Long id);
+	Optional<RefreshToken> findById(Long id);
 	Optional<RefreshToken> findByRefreshTokenKey(String refreshTokenKey);
 }

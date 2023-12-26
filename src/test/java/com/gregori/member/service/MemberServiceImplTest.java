@@ -50,8 +50,8 @@ class MemberServiceImplTest {
 	private MemberServiceImpl memberService;
 
 	@Test
-	@DisplayName("이메일이 중복되지 않으면 새로운 회원을 DB에 저장하고 id를 반환한다.")
-	 void should_register_when_notDuplicatedEmail() {
+	@DisplayName("회원가입을 성공하면 id를 반환한다.")
+	 void should_returnId_when_registerSuccess() {
 
 		// given
 		final MemberRegisterDto dto = new MemberRegisterDto("name", "email", "password");
@@ -80,8 +80,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("회원을 찾으면 회원 이름을 수정한다.")
-	void should_updateMemberName_when_findMember() {
+	@DisplayName("회원 이름 갱신을 성공한다.")
+	void should_updateMemberName() {
 
 		// given
 		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
@@ -96,8 +96,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("회원을 찾고 비밀번호가 일치하면 회원 비밀번호를 수정한다.")
-	void should_updateMemberPassword_when_findMemberAndCorrectPassword() {
+	@DisplayName("회원 비밀번호를 갱신한다.")
+	void should_updateMemberPasswordSuccess() {
 
 		// given
 		Member member = new Member("name", "email", passwordEncoder.encode("password"));
@@ -113,7 +113,7 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("기존 비밀번호가 일치하지 않으면 회원 비밀번호 변경을 실패한다.")
+	@DisplayName("올바르지 않은 비밀번호면 비밀번호 갱신을 실패한다.")
 	void should_ValidationException_when_incorrectPassword() {
 
 		// given
@@ -127,8 +127,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("조건을 만족하면 일반 회원을 탈퇴 처리한다.")
-	void should_deleteGeneralMember_when_meetCondition() {
+	@DisplayName("일반 회원을 탈퇴 처리한다.")
+	void should_deleteGeneralMember_when_deleteMemberSuccess() {
 
 		// given
 		final Long memberId = 1L;
@@ -146,8 +146,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("조건을 만족하면 판매자 회원을 탈퇴 처리한다.")
-	void should_deleteSellingMember_when_meetCondition() {
+	@DisplayName("판매자 회원을 탈퇴 처리한다.")
+	void should_deleteSellingMember_when_deleteMemberSuccess() {
 
 		// given
 		final Long memberId = 1L;
@@ -223,8 +223,8 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("회원을 찾으면 회원을 반환한다.")
-	void should_getMember_when_findMemberSuccess() {
+	@DisplayName("회원 조회를 성공하면 회원을 반환한다.")
+	void should_returnMember_when_getMemberSuccess() {
 
 		// given
 		final Long memberId = 1L;
@@ -239,7 +239,7 @@ class MemberServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("회원을 찾지 못하면 에러가 발생한다.")
+	@DisplayName("회원 조회를 실패하면 에러가 발생한다.")
 	void should_NotFoundException_when_findMemberFailure() {
 
 		// given

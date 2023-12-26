@@ -37,8 +37,8 @@ class OrderServiceImplTest {
 	private OrderServiceImpl orderService;
 
 	@Test
-	@DisplayName("주문 생성을 성공하면 주문을 반환한다.")
-	void should_returnOrderResponseDto_when_saveOrderSuccess() {
+	@DisplayName("주문 생성을 성공하면 id를 반환한다.")
+	void should_returnId_when_saveOrderSuccess() {
 
 		// given
 		OrderRequestDto dto = new OrderRequestDto(1L, "paymentMethod", 1L, 1L, List.of());
