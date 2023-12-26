@@ -16,7 +16,7 @@ class OrderDetailTest {
 	void should_paymentCompleted() {
 
 		// given
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		orderDetail.shipmentPreparation();
 		OrderDetail.Status status = orderDetail.getStatus();
 
@@ -33,7 +33,7 @@ class OrderDetailTest {
 	void should_shipmentPreparation() {
 
 		// given
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		OrderDetail.Status status = orderDetail.getStatus();
 
 		// when
@@ -49,7 +49,7 @@ class OrderDetailTest {
 	void should_shipped() {
 
 		// given
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		OrderDetail.Status status = orderDetail.getStatus();
 
 		// when
@@ -65,7 +65,7 @@ class OrderDetailTest {
 	void should_deliveryCost() {
 
 		// given
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		OrderDetail.Status status = orderDetail.getStatus();
 
 		// when

@@ -107,7 +107,7 @@ class ProductServiceImplTest {
 
 		// given
 		Long productId = 1L;
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 
 		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
 		given(orderDetailMapper.findByProductId(productId)).willReturn(List.of(orderDetail));

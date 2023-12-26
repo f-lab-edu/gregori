@@ -88,7 +88,7 @@ class OrderServiceImplTest {
 		Long orderId = 1L;
 		Member member = new Member("name", "email", "password");
 		Order order = new Order(1L, "method", 1L, 1L);
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
@@ -154,7 +154,7 @@ class OrderServiceImplTest {
 		Long orderId = 1L;
 		Member member = new Member("name", "email", "password");
 		Order order = new Order(1L, "method", 1L, 1L);
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		orderDetail.shipmentPreparation();
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
@@ -172,7 +172,7 @@ class OrderServiceImplTest {
 		// given
 		Long orderId = 1L;
 		Order order = new Order(1L, "method", 1L, 1L);
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 
 		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
 		given(orderDetailMapper.findByOrderId(null)).willReturn(List.of(orderDetail));
@@ -208,7 +208,7 @@ class OrderServiceImplTest {
 		Long memberId = 1L;
 		int page = 1;
 		Order order = new Order(1L, "method", 1L, 1L);
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 
 		given(orderMapper.findByMemberId(memberId, 10, 0)).willReturn(List.of(order));
 		given(orderDetailMapper.findByOrderId(null)).willReturn(List.of(orderDetail));
