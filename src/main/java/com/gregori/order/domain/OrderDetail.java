@@ -60,7 +60,7 @@ public class OrderDetail extends AbstractEntity {
 		this.status = Status.SHIPPED;
 	}
 
-	public void deliveryCost() {
+	public void delivered() {
 		this.status = Status.DELIVERED;
 	}
 }

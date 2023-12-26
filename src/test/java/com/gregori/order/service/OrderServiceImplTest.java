@@ -26,6 +26,8 @@ import com.gregori.order.mapper.OrderMapper;
 import com.gregori.order.mapper.OrderDetailMapper;
 
 import static com.gregori.order.domain.Order.Status.ORDER_CANCELED;
+import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
+import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
 import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -146,6 +148,23 @@ class OrderServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("주문 상세 취소를 성공한다.")
+	void should_cancelOrderDetailSuccess() {
+
+		// given
+		Long orderDetailId = 1L;
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
+
+		given(orderDetailMapper.findById(orderDetailId)).willReturn(Optional.of(orderDetail));
+
+		// when
+		orderService.cancelOrderDetail(orderDetailId);
+
+		// then
+		verify(orderDetailMapper).updateStatus(null, PAYMENT_CANCELED);
+	}
+
+	@Test
 	@DisplayName("주문 상품의 운송이 시작되면 주문 취소를 실패한다.")
 	void should_BusinessRuleViolationException_when_preparedDelivery() {
 
@@ -165,7 +184,46 @@ class OrderServiceImplTest {
 
 		// when, then
 		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrder(memberId, orderId));
-		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrderDetail(memberId, orderDetailId));
+		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrderDetail(orderDetailId));
+	}
+
+	@Test
+	@DisplayName("주문 상품의 상태를 갱신한다.")
+	void should_updateOrderDetailStatus() {
+
+		// given
+		Long memberId = 1L;
+		Long orderId = 1L;
+		Long orderDetailId = 1L;
+		OrderDetail.Status status = DELIVERED;
+		Member member = new Member("name", "email", "password");
+		member.sellingMember();
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
+		orderDetail.delivered();
+
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
+		given(orderDetailMapper.findById(orderDetailId)).willReturn(Optional.of(orderDetail));
+		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
+
+		// when
+		orderService.updateOrderDetailStatus(memberId, orderDetailId, status);
+
+		// then
+		verify(orderMapper).updateStatus(orderId, ORDER_COMPLETED);
+		verify(orderDetailMapper).updateStatus(orderDetailId, status);
+	}
+
+	@Test
+	@DisplayName("일반 회원이면 주문 상품 상태 갱신을 실패한다.")
+	void should_UnauthorizedException_when_generalMember() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+
+		// when, then
+		assertThrows(UnauthorizedException.class, () -> orderService.updateOrderDetailStatus(1L, 1L, DELIVERED));
 	}
 
 	@Test

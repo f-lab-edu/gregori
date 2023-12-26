@@ -69,7 +69,7 @@ class OrderDetailTest {
 		OrderDetail.Status status = orderDetail.getStatus();
 
 		// when
-		orderDetail.deliveryCost();
+		orderDetail.delivered();
 
 		// then
 		assertThat(status).isEqualTo(PAYMENT_COMPLETED);

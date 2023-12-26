@@ -50,7 +50,7 @@ public class OrderController {
 	@PatchMapping("/detail/{orderDetailId}")
 	public ResponseEntity<Void> cancelOrderDetail(@PathVariable Long orderDetailId) {
 
-		orderService.cancelOrderDetail(getMemberId(), orderDetailId);
+		orderService.cancelOrderDetail(orderDetailId);
 
 		return ResponseEntity.noContent().build();
 	}

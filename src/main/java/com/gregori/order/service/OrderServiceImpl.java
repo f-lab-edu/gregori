@@ -23,8 +23,12 @@ import com.gregori.order.mapper.OrderDetailMapper;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
 
@@ -81,7 +85,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public void cancelOrderDetail(Long memberId, Long orderDetailId) throws NotFoundException {
+	public void cancelOrderDetail(Long orderDetailId) throws NotFoundException {
 
 		OrderDetail orderDetail = orderDetailMapper.findById(orderDetailId).orElseThrow(NotFoundException::new);
 		cancelOrderDetail(orderDetail);
@@ -96,6 +100,34 @@ public class OrderServiceImpl implements OrderService {
 
 		orderDetail.paymentCanceled();
 		orderDetailMapper.updateStatus(orderDetail.getId(), orderDetail.getStatus());
+	}
+
+	@Override
+	@Transactional
+	public void updateOrderDetailStatus(Long memberId, Long orderDetailId, OrderDetail.Status status) throws NotFoundException {
+
+		Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
+		if (member.getAuthority() == GENERAL_MEMBER) {
+			throw new UnauthorizedException("일반 회원은 주문 상품 상태를 변경할 수 없습니다.");
+		}
+
+		OrderDetail orderDetail = orderDetailMapper.findById(orderDetailId).orElseThrow(NotFoundException::new);
+
+		if (status == DELIVERED) {
+			List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderDetail.getOrderId())
+				.stream()
+				.filter(detail -> detail.getId() != orderDetailId && (
+					detail.getStatus() == PAYMENT_COMPLETED ||
+					detail.getStatus() == SHIPMENT_PREPARATION ||
+					detail.getStatus() == SHIPPED))
+				.toList();
+
+			if (orderDetails.isEmpty()) {
+				orderMapper.updateStatus(orderDetail.getOrderId(), ORDER_COMPLETED);
+			}
+		}
+
+		orderDetailMapper.updateStatus(orderDetailId, status);
 	}
 
 	@Override

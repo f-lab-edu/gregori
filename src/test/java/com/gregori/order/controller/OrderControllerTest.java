@@ -116,7 +116,7 @@ class OrderControllerTest {
 		// then
 		actions.andExpect(status().isNoContent()).andDo(print());
 
-		verify(orderService).cancelOrderDetail(memberId, orderrDetailId);
+		verify(orderService).cancelOrderDetail(orderrDetailId);
 	}
 
 	@Test
