@@ -135,7 +135,7 @@ class MemberServiceImplTest {
 		final Member member = new Member("name", "email", "password");
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
-		given(orderMapper.findByMemberId(memberId)).willReturn(List.of());
+		given(orderMapper.findByMemberId(memberId, null, null)).willReturn(List.of());
 
 		// when
 		memberService.deleteMember(memberId);
@@ -156,11 +156,11 @@ class MemberServiceImplTest {
 
 		Order order1 = new Order(1L, "method", 1L, 1L);
 		Order order2 = new Order(1L, "method", 1L, 1L);
-		order1.orderCancelled();
+		order1.orderCanceled();
 		order2.orderCompleted();
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
-		given(orderMapper.findByMemberId(memberId)).willReturn(List.of(order1, order2));
+		given(orderMapper.findByMemberId(memberId, null, null)).willReturn(List.of(order1, order2));
 		given(sellerMapper.findByMemberId(1L)).willReturn(List.of());
 
 		// when
@@ -180,7 +180,7 @@ class MemberServiceImplTest {
 		Order order = new Order(1L, "method", 1L, 1L);
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
-		given(orderMapper.findByMemberId(1L)).willReturn(List.of(order));
+		given(orderMapper.findByMemberId(1L, null, null)).willReturn(List.of(order));
 
 		// when, then
 		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));
@@ -196,7 +196,7 @@ class MemberServiceImplTest {
 		Order order = new Order(1L, "method", 1L, 1L);
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
-		given(orderMapper.findByMemberId(1L)).willReturn(List.of(order));
+		given(orderMapper.findByMemberId(1L, null, null)).willReturn(List.of(order));
 
 		// when, then
 		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));
@@ -212,7 +212,7 @@ class MemberServiceImplTest {
 		Seller seller = new Seller(1L, "123-45-67891", "name");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
-		given(orderMapper.findByMemberId(1L)).willReturn(List.of());
+		given(orderMapper.findByMemberId(1L, null, null)).willReturn(List.of());
 		given(sellerMapper.findByMemberId(1L)).willReturn(List.of(seller));
 
 		// when, then

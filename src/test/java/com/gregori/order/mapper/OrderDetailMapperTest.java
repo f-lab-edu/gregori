@@ -1,6 +1,7 @@
 package com.gregori.order.mapper;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.junit.jupiter.api.AfterEach;
@@ -21,6 +22,7 @@ import com.gregori.order.domain.OrderDetail;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
@@ -135,6 +137,7 @@ class OrderDetailMapperTest {
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(order.getId())
 			.productId(products.get(0).getId())
+			.productSellerId(products.get(0).getSellerId())
 			.productName(products.get(0).getName())
 			.productPrice(products.get(0).getPrice())
 			.productCount(1L)
@@ -143,12 +146,37 @@ class OrderDetailMapperTest {
 		// when
 		orderDetailMapper.insert(orderDetail);
 		orderDetailIds.add(orderDetail.getId());
-		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
+		Optional<OrderDetail> result = orderDetailMapper.findById(orderDetail.getId());
 
 		// then
-		assertThat(result.size()).isEqualTo(1);
-		assertThat(result.get(0).getId()).isEqualTo(orderDetail.getId());
-		assertThat(result.get(0).getProductCount()).isEqualTo(orderDetail.getProductCount());
+		assertThat(result.isPresent()).isTrue();
+	}
+
+	@Test
+	@DisplayName("주문 상세의 상태를 수정한다.")
+	void should_updateStatus() {
+
+		// given
+		OrderDetail orderDetail = OrderDetail.builder()
+			.orderId(order.getId())
+			.productId(products.get(0).getId())
+			.productSellerId(products.get(0).getSellerId())
+			.productName(products.get(0).getName())
+			.productPrice(products.get(0).getPrice())
+			.productCount(1L)
+			.build();
+
+		orderDetailMapper.insert(orderDetail);
+		orderDetailIds.add(orderDetail.getId());
+
+		// when
+		orderDetail.paymentCanceled();
+		orderDetailMapper.updateStatus(order.getId(), orderDetail.getStatus());
+		Optional<OrderDetail> result = orderDetailMapper.findById(orderDetail.getId());
+
+		// then
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getStatus()).isEqualTo(PAYMENT_CANCELED);
 	}
 
 	@Test
@@ -159,6 +187,7 @@ class OrderDetailMapperTest {
 		OrderDetail orderDetail = OrderDetail.builder()
 			.orderId(order.getId())
 			.productId(products.get(0).getId())
+			.productSellerId(products.get(0).getSellerId())
 			.productName(products.get(0).getName())
 			.productPrice(products.get(0).getPrice())
 			.productCount(2L)
@@ -169,10 +198,42 @@ class OrderDetailMapperTest {
 
 		// when
 		orderDetailMapper.deleteByIds(List.of(orderDetail.getId()));
-		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
+		OrderDetail result = orderDetailMapper.findById(orderDetail.getId()).orElse(null);
 
 		// then
-		assertThat(result.size()).isEqualTo(0);
+		assertThat(result).isNull();
+	}
+
+	@Test
+	@DisplayName("id로 주문 상세를 조회한다.")
+	void should_findById() {
+
+		// given
+		OrderDetail orderDetail = OrderDetail.builder()
+			.orderId(order.getId())
+			.productId(products.get(0).getId())
+			.productSellerId(products.get(0).getSellerId())
+			.productName(products.get(0).getName())
+			.productPrice(products.get(0).getPrice())
+			.productCount(2L)
+			.build();
+
+		orderDetailMapper.insert(orderDetail);
+		orderDetailIds.add(orderDetail.getId());
+
+		// when
+		Optional<OrderDetail> result = orderDetailMapper.findById(orderDetail.getId());
+
+		// then
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getId()).isEqualTo(orderDetail.getId());
+		assertThat(result.get().getOrderId()).isEqualTo(orderDetail.getOrderId());
+		assertThat(result.get().getProductId()).isEqualTo(orderDetail.getProductId());
+		assertThat(result.get().getProductName()).isEqualTo(orderDetail.getProductName());
+		assertThat(result.get().getProductPrice()).isEqualTo(orderDetail.getProductPrice());
+		assertThat(result.get().getProductCount()).isEqualTo(orderDetail.getProductCount());
+		assertThat(result.get().getCreatedAt()).isEqualTo(orderDetail.getCreatedAt());
+		assertThat(result.get().getUpdatedAt()).isEqualTo(orderDetail.getUpdatedAt());
 	}
 
 	@Test
@@ -183,6 +244,7 @@ class OrderDetailMapperTest {
 		OrderDetail orderDetail1 = OrderDetail.builder()
 			.orderId(order.getId())
 			.productId(products.get(0).getId())
+			.productSellerId(products.get(0).getSellerId())
 			.productName(products.get(0).getName())
 			.productPrice(products.get(0).getPrice())
 			.productCount(2L)
@@ -190,6 +252,7 @@ class OrderDetailMapperTest {
 		OrderDetail orderDetail2 = OrderDetail.builder()
 			.orderId(order.getId())
 			.productId(products.get(1).getId())
+			.productSellerId(products.get(0).getSellerId())
 			.productName(products.get(1).getName())
 			.productPrice(products.get(1).getPrice())
 			.productCount(2L)
@@ -218,6 +281,7 @@ class OrderDetailMapperTest {
 		OrderDetail orderDetail1 = OrderDetail.builder()
 			.orderId(order.getId())
 			.productId(products.get(0).getId())
+			.productSellerId(products.get(0).getSellerId())
 			.productName(products.get(0).getName())
 			.productPrice(products.get(0).getPrice())
 			.productCount(2L)
@@ -225,6 +289,7 @@ class OrderDetailMapperTest {
 		OrderDetail orderDetail2 = OrderDetail.builder()
 			.orderId(order.getId())
 			.productId(products.get(1).getId())
+			.productSellerId(products.get(0).getSellerId())
 			.productName(products.get(1).getName())
 			.productPrice(products.get(1).getPrice())
 			.productCount(2L)
@@ -236,7 +301,7 @@ class OrderDetailMapperTest {
 		orderDetailIds.add(orderDetail2.getId());
 
 		// when
-		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail1.getId(), orderDetail2.getId()));
+		List<OrderDetail> result = orderDetailMapper.findByOrderId(order.getId());
 
 		// then
 		assertThat(result.get(0).getId()).isEqualTo(orderDetail1.getId());

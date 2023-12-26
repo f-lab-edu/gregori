@@ -72,15 +72,16 @@ CREATE TABLE orders (
 );
 
 CREATE TABLE order_details (
-    id            BIGINT       AUTO_INCREMENT PRIMARY KEY NOT NULL                            COMMENT '주문 상세 인덱스',
-    order_id      BIGINT       NOT NULL                                                       COMMENT '주문 인덱스',
-    product_id    BIGINT       NOT NULL                                                       COMMENT '상품 인덱스',
-    product_name  VARCHAR(255) NOT NULL                                                       COMMENT '주문 상품 이름',
-    product_price BIGINT       NOT NULL                                                       COMMENT '주문 상품 가격',
-    product_count BIGINT       NOT NULL                                                       COMMENT '주문 상품 개수',
-    status        VARCHAR(255) NOT NULL                                                       COMMENT '주문 상품 상태',
-    created_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 상세 생성 날짜',
-    updated_at    TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 상세 수정 날짜',
+    id                BIGINT       AUTO_INCREMENT PRIMARY KEY NOT NULL                            COMMENT '주문 상세 인덱스',
+    order_id          BIGINT       NOT NULL                                                       COMMENT '주문 인덱스',
+    product_id        BIGINT       NOT NULL                                                       COMMENT '상품 인덱스',
+    product_seller_id BIGINT       NOT NULL                                                       COMMENT '주문 상품 셀러 인덱스',
+    product_name      VARCHAR(255) NOT NULL                                                       COMMENT '주문 상품 이름',
+    product_price     BIGINT       NOT NULL                                                       COMMENT '주문 상품 가격',
+    product_count     BIGINT       NOT NULL                                                       COMMENT '주문 상품 개수',
+    status            VARCHAR(255) NOT NULL                                                       COMMENT '주문 상품 상태',
+    created_at        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '주문 상세 생성 날짜',
+    updated_at        TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '주문 상세 수정 날짜',
     CONSTRAINT fk_order_details_order_id FOREIGN KEY (order_id) REFERENCES orders(id),
     CONSTRAINT fk_order_details_product_id FOREIGN KEY (product_id) REFERENCES products(id)
 );

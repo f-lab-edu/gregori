@@ -22,6 +22,7 @@ public class OrderDetailRequestDto {
 		return OrderDetail.builder()
 			.orderId(orderId)
 			.productId(productId)
+			.productSellerId(product.getSellerId())
 			.productName(product.getName())
 			.productPrice(product.getPrice())
 			.productCount(productCount)

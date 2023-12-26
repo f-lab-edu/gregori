@@ -11,7 +11,8 @@ import com.gregori.order.domain.Order;
 public interface OrderMapper {
 
 	Long insert(Order order);
+	void updateStatus(Long id, Order.Status status);
 	void deleteByIds(List<Long> ids);
 	Optional<Order> findById(Long id);
-	List<Order> findByMemberId(Long memberId);
+	List<Order> findByMemberId(Long memberId, Integer limit, Integer offset);
 }

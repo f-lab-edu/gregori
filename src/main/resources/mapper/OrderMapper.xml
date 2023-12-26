@@ -10,14 +10,20 @@
         VALUES (#{memberId}, #{orderNumber}, #{paymentMethod}, #{paymentAmount}, #{deliveryCost}, #{status})
     </insert>
 
-    <update id="deleteByIds" parameterType="map">
+    <update id="updateStatus">
+        UPDATE orders
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="map">
         DELETE FROM orders
         WHERE id IN (
         <foreach collection="list" item="item" separator=",">
             #{item}
         </foreach>
         )
-    </update>
+    </delete>
 
     <select id="findById" resultType="com.gregori.order.domain.Order" parameterType="Long">
         SELECT id, member_id, order_number, payment_method, payment_amount, delivery_cost, status
@@ -29,5 +35,16 @@
         SELECT id, member_id, order_number, payment_method, payment_amount, delivery_cost, status
         FROM orders
         WHERE member_id = #{memberId}
+        ORDER BY created_at DESC
+        <include refid="limitAndOffset"/>
     </select>
+
+    <sql id="limitAndOffset">
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </sql>
 </mapper>

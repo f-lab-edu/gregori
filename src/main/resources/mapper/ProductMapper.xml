@@ -16,16 +16,22 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateInventory">
+        UPDATE products
+        SET inventory = #{inventory}
+        WHERE id = #{id}
+    </update>
+
     <update id="updateIsDeleted">
         UPDATE products
         SET is_deleted = #{isDeleted}
         WHERE id = #{id}
     </update>
 
-    <update id="deleteById">
+    <delete id="deleteById">
         DELETE FROM products
         WHERE id = #{id}
-    </update>
+    </delete>
 
     <select id="findById" resultType="com.gregori.product.domain.Product" parameterType="Long">
         SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at

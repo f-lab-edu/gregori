@@ -148,6 +148,31 @@ class ProductMapperTest {
 	}
 
 	@Test
+	@DisplayName("상품 재고를 수정한다.")
+	void should_updateInventory() {
+
+		// given
+		Product product = Product.builder()
+			.sellerId(seller.getId())
+			.categoryId(categoryIds.get(0))
+			.name("name")
+			.price(1L)
+			.inventory(1L)
+			.build();
+
+		productMapper.insert(product);
+		productIds.add(product.getId());
+
+		// when
+		productMapper.updateInventory(product.getId(), 10L);
+		Optional<Product> result = productMapper.findById(product.getId());
+
+		// then
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getInventory()).isEqualTo(10L);
+	}
+
+	@Test
 	@DisplayName("id로 상품을 논리적으로 삭제한다.")
 	void should_updateIsDeleted() {
 

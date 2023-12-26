@@ -6,37 +6,49 @@
 <mapper namespace="com.gregori.order.mapper.OrderDetailMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.order.domain.OrderDetail">
-        INSERT INTO order_details (order_id, product_id, product_name, product_price, product_count, status)
-        VALUES (#{orderId}, #{productId}, #{productName}, #{productPrice}, #{productCount}, #{status})
+        INSERT INTO order_details (order_id, product_id, product_seller_id, product_name, product_price, product_count, status)
+        VALUES (#{orderId}, #{productId}, #{productSellerId}, #{productName}, #{productPrice}, #{productCount}, #{status})
     </insert>
 
-    <update id="deleteByIds" parameterType="map">
+    <update id="updateStatus">
+        UPDATE order_details
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteByIds" parameterType="map">
         DELETE FROM order_details
         WHERE id IN (
         <foreach collection="list" item="item" separator=",">
             #{item}
         </foreach>
         )
-    </update>
-
-    <select id="findByProductId" resultType="com.gregori.order.domain.OrderDetail" parameterType="Long">
-        SELECT id, order_id, product_id, product_name, product_price, product_count, status
-        FROM order_details
-        WHERE productId = #{productId}
-    </select>
-
-    <select id="findByOrderId" resultType="com.gregori.order.domain.OrderDetail" parameterType="Long">
-        SELECT id, order_id, product_id, product_name, product_price, product_count, status
-        FROM order_details
-        WHERE order_id = #{orderId}
-    </select>
+    </delete>
 
     <select id="findByIds" resultType="com.gregori.order.domain.OrderDetail" parameterType="List">
-        SELECT id, order_id, product_id, product_name, product_price, product_count, status
+        SELECT id, order_id, product_id, product_seller_id, product_name, product_price, product_count, status
         FROM order_details
         WHERE id IN
         <foreach collection="list" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
+    </select>
+
+    <select id="findById" resultType="com.gregori.order.domain.OrderDetail" parameterType="Long">
+        SELECT id, order_id, product_id, product_seller_id, product_name, product_price, product_count, status
+        FROM order_details
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByProductId" resultType="com.gregori.order.domain.OrderDetail" parameterType="Long">
+        SELECT id, order_id, product_id, product_seller_id, product_name, product_price, product_count, status
+        FROM order_details
+        WHERE productId = #{productId}
+    </select>
+
+    <select id="findByOrderId" resultType="com.gregori.order.domain.OrderDetail" parameterType="Long">
+        SELECT id, order_id, product_id, product_seller_id, product_name, product_price, product_count, status
+        FROM order_details
+        WHERE order_id = #{orderId}
     </select>
 </mapper>

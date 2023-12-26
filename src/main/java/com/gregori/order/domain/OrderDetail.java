@@ -14,6 +14,7 @@ public class OrderDetail extends AbstractEntity {
 	private Long id;
 	private Long orderId;
 	private Long productId;
+	private Long productSellerId;
 	private String productName;
 	private Long productPrice;
 	private Long productCount;
@@ -23,6 +24,7 @@ public class OrderDetail extends AbstractEntity {
 	@RequiredArgsConstructor
 	public enum Status {
 
+		PAYMENT_CANCELED("결제 취소"),
 		PAYMENT_COMPLETED("결제 완료"),
 		SHIPMENT_PREPARATION("배송 준비중"),
 		SHIPPED("배송중"),
@@ -32,13 +34,18 @@ public class OrderDetail extends AbstractEntity {
 	}
 
 	@Builder
-	public OrderDetail(Long orderId, Long productId, String productName, Long productPrice, Long productCount) {
+	public OrderDetail(Long orderId, Long productId, Long productSellerId, String productName, Long productPrice, Long productCount) {
 		this.orderId = orderId;
 		this.productId = productId;
+		this.productSellerId = productSellerId;
 		this.productName = productName;
 		this.productPrice = productPrice;
 		this.productCount = productCount;
 		this.status = Status.PAYMENT_COMPLETED;
+	}
+
+	public void paymentCanceled() {
+		this.status = Status.PAYMENT_CANCELED;
 	}
 
 	public void paymentCompleted() {
@@ -53,7 +60,7 @@ public class OrderDetail extends AbstractEntity {
 		this.status = Status.SHIPPED;
 	}
 
-	public void deliveryCost() {
+	public void delivered() {
 		this.status = Status.DELIVERED;
 	}
 }

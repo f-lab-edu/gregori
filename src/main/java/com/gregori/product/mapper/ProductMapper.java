@@ -13,6 +13,7 @@ public interface ProductMapper {
 
 	Long insert(Product product);
 	void update(Product product);
+	void updateInventory(Long id, Long inventory);
 	void updateIsDeleted(Long id, IsDeleted isDeleted);
 	void deleteById(Long id);
 	Optional<Product> findById(Long id);

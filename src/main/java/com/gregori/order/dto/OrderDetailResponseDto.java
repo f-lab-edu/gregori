@@ -16,6 +16,7 @@ public class OrderDetailResponseDto {
 	private Long id;
 	private Long orderId;
 	private Long productId;
+	private Long productSellerId;
 	private String productName;
 	private Long productPrice;
 	private Long productCount;
@@ -27,6 +28,7 @@ public class OrderDetailResponseDto {
 			.id(orderDetail.getId())
 			.orderId(orderDetail.getOrderId())
 			.productId(orderDetail.getProductId())
+			.productSellerId(orderDetail.getProductSellerId())
 			.productName(orderDetail.getProductName())
 			.productPrice(orderDetail.getProductPrice())
 			.productCount(orderDetail.getProductCount())

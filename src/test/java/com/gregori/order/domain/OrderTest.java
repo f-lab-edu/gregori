@@ -3,7 +3,7 @@ package com.gregori.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.gregori.order.domain.Order.Status.ORDER_CANCELLED;
+import static com.gregori.order.domain.Order.Status.ORDER_CANCELED;
 import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,12 +38,12 @@ class OrderTest {
 
 
 		// when
-		order.orderCancelled();
+		order.orderCanceled();
 		Order.Status result = order.getStatus();
 
 		// then
 		assertThat(status).isEqualTo(ORDER_PROCESSING);
-		assertThat(result).isEqualTo(ORDER_CANCELLED);
+		assertThat(result).isEqualTo(ORDER_CANCELED);
 	}
 
 	@Test
