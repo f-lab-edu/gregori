@@ -55,8 +55,8 @@ class AuthControllerTest {
 	}
 
 	@Test
-	@DisplayName("로그아웃을 요쳥하면 Ok 응답을 반환한다.")
-	void should_responseOk_when_requestSignOut() throws Exception {
+	@DisplayName("로그아웃을 요쳥하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestSignOut() throws Exception {
 
 		// given
 		TokenRequestDto dto = new TokenRequestDto("access_token", "refresh_token");
@@ -69,7 +69,7 @@ class AuthControllerTest {
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isNoContent()).andDo(print());
 
 		verify(authService).signOut(refEq(dto));
 	}

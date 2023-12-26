@@ -34,7 +34,7 @@ public class AuthController {
 
 		authService.signOut(dto);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping("/refresh")
