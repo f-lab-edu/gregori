@@ -3,9 +3,9 @@ package com.gregori.product.controller;
 import java.net.URI;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +46,14 @@ public class ProductController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@DeleteMapping("/{productId}")
+	public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+
+		productService.deleteProduct(productId);
+
+		return ResponseEntity.noContent().build();
+	}
+
 	@GetMapping("/{productId}")
 	public ResponseEntity<ProductResponseDto> getProduct(@PathVariable Long productId) {
 
@@ -59,7 +67,7 @@ public class ProductController {
 		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long categoryId,
 		@RequestParam(required = false) Long sellerId,
-		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "1") int page,
 		@RequestParam(defaultValue = "CREATED_AT_DESC") Sorter sorter) {
 
 		List<ProductResponseDto> response = productService.getProducts(keyword, categoryId, sellerId, page, sorter);

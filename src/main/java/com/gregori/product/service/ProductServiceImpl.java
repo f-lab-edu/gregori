@@ -54,24 +54,23 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public void deleteProduct(Long id) throws NotFoundException {
+	public void deleteProduct(Long productId) throws NotFoundException {
 
-		productMapper.findById(id).orElseThrow(NotFoundException::new);
-		List<OrderDetail> orderDetails = orderDetailMapper.findByProductId(id)
+		productMapper.findById(productId).orElseThrow(NotFoundException::new);
+		List<OrderDetail> orderDetails = orderDetailMapper.findByProductId(productId)
 			.stream().filter(orderDetail -> orderDetail.getStatus() != DELIVERED).toList();
 
 		if (!orderDetails.isEmpty()) {
 			throw new BusinessRuleViolationException("주문 상품의 배송이 완료되지 않았으면 상품을 삭제할 수 없습니다.");
 		}
 
-		productMapper.updateIsDeleted(id, TRUE);
-
+		productMapper.updateIsDeleted(productId, TRUE);
 	}
 
 	@Override
-	public ProductResponseDto getProduct(Long id) {
+	public ProductResponseDto getProduct(Long productId) {
 
-		Product product = productMapper.findById(id).orElseThrow(NotFoundException::new);
+		Product product = productMapper.findById(productId).orElseThrow(NotFoundException::new);
 
 		return new ProductResponseDto().toEntity(product);
 	}
