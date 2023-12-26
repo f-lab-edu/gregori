@@ -25,7 +25,6 @@ import lombok.RequiredArgsConstructor;
 
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
-import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
 

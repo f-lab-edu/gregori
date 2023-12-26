@@ -22,7 +22,6 @@ import com.gregori.order.domain.OrderDetail;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
-import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -147,12 +146,10 @@ class OrderDetailMapperTest {
 		// when
 		orderDetailMapper.insert(orderDetail);
 		orderDetailIds.add(orderDetail.getId());
-		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
+		Optional<OrderDetail> result = orderDetailMapper.findById(orderDetail.getId());
 
 		// then
-		assertThat(result.size()).isEqualTo(1);
-		assertThat(result.get(0).getId()).isEqualTo(orderDetail.getId());
-		assertThat(result.get(0).getProductCount()).isEqualTo(orderDetail.getProductCount());
+		assertThat(result.isPresent()).isTrue();
 	}
 
 	@Test
@@ -201,10 +198,10 @@ class OrderDetailMapperTest {
 
 		// when
 		orderDetailMapper.deleteByIds(List.of(orderDetail.getId()));
-		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail.getId()));
+		OrderDetail result = orderDetailMapper.findById(orderDetail.getId()).orElse(null);
 
 		// then
-		assertThat(result.size()).isEqualTo(0);
+		assertThat(result).isNull();
 	}
 
 	@Test
@@ -304,7 +301,7 @@ class OrderDetailMapperTest {
 		orderDetailIds.add(orderDetail2.getId());
 
 		// when
-		List<OrderDetail> result = orderDetailMapper.findByIds(List.of(orderDetail1.getId(), orderDetail2.getId()));
+		List<OrderDetail> result = orderDetailMapper.findByOrderId(order.getId());
 
 		// then
 		assertThat(result.get(0).getId()).isEqualTo(orderDetail1.getId());

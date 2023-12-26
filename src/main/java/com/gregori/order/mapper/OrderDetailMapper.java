@@ -16,5 +16,4 @@ public interface OrderDetailMapper {
 	Optional<OrderDetail> findById(Long id);
 	List<OrderDetail> findByOrderId(Long orderId);
 	List<OrderDetail> findByProductId(Long productId);
-	List<OrderDetail> findByIds(List<Long> ids);
 }
