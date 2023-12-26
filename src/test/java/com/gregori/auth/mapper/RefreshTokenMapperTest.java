@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.common.CustomMybatisTest;
 import com.gregori.auth.domain.RefreshToken;
 

@@ -3,8 +3,6 @@ package com.gregori.order.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.gregori.order.domain.OrderDetail;
-
 import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
 import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
