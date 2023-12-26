@@ -1,4 +1,4 @@
-package com.gregori.order_detail.domain;
+package com.gregori.order.domain;
 
 import com.gregori.common.AbstractEntity;
 

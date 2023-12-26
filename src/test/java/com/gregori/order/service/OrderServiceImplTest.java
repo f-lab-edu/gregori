@@ -11,11 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gregori.order.domain.Order;
-import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order.domain.OrderDetail;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.order_detail.mapper.OrderDetailMapper;
+import com.gregori.order.mapper.OrderDetailMapper;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

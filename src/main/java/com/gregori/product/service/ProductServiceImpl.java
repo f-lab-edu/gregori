@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
-import com.gregori.order_detail.domain.OrderDetail;
-import com.gregori.order_detail.mapper.OrderDetailMapper;
+import com.gregori.order.domain.OrderDetail;
+import com.gregori.order.mapper.OrderDetailMapper;
 import com.gregori.product.domain.Product;
 import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
@@ -20,7 +20,7 @@ import com.gregori.product.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 
 import static com.gregori.common.domain.IsDeleted.TRUE;
-import static com.gregori.order_detail.domain.OrderDetail.Status.DELIVERED;
+import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
 
 @Service
 @RequiredArgsConstructor

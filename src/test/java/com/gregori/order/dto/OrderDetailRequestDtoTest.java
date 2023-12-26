@@ -1,7 +1,9 @@
-package com.gregori.order_detail.dto;
+package com.gregori.order.dto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.gregori.order.dto.OrderDetailRequestDto;
 
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
