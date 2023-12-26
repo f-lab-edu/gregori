@@ -22,7 +22,7 @@ import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 

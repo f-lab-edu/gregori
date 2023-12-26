@@ -11,7 +11,7 @@ import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
-import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.auth.mapper.RefreshTokenMapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

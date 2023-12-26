@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import com.gregori.config.jwt.JwtSecurityConfig;
 import com.gregori.config.jwt.TokenProvider;
 import com.gregori.member.mapper.MemberMapper;
-import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.auth.mapper.RefreshTokenMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

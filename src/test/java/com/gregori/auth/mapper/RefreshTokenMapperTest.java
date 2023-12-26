@@ -1,4 +1,4 @@
-package com.gregori.refresh_token.mapper;
+package com.gregori.auth.mapper;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +9,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.common.CustomMybatisTest;
-import com.gregori.refresh_token.domain.RefreshToken;
+import com.gregori.auth.domain.RefreshToken;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
