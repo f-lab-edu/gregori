@@ -35,42 +35,62 @@ class AuthControllerTest {
 	AuthService authService;
 
 	@Test
-	@DisplayName("로그인을 요청하면 OK 응답을 반환한다.")
+	@DisplayName("로그인을 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestSignIn() throws Exception {
 
 		// given
-		AuthSignInDto authSignInDto = new AuthSignInDto("a@a.a", "aa11111!");
+		AuthSignInDto dto = new AuthSignInDto("a@a.a", "aa11111!");
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/signin")
 				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(authSignInDto)));
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
 
-		verify(authService).signIn(refEq(authSignInDto));
+		verify(authService).signIn(refEq(dto));
 	}
 
 	@Test
-	@DisplayName("로그아웃을 요쳥하면 OK 응답을 반환한다.")
+	@DisplayName("로그아웃을 요쳥하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestSignOut() throws Exception {
 
 		// given
-		TokenRequestDto tokenRequestDto = new TokenRequestDto("access_token", "refresh_token");
+		TokenRequestDto dto = new TokenRequestDto("access_token", "refresh_token");
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/signout")
 				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(tokenRequestDto)));
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
 
-		verify(authService).signOut(refEq(tokenRequestDto));
+		verify(authService).signOut(refEq(dto));
+	}
+
+	@Test
+	@DisplayName("리프레시를 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestRefresh() throws Exception {
+
+		// given
+		TokenRequestDto dto = new TokenRequestDto("access_token", "refresh_token");
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/auth/refresh")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)));
+
+		// then
+		actions.andExpect(status().isOk()).andDo(print());
+
+		verify(authService).refresh(refEq(dto));
 	}
 }

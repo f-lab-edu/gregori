@@ -22,18 +22,26 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signin")
-	public ResponseEntity<TokenDto> signIn(@RequestBody @Valid AuthSignInDto authSignInDto) {
+	public ResponseEntity<TokenDto> signIn(@RequestBody @Valid AuthSignInDto dto) {
 
-		TokenDto response = authService.signIn(authSignInDto);
+		TokenDto response = authService.signIn(dto);
 
 		return ResponseEntity.ok().body(response);
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<Long> signOut(@RequestBody TokenRequestDto tokenRequestDto) {
+	public ResponseEntity<Void> signOut(@RequestBody TokenRequestDto dto) {
 
-		authService.signOut(tokenRequestDto);
+		authService.signOut(dto);
 
 		return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/refresh")
+	public ResponseEntity<TokenDto> refresh(@RequestBody TokenRequestDto dto) {
+
+		TokenDto response = authService.refresh(dto);
+
+		return ResponseEntity.ok().body(response);
 	}
 }
