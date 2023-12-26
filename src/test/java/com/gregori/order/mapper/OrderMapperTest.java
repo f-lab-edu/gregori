@@ -2,6 +2,7 @@ package com.gregori.order.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.gregori.common.CustomMybatisTest;
-import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 
+import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
@@ -66,12 +67,35 @@ class OrderMapperTest {
 		// when
 		orderMapper.insert(order);
 		orderIds.add(order.getId());
-		Order result = orderMapper.findById(order.getId()).orElseThrow(NotFoundException::new);
+		Optional<Order> result = orderMapper.findById(order.getId());
 
 		// then
-		assertThat(result.getId()).isEqualTo(order.getId());
-		assertThat(result.getMemberId()).isEqualTo(order.getMemberId());
-		assertThat(result.getPaymentMethod()).isEqualTo(order.getPaymentMethod());
+		assertThat(result.isPresent()).isTrue();
+	}
+
+	@Test
+	@DisplayName("주문의 상태를 수정한다.")
+	void should_updateStatus() {
+
+		// given
+		Order order = Order.builder()
+			.memberId(member.getId())
+			.paymentMethod("카드")
+			.paymentAmount(1000L)
+			.deliveryCost(2500L)
+			.build();
+
+		orderMapper.insert(order);
+		orderIds.add(order.getId());
+
+		// when
+		order.orderCompleted();
+		orderMapper.updateStatus(order.getId(), order.getStatus());
+		Optional<Order> result = orderMapper.findById(order.getId());
+
+		// then
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getStatus()).isEqualTo(ORDER_COMPLETED);
 	}
 
 	@Test
@@ -113,16 +137,17 @@ class OrderMapperTest {
 		orderIds.add(order.getId());
 
 		// when
-		Order result = orderMapper.findById(order.getId()).orElseThrow(NotFoundException::new);
+		Optional<Order> result = orderMapper.findById(order.getId());
 
 		// then
-		assertThat(result.getId()).isEqualTo(order.getId());
-		assertThat(result.getMemberId()).isEqualTo(order.getMemberId());
-		assertThat(result.getPaymentMethod()).isEqualTo(order.getPaymentMethod());
-		assertThat(result.getPaymentAmount()).isEqualTo(order.getPaymentAmount());
-		assertThat(result.getDeliveryCost()).isEqualTo(order.getDeliveryCost());
-		assertThat(result.getCreatedAt()).isEqualTo(order.getCreatedAt());
-		assertThat(result.getUpdatedAt()).isEqualTo(order.getUpdatedAt());
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getId()).isEqualTo(order.getId());
+		assertThat(result.get().getMemberId()).isEqualTo(order.getMemberId());
+		assertThat(result.get().getPaymentMethod()).isEqualTo(order.getPaymentMethod());
+		assertThat(result.get().getPaymentAmount()).isEqualTo(order.getPaymentAmount());
+		assertThat(result.get().getDeliveryCost()).isEqualTo(order.getDeliveryCost());
+		assertThat(result.get().getCreatedAt()).isEqualTo(order.getCreatedAt());
+		assertThat(result.get().getUpdatedAt()).isEqualTo(order.getUpdatedAt());
 	}
 
 	@Test

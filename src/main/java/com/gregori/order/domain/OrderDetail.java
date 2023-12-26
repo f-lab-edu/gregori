@@ -23,6 +23,7 @@ public class OrderDetail extends AbstractEntity {
 	@RequiredArgsConstructor
 	public enum Status {
 
+		PAYMENT_CANCELED("결제 취소"),
 		PAYMENT_COMPLETED("결제 완료"),
 		SHIPMENT_PREPARATION("배송 준비중"),
 		SHIPPED("배송중"),
@@ -39,6 +40,10 @@ public class OrderDetail extends AbstractEntity {
 		this.productPrice = productPrice;
 		this.productCount = productCount;
 		this.status = Status.PAYMENT_COMPLETED;
+	}
+
+	public void paymentCanceled() {
+		this.status = Status.PAYMENT_CANCELED;
 	}
 
 	public void paymentCompleted() {

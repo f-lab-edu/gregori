@@ -5,8 +5,12 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.domain.Order;
@@ -19,10 +23,17 @@ import com.gregori.order.mapper.OrderDetailMapper;
 
 import lombok.RequiredArgsConstructor;
 
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_COMPLETED;
+import static com.gregori.order.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
+import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
+
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
+	private final MemberMapper memberMapper;
 	private final ProductMapper productMapper;
 	private final OrderMapper orderMapper;
 	private final OrderDetailMapper orderDetailMapper;
@@ -33,7 +44,8 @@ public class OrderServiceImpl implements OrderService {
 
 		Order order = orderRequestDto.toEntity();
 		orderMapper.insert(order);
-		orderRequestDto.getOrderDetails().forEach(orderDetailRequestDto -> {
+		orderRequestDto.getOrderDetails()
+			.forEach(orderDetailRequestDto -> {
 
 				Product product = productMapper.findById(orderDetailRequestDto.getProductId()).orElseThrow(NotFoundException::new);
 				long newInventory = product.getInventory() - orderDetailRequestDto.getProductCount();
@@ -47,6 +59,35 @@ public class OrderServiceImpl implements OrderService {
 			});
 
 		return order.getId();
+	}
+
+	@Override
+	@Transactional
+	public void cancelOrder(Long memberId, Long orderId) throws NotFoundException {
+
+		Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
+		if (member.getAuthority() == SELLING_MEMBER) {
+			throw new UnauthorizedException("판매자 회원은 주문 전체를 취소할 수 없습니다.");
+		}
+		Order order = orderMapper.findById(orderId).orElseThrow(NotFoundException::new);
+		order.orderCanceled();
+		orderMapper.updateStatus(orderId, order.getStatus());
+
+		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderId);
+		if (orderDetails.isEmpty()) {
+			throw new NotFoundException("주문한 상품을 찾을 수 없습니다.");
+		}
+
+		orderDetails.forEach(orderDetail -> {
+			if (orderDetail.getStatus() == SHIPMENT_PREPARATION ||
+				orderDetail.getStatus() == SHIPPED ||
+				orderDetail.getStatus() == DELIVERED) {
+				throw new BusinessRuleViolationException("운송이 시작된 주문 상품은 취소할 수 없습니다.");
+			}
+
+			orderDetail.paymentCanceled();
+			orderDetailMapper.updateStatus(orderDetail.getId(), orderDetail.getStatus());
+		});
 	}
 
 	@Override

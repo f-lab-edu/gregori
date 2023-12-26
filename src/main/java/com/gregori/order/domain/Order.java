@@ -27,7 +27,7 @@ public class Order extends AbstractEntity {
 	@RequiredArgsConstructor
 	public enum Status {
 
-		ORDER_CANCELLED("주문 취소"),
+		ORDER_CANCELED("주문 취소"),
 		ORDER_PROCESSING("주문 진행중"),
 		ORDER_COMPLETED("주문 완료");
 
@@ -54,8 +54,8 @@ public class Order extends AbstractEntity {
 		return "ORD_" + datetime + memberId + randomNumber;
 	}
 
-	public void orderCancelled() {
-		this.status = Status.ORDER_CANCELLED;
+	public void orderCanceled() {
+		this.status = Status.ORDER_CANCELED;
 	}
 
 	public void orderProcessing() {

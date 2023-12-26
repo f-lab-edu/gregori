@@ -156,7 +156,7 @@ class MemberServiceImplTest {
 
 		Order order1 = new Order(1L, "method", 1L, 1L);
 		Order order2 = new Order(1L, "method", 1L, 1L);
-		order1.orderCancelled();
+		order1.orderCanceled();
 		order2.orderCompleted();
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));

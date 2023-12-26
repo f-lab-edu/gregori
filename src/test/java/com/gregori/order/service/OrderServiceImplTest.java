@@ -10,8 +10,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.domain.OrderDetail;
 import com.gregori.order.dto.OrderDetailRequestDto;
@@ -21,6 +25,8 @@ import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.mapper.OrderMapper;
 import com.gregori.order.mapper.OrderDetailMapper;
 
+import static com.gregori.order.domain.Order.Status.ORDER_CANCELED;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -28,6 +34,9 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class OrderServiceImplTest {
+
+	@Mock
+	private MemberMapper memberMapper;
 
 	@Mock
 	private ProductMapper productMapper;
@@ -71,6 +80,92 @@ class OrderServiceImplTest {
 	}
 
 	@Test
+	@DisplayName("주문 취소를 성공한다.")
+	void should_cancelOrderSuccess() {
+
+		// given
+		Long memberId = 1L;
+		Long orderId = 1L;
+		Member member = new Member("name", "email", "password");
+		Order order = new Order(1L, "method", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
+		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
+		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
+
+		// when
+		orderService.cancelOrder(memberId, orderId);
+
+		// then
+		verify(orderMapper).updateStatus(orderId, ORDER_CANCELED);
+		verify(orderDetailMapper).updateStatus(null, PAYMENT_CANCELED);
+	}
+
+	@Test
+	@DisplayName("회원 정보 조회를 실패하면 주문 취소를 실패한다.")
+	void should_NotFoundException_when_findMemberFailure() {
+
+		// given
+		given(memberMapper.findById(1L)).willReturn(Optional.empty());
+
+		// when, then
+		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(1L, 1L));
+	}
+
+	@Test
+	@DisplayName("판매자 회원이면 주문 취소를 실패한다.")
+	void should_UnauthorizedException_when_sellingMember() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+
+		// when, then
+		assertThrows(UnauthorizedException.class, () -> orderService.cancelOrder(1L, 1L));
+	}
+
+	@Test
+	@DisplayName("주문 상세를 찾을 수 없으면 주문 취소를 실패한다.")
+	void should_NotFonudException_when_findOrderDetailFailure() {
+
+		// given
+		Long memberId = 1L;
+		Long orderId = 1L;
+		Member member = new Member("name", "email", "password");
+		Order order = new Order(1L, "method", 1L, 1L);
+
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
+		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
+		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of());
+
+		// when, then
+		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(memberId, orderId));
+	}
+
+	@Test
+	@DisplayName("주문 상품의 운송이 시작되면 주문 취소를 실패한다.")
+	void should_BusinessRuleViolationException_when_preparedDelivery() {
+
+		// given
+		Long memberId = 1L;
+		Long orderId = 1L;
+		Member member = new Member("name", "email", "password");
+		Order order = new Order(1L, "method", 1L, 1L);
+		OrderDetail orderDetail = new OrderDetail(1L, 1L, "name", 1L, 1L);
+		orderDetail.shipmentPreparation();
+
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
+		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
+		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
+
+		// when, then
+		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrder(memberId, orderId));
+	}
+
+	@Test
 	@DisplayName("주문 조회를 성공하면 주문을 반환한다.")
 	void should_returnOrderResponseDto_when_getOrderSuccess() {
 
@@ -95,9 +190,13 @@ class OrderServiceImplTest {
 	void should_NotFoundException_when_findOrderFailure() {
 
 		// given
+		Member member = new Member("name", "email", "password");
+
+		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 		given(orderMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
+		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(1L, 1L));
 		assertThrows(NotFoundException.class, () -> orderService.getOrder(1L));
 	}
 
