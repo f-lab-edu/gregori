@@ -151,7 +151,7 @@ class OrderMapperTest {
 		orderIds.add(order2.getId());
 
 		// when
-		List<Order> result = orderMapper.findByMemberId(member.getId());
+		List<Order> result = orderMapper.findByMemberId(member.getId(), null, null);
 
 		// then
 		assertThat(result.size()).isEqualTo(2);

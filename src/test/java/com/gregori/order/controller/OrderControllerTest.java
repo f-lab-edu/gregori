@@ -9,6 +9,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,7 +22,10 @@ import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderDetailRequestDto;
 
 import static com.gregori.common.DeepReflectionEqMatcher.deepRefEq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -60,7 +66,7 @@ class OrderControllerTest {
 	}
 
 	@Test
-	@DisplayName("주문 조회를 요청하면 OK 응답을 반환한다.")
+	@DisplayName("주문 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestGetOrder() throws Exception {
 
 		// given
@@ -76,5 +82,32 @@ class OrderControllerTest {
 		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(orderService).getOrder(orderId);
+	}
+
+	@Test
+	@DisplayName("주문 목록 조회를 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestGetOrders() throws Exception {
+
+		// given
+		Long memberId = 1L;
+		int page = 1;
+
+		Authentication authentication = mock(Authentication.class);
+		SecurityContext securityContext = mock(SecurityContext.class);
+
+		given(securityContext.getAuthentication()).willReturn(authentication);
+		SecurityContextHolder.setContext(securityContext);
+		given(authentication.getName()).willReturn(memberId.toString());
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/order?page=" + page)
+				.with(csrf())
+				.contentType(APPLICATION_JSON));
+
+		// then
+		actions.andExpect(status().isOk()).andDo(print());
+
+		verify(orderService).getOrders(memberId, page);
 	}
 }

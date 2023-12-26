@@ -83,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
 
-        List<Order> orders = orderMapper.findByMemberId(memberId).stream()
+        List<Order> orders = orderMapper.findByMemberId(memberId, null, null).stream()
             .filter(order -> order.getStatus() == ORDER_PROCESSING)
             .toList();
 

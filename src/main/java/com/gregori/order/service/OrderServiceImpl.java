@@ -29,20 +29,20 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public Long saveOrder(OrderRequestDto dto) throws NotFoundException {
+	public Long saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
 
-		Order order = dto.toEntity();
+		Order order = orderRequestDto.toEntity();
 		orderMapper.insert(order);
-		dto.getOrderDetails()
-			.forEach(orderDetailDto -> {
-				Product product = productMapper.findById(orderDetailDto.getProductId()).orElseThrow(NotFoundException::new);
-				long newInventory = product.getInventory() - orderDetailDto.getProductCount();
+		orderRequestDto.getOrderDetails().forEach(orderDetailRequestDto -> {
+
+				Product product = productMapper.findById(orderDetailRequestDto.getProductId()).orElseThrow(NotFoundException::new);
+				long newInventory = product.getInventory() - orderDetailRequestDto.getProductCount();
 				if (newInventory < 0) {
 					throw new ValidationException("상품의 재고가 부족해서 주문을 진행할 수 없습니다.");
 				}
 
 				productMapper.updateInventory(product.getId(), newInventory);
-				OrderDetail initOrderDetail = orderDetailDto.toEntity(order.getId(), product);
+				OrderDetail initOrderDetail = orderDetailRequestDto.toEntity(order.getId(), product);
 				orderDetailMapper.insert(initOrderDetail);
 			});
 
@@ -54,13 +54,32 @@ public class OrderServiceImpl implements OrderService {
 	public OrderResponseDto getOrder(Long orderId) throws NotFoundException {
 
 		Order order = orderMapper.findById(orderId).orElseThrow(NotFoundException::new);
-		List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderId);
-		if (orderDetails.isEmpty()) {
-			throw new NotFoundException();
+
+		return getOrderResponseDto(order);
+	}
+
+	@Override
+	public List<OrderResponseDto> getOrders(Long memberId, int page) {
+
+		int limit = 10;
+		int offset = (page - 1) * limit;
+
+		return orderMapper.findByMemberId(memberId, limit, offset)
+			.stream().map(this::getOrderResponseDto)
+			.toList();
+	}
+
+	private OrderResponseDto getOrderResponseDto(Order order) {
+		List<OrderDetailResponseDto> orderDetailResponseDto = orderDetailMapper
+			.findByOrderId(order.getId())
+			.stream()
+			.map(orderDetail -> new OrderDetailResponseDto().toEntity(orderDetail))
+			.toList();
+
+		if (orderDetailResponseDto.isEmpty()) {
+			throw new NotFoundException("주문한 상품을 찾을 수 없습니다.");
 		}
 
-		return new OrderResponseDto().toEntity(order, orderDetails.stream()
-			.map(orderDetail -> new OrderDetailResponseDto().toEntity(orderDetail))
-			.toList());
+		return new OrderResponseDto().toEntity(order, orderDetailResponseDto);
 	}
 }
