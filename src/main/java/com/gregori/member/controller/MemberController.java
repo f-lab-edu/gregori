@@ -34,9 +34,9 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody @Valid MemberRegisterDto memberRegisterDto) {
+    public ResponseEntity<Void> register(@RequestBody @Valid MemberRegisterDto dto) {
 
-        Long memberId = memberService.register(memberRegisterDto);
+        Long memberId = memberService.register(dto);
 
         return ResponseEntity.created(URI.create("/member/" + memberId)).build();
     }
@@ -66,7 +66,7 @@ public class MemberController {
 
         memberService.deleteMember(memberId);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{memberId}")

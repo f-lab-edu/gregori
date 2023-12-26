@@ -35,37 +35,36 @@ class MemberControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
+
 	@Autowired
 	private ObjectMapper objectMapper;
 
 	@MockBean
 	MemberService memberService;
 
-	MemberRegisterDto memberRegisterDto;
-
 	@Test
-	@DisplayName("회원가입을 요청하면 OK 응답을 반환한다.")
+	@DisplayName("회원가입을 요청하면 Created 응답을 반환한다.")
 	void should_responseCreated_when_requestRegister() throws Exception {
 
 		// given
-		memberRegisterDto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
+		MemberRegisterDto dto = new MemberRegisterDto("일호", "a@a.a", "aa11111!");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.post("/member/register")
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(memberRegisterDto)));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/member/register")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isCreated()).andDo(print());
 
-		verify(memberService).register(refEq(memberRegisterDto));
+		verify(memberService).register(refEq(dto));
 	}
 
 	@Test
-	@DisplayName("회원 이름 수정을 요청하면 Ok 응답을 반환한다.")
-	void should_responseOk_when_requestUpdateMemberName() throws Exception {
+	@DisplayName("회원 이름 수정을 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestUpdateMemberName() throws Exception {
 
 		// given
 		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
@@ -77,10 +76,11 @@ class MemberControllerTest {
 		given(authentication.getName()).willReturn("1");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member/name")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(dto)));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/member/name")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isNoContent()).andDo(print());
@@ -89,8 +89,8 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 비밀번호 수정을 요청하면 Ok 응답을 반환한다.")
-	void should_responseOk_when_requestUpdateMemberPassword() throws Exception {
+	@DisplayName("회원 비밀번호 수정을 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestUpdateMemberPassword() throws Exception {
 
 		// given
 		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "aa11111!", "aa11111!");
@@ -102,10 +102,11 @@ class MemberControllerTest {
 		given(authentication.getName()).willReturn("1");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/member/password")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(dto)));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/member/password")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isNoContent()).andDo(print());
@@ -114,8 +115,8 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 탈퇴를 요청하면 Ok 응답을 반환한다.")
-	void should_responseOk_when_requestDeleteMember() throws Exception {
+	@DisplayName("회원 탈퇴를 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestDeleteMember() throws Exception {
 
 		// given
 		Authentication authentication = mock(Authentication.class);
@@ -126,12 +127,13 @@ class MemberControllerTest {
 		given(authentication.getName()).willReturn("1");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.delete("/member/1")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.delete("/member/1")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isNoContent()).andDo(print());
 
 		verify(memberService).deleteMember(1L);
 	}
@@ -149,9 +151,10 @@ class MemberControllerTest {
 		given(authentication.getName()).willReturn("1");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get("/member/1")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/member/1")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
@@ -160,7 +163,7 @@ class MemberControllerTest {
 	}
 
 	@Test
-	@DisplayName("회원 id가 토큰 id와 불일치하면 AccessDeniedException이 발생한다.")
+	@DisplayName("회원 id가 토큰 id와 불일치하면 Forbidden 응답을 반환한다.")
 	void should_AccessDeniedException_when_invalidMemberId() throws Exception {
 
 		// given
@@ -172,9 +175,10 @@ class MemberControllerTest {
 		given(authentication.getName()).willReturn("2");
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get("/member/1")
-			.with(SecurityMockMvcRequestPostProcessors.csrf())
-			.contentType(MediaType.APPLICATION_JSON));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/member/1")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isForbidden()).andDo(print());
