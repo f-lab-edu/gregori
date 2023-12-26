@@ -27,7 +27,7 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	@PostMapping
-	public ResponseEntity<Long> createCategory(@RequestBody String name) {
+	public ResponseEntity<Void> createCategory(@RequestBody String name) {
 
 		Long categoryId = categoryService.saveCategory(name);
 
@@ -35,19 +35,19 @@ public class CategoryController {
 	}
 
 	@PostMapping("/{categoryId}")
-	public ResponseEntity<Long> updateCategoryName(@PathVariable Long categoryId, @RequestBody String name) {
+	public ResponseEntity<Void> updateCategoryName(@PathVariable Long categoryId, @RequestBody String name) {
 
 		categoryService.updateCategoryName(categoryId, name);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/{categoryId}")
-	public ResponseEntity<Long> deleteCategory(@PathVariable Long categoryId) {
+	public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
 
 		categoryService.deleteCategory(categoryId);
 
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/{categoryId}")
@@ -60,11 +60,10 @@ public class CategoryController {
 
 	@GetMapping
 	public ResponseEntity<List<Category>> getCategories(
-		@RequestParam(defaultValue = "10") int limit,
-		@RequestParam(defaultValue = "0") int offset) {
+		@RequestParam(defaultValue = "1") int page) {
 
-		List<Category> categories = categoryService.getCategories(limit, offset);
+		List<Category> categories = categoryService.getCategories(page);
 
-		return ResponseEntity.status(HttpStatus.OK).body(categories);
+		return ResponseEntity.ok().body(categories);
 	}
 }
