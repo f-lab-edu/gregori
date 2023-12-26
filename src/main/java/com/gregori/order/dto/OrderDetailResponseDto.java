@@ -1,6 +1,6 @@
-package com.gregori.order_detail.dto;
+package com.gregori.order.dto;
 
-import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order.domain.OrderDetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

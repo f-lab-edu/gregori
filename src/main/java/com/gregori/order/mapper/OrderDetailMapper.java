@@ -1,10 +1,10 @@
-package com.gregori.order_detail.mapper;
+package com.gregori.order.mapper;
 
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order.domain.OrderDetail;
 
 @Mapper
 public interface OrderDetailMapper {
@@ -13,5 +13,5 @@ public interface OrderDetailMapper {
 	void deleteByIds(List<Long> orderDetailIds);
 	List<OrderDetail> findByOrderId(Long orderId);
 	List<OrderDetail> findByProductId(Long productId);
-	List<OrderDetail> findByIds(List<Long> orderDetailIds);
+	List<OrderDetail> findByIds(List<Long> ids);
 }

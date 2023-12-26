@@ -1,12 +1,12 @@
-package com.gregori.order_detail.domain;
+package com.gregori.order.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.gregori.order_detail.domain.OrderDetail.Status.DELIVERED;
-import static com.gregori.order_detail.domain.OrderDetail.Status.PAYMENT_COMPLETED;
-import static com.gregori.order_detail.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
-import static com.gregori.order_detail.domain.OrderDetail.Status.SHIPPED;
+import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_COMPLETED;
+import static com.gregori.order.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
+import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class OrderDetailTest {

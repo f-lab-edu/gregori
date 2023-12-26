@@ -1,6 +1,7 @@
 package com.gregori.order.controller;
 
-import org.springframework.http.HttpStatus;
+import java.net.URI;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +25,11 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping
-	public ResponseEntity<OrderResponseDto> createOrder(@RequestBody @Valid OrderRequestDto orderRequestDto) {
+	public ResponseEntity<Void> createOrder(@RequestBody @Valid OrderRequestDto dto) {
 
-		OrderResponseDto response = orderService.saveOrder(orderRequestDto);
+		Long orderId = orderService.saveOrder(dto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.created(URI.create("/order/" + orderId)).build();
 	}
 
 	@GetMapping("/{orderId}")
@@ -36,6 +37,6 @@ public class OrderController {
 
 		OrderResponseDto response = orderService.getOrder(orderId);
 
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.ok().body(response);
 	}
 }

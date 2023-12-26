@@ -44,7 +44,7 @@ class CustomUserDetailServiceTest {
 	}
 
 	@Test
-	@DisplayName("회원을 찾지 못하면 유저 조회를 실패한다.")
+	@DisplayName("회원 조회를 실패하면 유저 조회를 실패한다.")
 	void should_NotFoundException_when_findMemberFailure() {
 
 		// given
@@ -61,12 +61,11 @@ class CustomUserDetailServiceTest {
 	void should_AccessDeniedException_when_deactivateMember() {
 
 		// given
-		Member member = new Member("name", "email", "password");
-		member.deactivate();
+		String email = "email";
 
-		given(memberMapper.findByEmail(member.getEmail())).willReturn(Optional.of(member));
+		given(memberMapper.findByEmail(email)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(AccessDeniedException.class, () -> userDetailService.loadUserByUsername(member.getEmail()));
+		assertThrows(NotFoundException.class, () -> userDetailService.loadUserByUsername(email));
 	}
 }

@@ -1,4 +1,4 @@
-package com.gregori.order_detail.mapper;
+package com.gregori.order.mapper;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -17,8 +17,7 @@ import com.gregori.product.mapper.ProductMapper;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
-import com.gregori.order.mapper.OrderMapper;
-import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order.domain.OrderDetail;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 

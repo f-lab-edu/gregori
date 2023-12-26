@@ -8,8 +8,8 @@ import com.gregori.common.exception.NotFoundException;
 public interface CategoryService {
 
 	Long saveCategory(String name);
-	Long updateCategoryName(Long categoryId, String name) throws NotFoundException;
-	Long deleteCategory(Long categoryId);
+	void updateCategoryName(Long categoryId, String name) throws NotFoundException;
+	void deleteCategory(Long categoryId);
 	Category getCategory(Long categoryId) throws NotFoundException;
-	List<Category> getCategories(int limit, int offset);
+	List<Category> getCategories(int page);
 }

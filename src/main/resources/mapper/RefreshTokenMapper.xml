@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.gregori.refresh_token.mapper.RefreshTokenMapper">
+<mapper namespace="com.gregori.auth.mapper.RefreshTokenMapper">
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.refresh_token.domain.RefreshToken">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.auth.domain.RefreshToken">
         INSERT INTO refresh_tokens (refresh_token_key, refresh_token_value)
         VALUES (#{refreshTokenKey}, #{refreshTokenValue})
     </insert>
@@ -21,13 +21,13 @@
         WHERE id = #{id}
     </delete>
 
-    <select id="findById" resultType="com.gregori.refresh_token.domain.RefreshToken" parameterType="Long">
+    <select id="findById" resultType="com.gregori.auth.domain.RefreshToken" parameterType="Long">
         SELECT id, refresh_token_key, refresh_token_value
         FROM refresh_tokens
         WHERE id = #{id}
     </select>
 
-    <select id="findByRefreshTokenKey" resultType="com.gregori.refresh_token.domain.RefreshToken" parameterType="String">
+    <select id="findByRefreshTokenKey" resultType="com.gregori.auth.domain.RefreshToken" parameterType="String">
         SELECT id, refresh_token_key, refresh_token_value
         FROM refresh_tokens
         WHERE refresh_token_key = #{refreshTokenKey}

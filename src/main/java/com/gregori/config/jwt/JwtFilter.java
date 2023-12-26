@@ -11,7 +11,7 @@ import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
-import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.auth.mapper.RefreshTokenMapper;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static java.lang.Long.parseLong;
 
 @Slf4j
@@ -43,11 +42,8 @@ public class JwtFilter extends OncePerRequestFilter {
 		if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 			Authentication authentication = tokenProvider.getAuthentication(jwt);
 			String username = authentication.getName();
-			Member member = memberMapper.findById(parseLong(username)).orElseThrow(NotFoundException::new);
-
-			if (member.getStatus() == DEACTIVATE) {
-				throw new UnauthorizedException("탈퇴한 사용자입니다.");
-			}
+			memberMapper.findById(parseLong(username))
+				.orElseThrow(() -> new NotFoundException("사용자를 찾을 수 없습니다."));
 
 			refreshTokenMapper.findByRefreshTokenKey(username)
 				.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));

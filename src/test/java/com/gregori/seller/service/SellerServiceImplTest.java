@@ -22,6 +22,7 @@ import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
+import static com.gregori.common.domain.IsDeleted.TRUE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -95,16 +96,16 @@ class SellerServiceImplTest {
 	void should_returnId_when_deleteSellerSuccess() {
 
 		// given
-		Long id = 1L;
+		Long sellerId = 1L;
 
-		given(sellerMapper.findById(id)).willReturn(Optional.of(new Seller()));
-		given(productMapper.find(null, null, id, null, null, CREATED_AT_DESC.name())).willReturn(List.of());
+		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
+		given(productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.name())).willReturn(List.of());
 
 		// when
-		sellerService.deleteSeller(id);
+		sellerService.deleteSeller(sellerId);
 
 		// then
-		verify(sellerMapper).update(any(Seller.class));
+		verify(sellerMapper).updateIsDeleted(sellerId, TRUE);
 	}
 
 	@Test
@@ -112,30 +113,14 @@ class SellerServiceImplTest {
 	void should_BusinessRuleViolationException_when_productIsDeletedFalse() {
 
 		// given
-		Long id = 1L;
+		Long sellerId = 1L;
 		Product product = new Product(1L, 1L, "name", 1L, 1L);
 
-		given(sellerMapper.findById(id)).willReturn(Optional.of(new Seller()));
-		given(productMapper.find(null, null, id, null, null, CREATED_AT_DESC.toString())).willReturn(List.of(product));
+		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
+		given(productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString())).willReturn(List.of(product));
 
 		// when, then
-		assertThrows(BusinessRuleViolationException.class, () -> sellerService.deleteSeller(id));
-	}
-
-	@Test
-	@DisplayName("판매자 목록을 반환한다.")
-	void should_returnSellers() {
-
-		// given
-		Long sellerId = 1L;
-
-		given(sellerMapper.findByMemberId(sellerId)).willReturn(List.of(new Seller()));
-
-		// when
-		sellerService.getSellers(sellerId);
-
-		// then
-		verify(sellerMapper).findByMemberId(sellerId);
+		assertThrows(BusinessRuleViolationException.class, () -> sellerService.deleteSeller(sellerId));
 	}
 
 	@Test
@@ -155,7 +140,7 @@ class SellerServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("셀러를 찾지 못하면 에러가 발생한다.")
+	@DisplayName("판매자 조회를 실패하면 에러가 발생한다.")
 	void should_NotFoundException_when_findSellerFailure() {
 
 		// given
@@ -169,5 +154,21 @@ class SellerServiceImplTest {
 		assertThrows(NotFoundException.class, () -> sellerService.updateSeller(dto2));
 		assertThrows(NotFoundException.class, () -> sellerService.deleteSeller(1L));
 		assertThrows(NotFoundException.class, () -> sellerService.getSeller(1L));
+	}
+
+	@Test
+	@DisplayName("판매자 목록 조회를 성공하면 판매자 목록을 반환한다.")
+	void should_returnSellers_when_getSellersSuccess() {
+
+		// given
+		Long sellerId = 1L;
+
+		given(sellerMapper.findByMemberId(sellerId)).willReturn(List.of(new Seller()));
+
+		// when
+		sellerService.getSellers(sellerId);
+
+		// then
+		verify(sellerMapper).findByMemberId(sellerId);
 	}
 }

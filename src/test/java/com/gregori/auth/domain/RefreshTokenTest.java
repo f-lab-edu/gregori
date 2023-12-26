@@ -1,4 +1,4 @@
-package com.gregori.refresh_token.domain;
+package com.gregori.auth.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

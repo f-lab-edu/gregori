@@ -41,7 +41,7 @@ class SellerControllerTest {
 	SellerService sellerService;
 
 	@Test
-	@DisplayName("판매자 생성을 요청하면 CREATED 응답을 반환한다.")
+	@DisplayName("판매자 생성을 요청하면 Created 응답을 반환한다.")
 	void should_responseCreated_when_requestCreateSeller() throws Exception {
 
 		// given
@@ -100,6 +100,26 @@ class SellerControllerTest {
 	}
 
 	@Test
+	@DisplayName("판매자 조회를 요청하면 Ok 응답을 반환한다.")
+	void should_responseOk_when_requestGetSeller() throws Exception {
+
+		// given
+		Long sellerId = 1L;
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/seller/" + sellerId)
+				.with(csrf())
+				.contentType(APPLICATION_JSON));
+
+		// then
+		actions.andExpect(status().isOk()).andDo(print());
+
+		verify(sellerService).getSeller(sellerId);
+	}
+
+
+	@Test
 	@DisplayName("판매자 목록 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestGetSellers() throws Exception {
 
@@ -123,24 +143,5 @@ class SellerControllerTest {
 		actions.andExpect(status().isOk()).andDo(print());
 
 		verify(sellerService).getSellers(memberId);
-	}
-
-	@Test
-	@DisplayName("판매자 조회를 요청하면 OK 응답을 반환한다.")
-	void should_responseOk_when_requestGetSeller() throws Exception {
-
-		// given
-		Long sellerId = 1L;
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/seller/" + sellerId)
-				.with(csrf())
-				.contentType(APPLICATION_JSON));
-
-		// then
-		actions.andExpect(status().isOk()).andDo(print());
-
-		verify(sellerService).getSeller(sellerId);
 	}
 }

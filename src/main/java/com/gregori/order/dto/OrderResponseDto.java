@@ -3,7 +3,6 @@ package com.gregori.order.dto;
 import java.util.List;
 
 import com.gregori.order.domain.Order;
-import com.gregori.order_detail.dto.OrderDetailResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

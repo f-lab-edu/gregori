@@ -13,6 +13,6 @@ public interface SellerService {
 	Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException;
 	void updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException;
 	void deleteSeller(Long sellerId) throws NotFoundException;
-	List<SellerResponseDto> getSellers(Long memberId);
 	SellerResponseDto getSeller(Long sellerId) throws NotFoundException;
+	List<SellerResponseDto> getSellers(Long memberId);
 }

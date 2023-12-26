@@ -14,7 +14,7 @@ import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
@@ -27,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
-import static com.gregori.seller.domain.Seller.Status.OPERATING;
 
 @Service
 @RequiredArgsConstructor
@@ -94,16 +92,14 @@ public class MemberServiceImpl implements MemberService {
         }
 
         if (member.getAuthority() == SELLING_MEMBER) {
-            List<Seller> sellers = sellerMapper.findByMemberId(memberId).stream()
-                .filter(seller -> seller.getStatus() == OPERATING)
-                .toList();
-
+            List<Seller> sellers = sellerMapper.findByMemberId(memberId);
             if (!sellers.isEmpty()) {
                 throw new BusinessRuleViolationException("사업장을 전부 폐업하지 않으면 탈퇴 신청이 불가합니다.");
             }
         }
 
-        memberMapper.updateStatus(memberId, DEACTIVATE);
+        member.isDeletedTrue();
+        memberMapper.updateIsDeleted(memberId, member.getIsDeleted());
         refreshTokenMapper.findByRefreshTokenKey(memberId.toString())
             .ifPresent(token -> refreshTokenMapper.deleteById(token.getId()));
     }

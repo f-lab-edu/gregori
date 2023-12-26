@@ -39,8 +39,8 @@ class CategoryServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("카테고리 갱신을 성공하면 id를 반환한다.")
-	void should_returnId_when_updateCategorySuccess() {
+	@DisplayName("카테고리 갱신을 성공한다.")
+	void should_updateCategorySuccess() {
 
 		// given
 		Long categoryId = 1L;
@@ -58,7 +58,7 @@ class CategoryServiceImplTest {
 
 	@Test
 	@DisplayName("카테고리 삭제를 성공하면 id를 반환한다.")
-	void should_returnId_when_deleteCategorySuccess() {
+	void should_deleteCategorySuccess() {
 
 		// given
 		Long categoryId = 1L;
@@ -89,24 +89,26 @@ class CategoryServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("전체 카테고리를 반환한다.")
-	void should_returnCategories() {
-
-		// given, when
-		categoryService.getCategories(1, 1);
-
-		// then
-		verify(categoryMapper).find(1, 1);
-	}
-
-	@Test
-	@DisplayName("카테고리를 찾지 못하면 카테고리 삭제를 실패한다.")
+	@DisplayName("카테고리 조회를 실패하면 에러가 발생한다.")
 	void should_NotFoundException_when_categoryGetFailure() {
 
 		// given
 		given(categoryMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
+		assertThrows(NotFoundException.class, () -> categoryService.updateCategoryName(1L, "name"));
 		assertThrows(NotFoundException.class, () -> categoryService.getCategory(1L));
+	}
+
+
+	@Test
+	@DisplayName("카테고리 목록 조회를 성공하면 카테고리 목록을 반환한다.")
+	void should_returnCategories_when_getCategoriesSuccess() {
+
+		// given, when
+		categoryService.getCategories(1);
+
+		// then
+		verify(categoryMapper).find(10, 0);
 	}
 }

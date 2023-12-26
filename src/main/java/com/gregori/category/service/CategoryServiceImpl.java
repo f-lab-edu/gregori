@@ -3,6 +3,7 @@ package com.gregori.category.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.category.domain.Category;
 import com.gregori.category.mapper.CategoryMapper;
@@ -26,21 +27,18 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Long updateCategoryName(Long categoryId, String name) throws NotFoundException {
+	public void updateCategoryName(Long categoryId, String name) throws NotFoundException {
 
 		Category category = categoryMapper.findById(categoryId).orElseThrow(NotFoundException::new);
 		category.updateCategoryName(name);
 		categoryMapper.updateName(category);
-
-		return category.getId();
 	}
 
 	@Override
-	public Long deleteCategory(Long categoryId) {
+	@Transactional
+	public void deleteCategory(Long categoryId) {
 
 		categoryMapper.deleteById(categoryId);
-
-		return categoryId;
 	}
 
 	@Override
@@ -50,7 +48,10 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<Category> getCategories(int limit, int offset) {
+	public List<Category> getCategories(int page) {
+
+		int limit = 10;
+		int offset = (page - 1) * limit;
 
 		return categoryMapper.find(limit, offset);
 	}

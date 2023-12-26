@@ -30,6 +30,15 @@
     <select id="find" resultType="com.gregori.category.domain.Category">
         SELECT id, name
         FROM categories
-        LIMIT #{limit} OFFSET #{offset}
+        <include refid="limitAndOffset"/>
     </select>
+
+    <sql id="limitAndOffset">
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </sql>
 </mapper>

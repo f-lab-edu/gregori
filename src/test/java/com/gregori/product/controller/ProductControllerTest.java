@@ -47,10 +47,11 @@ class ProductControllerTest {
 		ProductCreateDto dto = new ProductCreateDto(1L, "name", 1L, 1L);
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.post("/product")
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(dto)));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.post("/product")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isCreated()).andDo(print());
@@ -66,10 +67,11 @@ class ProductControllerTest {
 		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, 1L, PRE_SALE);
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.put("/product")
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(dto)));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.put("/product")
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
 		actions.andExpect(status().isNoContent()).andDo(print());
@@ -78,14 +80,34 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@DisplayName("상품 조회를 요청하면 OK 응답을 반환한다.")
+	@DisplayName("상품 삭제를 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestDeleteProduct() throws Exception {
+
+		// given
+		Long productId = 1L;
+
+		// when
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.delete("/product/" + productId)
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
+
+		// then
+		actions.andExpect(status().isNoContent()).andDo(print());
+
+		verify(productService).deleteProduct(productId);
+	}
+
+	@Test
+	@DisplayName("상품 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_request_getProduct() throws Exception {
 
 		// given
 		Long productId = 1L;
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders.get("/product/" + productId)
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/product/" + productId)
 				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
@@ -96,19 +118,19 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@DisplayName("검색어와 함께 상품 목록 조회를 요청하면 OK 응답을 반환한다.")
+	@DisplayName("검색어와 함께 상품 목록 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_request_getProductsWithKeyword() throws Exception {
 
 		// given
 		String keyword = "스프링";
-		Sorter sorter = CREATED_AT_DESC;
 		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product?keyword=" + keyword + "&page=" + page + "&sorter=" + sorter)
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/product?keyword=" + keyword + "&page=" + page + "&sorter=" + sorter)
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
@@ -117,19 +139,19 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@DisplayName("categoryId와 함께 상품 목록 조회를 요청하면 OK 응답을 반환한다.")
+	@DisplayName("categoryId와 함께 상품 목록 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_request_getProductsWithCategoryId() throws Exception {
 
 		// given
 		Long categoryId = 1L;
-		Sorter sorter = CREATED_AT_DESC;
 		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product?categoryId=" + categoryId + "&page=" + page + "&sorter=" + sorter)
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/product?categoryId=" + categoryId + "&page=" + page + "&sorter=" + sorter)
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());
@@ -138,19 +160,19 @@ class ProductControllerTest {
 	}
 
 	@Test
-	@DisplayName("sellerId와 함께 상품 목록 조회를 요청하면 OK 응답을 반환한다.")
+	@DisplayName("sellerId와 함께 상품 목록 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_request_getProductsWithSellerId() throws Exception {
 
 		// given
 		Long sellerId = 1L;
-		Sorter sorter = CREATED_AT_DESC;
 		int page = 1;
+		Sorter sorter = CREATED_AT_DESC;
 
 		// when
-		ResultActions actions = mockMvc.perform(MockMvcRequestBuilders
-			.get("/product?&sellerId=" + sellerId + "&page=" + page + "&sorter=" + sorter)
-			.with(csrf())
-			.contentType(MediaType.APPLICATION_JSON));
+		ResultActions actions = mockMvc.perform(
+			MockMvcRequestBuilders.get("/product?&sellerId=" + sellerId + "&page=" + page + "&sorter=" + sorter)
+				.with(csrf())
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isOk()).andDo(print());

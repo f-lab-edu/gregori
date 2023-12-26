@@ -75,16 +75,8 @@ public class SellerServiceImpl implements SellerService {
 			throw new BusinessRuleViolationException("상품이 있으면 폐업 신청이 불가합니다.");
 		}
 
-		seller.closed();
-		sellerMapper.update(seller);
-	}
-
-	@Override
-	public List<SellerResponseDto> getSellers(Long memberId) {
-
-		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
-
-		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
+		seller.isDeletedTrue();
+		sellerMapper.updateIsDeleted(sellerId, seller.getIsDeleted());
 	}
 
 	@Override
@@ -93,6 +85,14 @@ public class SellerServiceImpl implements SellerService {
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 
 		return new SellerResponseDto().toEntity(seller);
+	}
+
+	@Override
+	public List<SellerResponseDto> getSellers(Long memberId) {
+
+		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
+
+		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
 	}
 
 	private void checkBusinessNumberValidation(String businessNumber) {

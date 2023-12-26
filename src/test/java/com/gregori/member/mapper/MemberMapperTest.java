@@ -14,8 +14,7 @@ import com.gregori.member.domain.Member;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
-import static com.gregori.member.domain.Member.Status.ACTIVATE;
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
+import static com.gregori.common.domain.IsDeleted.TRUE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @CustomMybatisTest
@@ -62,9 +61,9 @@ class MemberMapperTest {
 
 		// when
 		memberMapper.updateName(member.getId(), "new name");
+		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		Optional<Member> result = memberMapper.findById(member.getId());
 		assertThat(result.isPresent()).isTrue();
 		assertThat(member.getName()).isEqualTo("name");
 		assertThat(result.get().getName()).isEqualTo("new name");
@@ -81,31 +80,12 @@ class MemberMapperTest {
 
 		// when
 		memberMapper.updatePassword(member.getId(), "new password");
+		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		Optional<Member> result = memberMapper.findById(member.getId());
 		assertThat(result.isPresent()).isTrue();
 		assertThat(member.getPassword()).isEqualTo("password");
 		assertThat(result.get().getPassword()).isEqualTo("new password");
-	}
-
-	@Test
-	@DisplayName("회원 상태를 갱신한다.")
-	void should_updateStatus() {
-
-		// given
-		Member member = new Member("name", "email", "password");
-		memberMapper.insert(member);
-		memberIds.add(member.getId());
-
-		// when
-		memberMapper.updateStatus(member.getId(), DEACTIVATE);
-
-		// then
-		Optional<Member> result = memberMapper.findById(member.getId());
-		assertThat(result.isPresent()).isTrue();
-		assertThat(member.getStatus()).isEqualTo(ACTIVATE);
-		assertThat(result.get().getStatus()).isEqualTo(DEACTIVATE);
 	}
 
 	@Test
@@ -119,12 +99,29 @@ class MemberMapperTest {
 
 		// when
 		memberMapper.updateAuthority(member.getId(), SELLING_MEMBER);
+		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		Optional<Member> result = memberMapper.findById(member.getId());
 		assertThat(result.isPresent()).isTrue();
 		assertThat(member.getAuthority()).isEqualTo(GENERAL_MEMBER);
 		assertThat(result.get().getAuthority()).isEqualTo(SELLING_MEMBER);
+	}
+
+	@Test
+	@DisplayName("id로 상품을 논리적으로 삭제한다")
+	void should_updateIsDeleted() {
+
+		// given
+		Member member = new Member("name", "email", "password");
+		memberMapper.insert(member);
+		memberIds.add(member.getId());
+
+		// when
+		memberMapper.updateIsDeleted(member.getId(), TRUE);
+		Optional<Member> result = memberMapper.findById(member.getId());
+
+		// then
+		assertThat(result.isPresent()).isFalse();
 	}
 
 	@Test
@@ -138,9 +135,9 @@ class MemberMapperTest {
 
 		// when
 		memberMapper.deleteById(member.getId());
+		Optional<Member> result = memberMapper.findById(member.getId());
 
 		// then
-		Optional<Member> result = memberMapper.findById(member.getId());
 		assertThat(result.isEmpty()).isTrue();
 	}
 
@@ -158,10 +155,10 @@ class MemberMapperTest {
 
 		// when
 		memberMapper.deleteByIds(memberIds);
-
-		// then
 		Optional<Member> result1 = memberMapper.findById(member1.getId());
 		Optional<Member> result2 = memberMapper.findById(member2.getId());
+
+		// then
 		assertThat(result1.isEmpty()).isTrue();
 		assertThat(result2.isEmpty()).isTrue();
 	}

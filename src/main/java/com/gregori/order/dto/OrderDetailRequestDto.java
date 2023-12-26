@@ -1,7 +1,7 @@
-package com.gregori.order_detail.dto;
+package com.gregori.order.dto;
 
 import com.gregori.product.domain.Product;
-import com.gregori.order_detail.domain.OrderDetail;
+import com.gregori.order.domain.OrderDetail;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

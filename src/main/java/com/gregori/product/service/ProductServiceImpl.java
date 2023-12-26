@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
-import com.gregori.order_detail.domain.OrderDetail;
-import com.gregori.order_detail.mapper.OrderDetailMapper;
+import com.gregori.order.domain.OrderDetail;
+import com.gregori.order.mapper.OrderDetailMapper;
 import com.gregori.product.domain.Product;
 import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
@@ -20,7 +20,7 @@ import com.gregori.product.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 
 import static com.gregori.common.domain.IsDeleted.TRUE;
-import static com.gregori.order_detail.domain.OrderDetail.Status.DELIVERED;
+import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
 
 @Service
 @RequiredArgsConstructor
@@ -54,24 +54,23 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public void deleteProduct(Long id) throws NotFoundException {
+	public void deleteProduct(Long productId) throws NotFoundException {
 
-		productMapper.findById(id).orElseThrow(NotFoundException::new);
-		List<OrderDetail> orderDetails = orderDetailMapper.findByProductId(id)
+		productMapper.findById(productId).orElseThrow(NotFoundException::new);
+		List<OrderDetail> orderDetails = orderDetailMapper.findByProductId(productId)
 			.stream().filter(orderDetail -> orderDetail.getStatus() != DELIVERED).toList();
 
 		if (!orderDetails.isEmpty()) {
 			throw new BusinessRuleViolationException("주문 상품의 배송이 완료되지 않았으면 상품을 삭제할 수 없습니다.");
 		}
 
-		productMapper.updateIsDeleted(id, TRUE);
-
+		productMapper.updateIsDeleted(productId, TRUE);
 	}
 
 	@Override
-	public ProductResponseDto getProduct(Long id) {
+	public ProductResponseDto getProduct(Long productId) {
 
-		Product product = productMapper.findById(id).orElseThrow(NotFoundException::new);
+		Product product = productMapper.findById(productId).orElseThrow(NotFoundException::new);
 
 		return new ProductResponseDto().toEntity(product);
 	}

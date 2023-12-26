@@ -13,8 +13,8 @@ import com.gregori.auth.dto.TokenRequestDto;
 import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.config.jwt.TokenProvider;
-import com.gregori.refresh_token.domain.RefreshToken;
-import com.gregori.refresh_token.mapper.RefreshTokenMapper;
+import com.gregori.auth.domain.RefreshToken;
+import com.gregori.auth.mapper.RefreshTokenMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
