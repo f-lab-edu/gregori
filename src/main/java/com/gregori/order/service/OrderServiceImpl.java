@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.ValidationException;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.domain.Order;
@@ -28,14 +29,20 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional
-	public Long saveOrder(OrderRequestDto orderRequestDto) throws NotFoundException {
+	public Long saveOrder(OrderRequestDto dto) throws NotFoundException {
 
-		Order order = orderRequestDto.toEntity();
+		Order order = dto.toEntity();
 		orderMapper.insert(order);
-		orderRequestDto.getOrderDetails()
-			.forEach(orderDetailRequestDto -> {
-				Product product = productMapper.findById(orderDetailRequestDto.getProductId()).orElseThrow(NotFoundException::new);
-				OrderDetail initOrderDetail = orderDetailRequestDto.toEntity(order.getId(), product);
+		dto.getOrderDetails()
+			.forEach(orderDetailDto -> {
+				Product product = productMapper.findById(orderDetailDto.getProductId()).orElseThrow(NotFoundException::new);
+				long newInventory = product.getInventory() - orderDetailDto.getProductCount();
+				if (newInventory < 0) {
+					throw new ValidationException("상품의 재고가 부족해서 주문을 진행할 수 없습니다.");
+				}
+
+				productMapper.updateInventory(product.getId(), newInventory);
+				OrderDetail initOrderDetail = orderDetailDto.toEntity(order.getId(), product);
 				orderDetailMapper.insert(initOrderDetail);
 			});
 

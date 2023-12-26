@@ -16,6 +16,12 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateInventory">
+        UPDATE products
+        SET inventory = #{inventory}
+        WHERE id = #{id}
+    </update>
+
     <update id="updateIsDeleted">
         UPDATE products
         SET is_deleted = #{isDeleted}
