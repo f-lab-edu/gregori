@@ -22,6 +22,7 @@ import com.gregori.seller.mapper.SellerMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
+import static com.gregori.common.domain.IsDeleted.TRUE;
 import static com.gregori.product.domain.Product.Status.ON_SALE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 import static com.gregori.product.domain.Sorter.PRICE_ASC;
@@ -144,6 +145,30 @@ class ProductMapperTest {
 		assertThat(result.get().getName()).isEqualTo("newName");
 		assertThat(result.get().getPrice()).isEqualTo(2L);
 		assertThat(result.get().getInventory()).isEqualTo(2L);
+	}
+
+	@Test
+	@DisplayName("id로 상품을 논리적으로 삭제한다.")
+	void should_updateIsDeleted() {
+
+		// given
+		Product product = Product.builder()
+			.sellerId(seller.getId())
+			.categoryId(categoryIds.get(0))
+			.name("name")
+			.price(1L)
+			.inventory(1L)
+			.build();
+
+		productMapper.insert(product);
+		productIds.add(product.getId());
+
+		// when
+		productMapper.updateIsDeleted(product.getId(), TRUE);
+		Optional<Product> result = productMapper.findById(product.getId());
+
+		// then
+		assertThat(result.isPresent()).isFalse();
 	}
 
 	@Test

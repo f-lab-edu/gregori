@@ -6,13 +6,19 @@
 <mapper namespace="com.gregori.product.mapper.ProductMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.product.domain.Product">
-        INSERT INTO products (seller_id, category_id, name, price, inventory, status)
-        VALUES (#{sellerId}, #{categoryId}, #{name}, #{price}, #{inventory}, #{status})
+        INSERT INTO products (seller_id, category_id, name, price, inventory, status, is_deleted)
+        VALUES (#{sellerId}, #{categoryId}, #{name}, #{price}, #{inventory}, #{status}, #{isDeleted})
     </insert>
 
     <update id="update">
         UPDATE products
         SET category_id = #{categoryId}, name = #{name}, price = #{price}, inventory = #{inventory}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateIsDeleted">
+        UPDATE products
+        SET is_deleted = #{isDeleted}
         WHERE id = #{id}
     </update>
 
@@ -24,7 +30,7 @@
     <select id="findById" resultType="com.gregori.product.domain.Product" parameterType="Long">
         SELECT id, seller_id, category_id, name, price, inventory, status, created_at, updated_at
         FROM products
-        WHERE id = #{id}
+        WHERE id = #{id} AND is_deleted = 'FALSE'
     </select>
 
     <select id="find" resultType="com.gregori.product.domain.Product" parameterType="Long">
@@ -38,13 +44,13 @@
     <sql id="where">
         <choose>
             <when test="keyword != null">
-                WHERE name LIKE CONCAT('%', #{keyword}, '%')
+                WHERE name LIKE CONCAT('%', #{keyword}, '%') AND is_deleted = 'FALSE'
             </when>
             <when test="categoryId != null">
-                WHERE category_id = #{categoryId}
+                WHERE category_id = #{categoryId} AND is_deleted = 'FALSE'
             </when>
             <when test="sellerId != null">
-                WHERE seller_id = #{sellerId}
+                WHERE seller_id = #{sellerId} AND is_deleted = 'FALSE'
             </when>
         </choose>
     </sql>

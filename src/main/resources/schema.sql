@@ -51,6 +51,7 @@ CREATE TABLE products (
     price       BIGINT       NOT NULL                                                       COMMENT '상품 가격',
     inventory   BIGINT       NOT NULL                                                       COMMENT '상품 재고',
     status      VARCHAR(255) NOT NULL                                                       COMMENT '상품 상태',
+    is_deleted  VARCHAR(255) NOT NULL                                                       COMMENT '상품 삭제 여부',
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '상품 생성 날짜',
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '상품 수정 날짜',
     CONSTRAINT fk_products_seller_id FOREIGN KEY (seller_id) REFERENCES sellers(id),

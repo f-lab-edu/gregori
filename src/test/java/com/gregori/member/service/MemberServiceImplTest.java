@@ -249,10 +249,9 @@ class MemberServiceImplTest {
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.getMember(1L));
 		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(dto1));
 		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(dto2));
 		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
+		assertThrows(NotFoundException.class, () -> memberService.getMember(1L));
 	}
-
 }

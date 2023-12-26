@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
-import static com.gregori.product.domain.Product.Status.ON_SALE;
+import static com.gregori.common.domain.IsDeleted.FALSE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 
 @Slf4j
@@ -67,14 +67,14 @@ public class SellerServiceImpl implements SellerService {
 	@Transactional
 	public void deleteSeller(Long sellerId) throws NotFoundException {
 
-		List<Product> products = productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString());
-		for (Product product : products) {
-			if (product.getStatus() == ON_SALE) {
-				throw new BusinessRuleViolationException("판매 중인 상품이 있으면 폐업 신청이 불가합니다.");
-			}
+		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+
+		List<Product> products = productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString())
+			.stream().filter(product -> product.getIsDeleted() == FALSE).toList();
+		if (!products.isEmpty()) {
+			throw new BusinessRuleViolationException("상품이 있으면 폐업 신청이 불가합니다.");
 		}
 
-		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
 		seller.closed();
 		sellerMapper.update(seller);
 	}
