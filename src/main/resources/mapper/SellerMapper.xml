@@ -6,13 +6,19 @@
 <mapper namespace="com.gregori.seller.mapper.SellerMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.seller.domain.Seller">
-        INSERT INTO sellers (member_id, business_number, business_name, status)
-        VALUES (#{memberId}, #{businessNumber}, #{businessName}, #{status})
+        INSERT INTO sellers (member_id, business_number, business_name, is_deleted)
+        VALUES (#{memberId}, #{businessNumber}, #{businessName}, #{isDeleted})
     </insert>
 
     <update id="update">
         UPDATE sellers
-        SET business_number = #{businessNumber}, business_name = #{businessName}, status = #{status}
+        SET business_number = #{businessNumber}, business_name = #{businessName}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateIsDeleted">
+        UPDATE products
+        SET is_deleted = #{isDeleted}
         WHERE id = #{id}
     </update>
 
@@ -26,14 +32,14 @@
     </update>
 
     <select id="findById" resultType="com.gregori.seller.domain.Seller" parameterType="Long">
-        SELECT id, member_id, business_number, business_name, status, created_at, updated_at
+        SELECT id, member_id, business_number, business_name, is_deleted, created_at, updated_at
         FROM sellers
-        WHERE id = #{id}
+        WHERE id = #{id} AND is_deleted = 'FALSE'
     </select>
 
     <select id="findByMemberId" resultType="com.gregori.seller.domain.Seller" parameterType="Long">
-        SELECT id, member_id, business_number, business_name, status, created_at, updated_at
+        SELECT id, member_id, business_number, business_name, is_deleted, created_at, updated_at
         FROM sellers
-        WHERE member_id = #{memberId}
+        WHERE member_id = #{memberId} AND is_deleted = 'FALSE'
     </select>
 </mapper>

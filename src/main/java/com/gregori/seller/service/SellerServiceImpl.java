@@ -75,8 +75,8 @@ public class SellerServiceImpl implements SellerService {
 			throw new BusinessRuleViolationException("상품이 있으면 폐업 신청이 불가합니다.");
 		}
 
-		seller.closed();
-		sellerMapper.update(seller);
+		seller.isDeletedTrue();
+		sellerMapper.updateIsDeleted(sellerId, seller.getIsDeleted());
 	}
 
 	@Override

@@ -159,12 +159,9 @@ class MemberServiceImplTest {
 		order1.orderCancelled();
 		order2.orderCompleted();
 
-		Seller seller = new Seller(1L, "123-45-67891", "name");
-		seller.closed();
-
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findByMemberId(memberId)).willReturn(List.of(order1, order2));
-		given(sellerMapper.findByMemberId(1L)).willReturn(List.of(seller));
+		given(sellerMapper.findByMemberId(1L)).willReturn(List.of());
 
 		// when
 		memberService.deleteMember(memberId);

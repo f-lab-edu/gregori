@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
-import static com.gregori.seller.domain.Seller.Status.OPERATING;
 
 @Service
 @RequiredArgsConstructor
@@ -93,10 +92,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         if (member.getAuthority() == SELLING_MEMBER) {
-            List<Seller> sellers = sellerMapper.findByMemberId(memberId).stream()
-                .filter(seller -> seller.getStatus() == OPERATING)
-                .toList();
-
+            List<Seller> sellers = sellerMapper.findByMemberId(memberId);
             if (!sellers.isEmpty()) {
                 throw new BusinessRuleViolationException("사업장을 전부 폐업하지 않으면 탈퇴 신청이 불가합니다.");
             }

@@ -22,6 +22,7 @@ import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
+import static com.gregori.common.domain.IsDeleted.TRUE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -104,7 +105,7 @@ class SellerServiceImplTest {
 		sellerService.deleteSeller(sellerId);
 
 		// then
-		verify(sellerMapper).update(any(Seller.class));
+		verify(sellerMapper).updateIsDeleted(sellerId, TRUE);
 	}
 
 	@Test

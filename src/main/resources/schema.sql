@@ -37,7 +37,7 @@ CREATE TABLE sellers (
      member_id       BIGINT       NOT NULL                                                       COMMENT '회원 인덱스',
      business_number VARCHAR(255) NOT NULL                                                       COMMENT '셀러 사업자 등록번호',
      business_name   VARCHAR(255) NOT NULL                                                       COMMENT '셀러 상호 이름',
-     status          VARCHAR(255) NOT NULL                                                       COMMENT '셀러 상태',
+     is_deleted      VARCHAR(255) NOT NULL                                                       COMMENT '셀러 삭제 여부',
      created_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '셀러 가입 날짜',
      updated_at      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '셀러 수정 날짜',
      CONSTRAINT fk_sellers_member_id FOREIGN KEY (member_id) REFERENCES members(id)

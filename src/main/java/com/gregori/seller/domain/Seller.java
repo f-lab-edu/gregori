@@ -1,11 +1,16 @@
 package com.gregori.seller.domain;
 
+import javax.net.ssl.SSLEngineResult;
+
 import com.gregori.common.AbstractEntity;
+import com.gregori.common.domain.IsDeleted;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
+import static com.gregori.common.domain.IsDeleted.FALSE;
+import static com.gregori.common.domain.IsDeleted.TRUE;
 
 @Getter
 @NoArgsConstructor
@@ -15,17 +20,7 @@ public class Seller extends AbstractEntity {
 	private Long memberId;
 	private String businessNumber;
 	private String businessName;
-	private Status status;
-
-	@Getter
-	@RequiredArgsConstructor
-	public enum Status {
-
-		OPERATING("영업"),
-		CLOSED("폐업");
-
-		private final String description;
-	}
+	private IsDeleted isDeleted;
 
 	@Builder
 	public Seller(Long memberId, String businessNumber, String businessName) {
@@ -33,7 +28,7 @@ public class Seller extends AbstractEntity {
 		this.memberId = memberId;
 		this.businessNumber = businessNumber;
 		this.businessName = businessName;
-		this.status = Status.OPERATING;
+		this.isDeleted = FALSE;
 	}
 
 	public void updateSellerInfo(String businessNumber, String businessName) {
@@ -42,11 +37,7 @@ public class Seller extends AbstractEntity {
 		this.businessName = businessName;
 	}
 
-	public void operating() {
-		this.status = Status.OPERATING;
-	}
-
-	public void closed() {
-		this.status = Status.CLOSED;
+	public void isDeletedTrue() {
+		this.isDeleted = TRUE;
 	}
 }
