@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 import static com.gregori.order.domain.Order.Status.ORDER_PROCESSING;
 import static com.gregori.seller.domain.Seller.Status.OPERATING;
 
@@ -103,7 +102,8 @@ public class MemberServiceImpl implements MemberService {
             }
         }
 
-        memberMapper.updateStatus(memberId, DEACTIVATE);
+        member.isDeletedTrue();
+        memberMapper.updateIsDeleted(memberId, member.getIsDeleted());
         refreshTokenMapper.findByRefreshTokenKey(memberId.toString())
             .ifPresent(token -> refreshTokenMapper.deleteById(token.getId()));
     }

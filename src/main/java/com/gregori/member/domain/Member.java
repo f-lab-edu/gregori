@@ -2,11 +2,14 @@ package com.gregori.member.domain;
 
 import com.gregori.auth.domain.Authority;
 import com.gregori.common.AbstractEntity;
+import com.gregori.common.domain.IsDeleted;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+
+import static com.gregori.common.domain.IsDeleted.FALSE;
+import static com.gregori.common.domain.IsDeleted.TRUE;
 
 @Getter
 @NoArgsConstructor
@@ -16,41 +19,23 @@ public class Member extends AbstractEntity {
     private String name;
     private String email;
     private String password;
-    private Status status;
     private Authority authority;
-
-    @Getter
-    @RequiredArgsConstructor
-    public enum Status {
-
-        ACTIVATE("활성화"),
-        DEACTIVATE("비활성화");
-
-        private final String description;
-    }
+    private IsDeleted isDeleted;
 
     @Builder
     public Member(String name, String email, String password) {
         this.name = name;
         this.email = email;
         this.password = password;
-        this.status = Status.ACTIVATE;
         this.authority = Authority.GENERAL_MEMBER;
-    }
-
-    public void activate() {
-        this.status = Status.ACTIVATE;
-    }
-
-    public void deactivate() {
-        this.status = Status.DEACTIVATE;
-    }
-
-    public void generalMember() {
-        this.authority = Authority.GENERAL_MEMBER;
+        this.isDeleted = FALSE;
     }
 
     public void sellingMember() {
         this.authority = Authority.SELLING_MEMBER;
+    }
+
+    public void isDeletedTrue() {
+        this.isDeleted = TRUE;
     }
 }

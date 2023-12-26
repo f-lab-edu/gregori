@@ -11,14 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gregori.common.exception.AccessDeniedException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
-
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
 
 @Service
 @RequiredArgsConstructor
@@ -31,9 +28,6 @@ public class CustomUserDetailService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String email) {
 
 		Member member = memberMapper.findByEmail(email).orElseThrow(NotFoundException::new);
-		if (member.getStatus() == DEACTIVATE) {
-			throw new AccessDeniedException("탈퇴한 사용자입니다.");
-		}
 
 		return createUserDetails(member);
 	}

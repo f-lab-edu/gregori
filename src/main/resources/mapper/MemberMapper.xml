@@ -6,15 +6,9 @@
 <mapper namespace="com.gregori.member.mapper.MemberMapper">
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.gregori.member.domain.Member">
-        INSERT INTO members (name, email, password, status, authority)
-        VALUES (#{name}, #{email}, #{password}, #{status}, #{authority})
+        INSERT INTO members (name, email, password, authority, is_deleted)
+        VALUES (#{name}, #{email}, #{password}, #{authority}, #{isDeleted})
     </insert>
-
-    <update id="update">
-        UPDATE members
-        SET name = #{name}, password = #{password}, status = #{status}, authority = #{authority}
-        WHERE id = #{id}
-    </update>
 
     <update id="updateName">
         UPDATE members
@@ -28,15 +22,15 @@
         WHERE id = #{id}
     </update>
 
-    <update id="updateStatus">
-        UPDATE members
-        SET status = #{status}
-        WHERE id = #{id}
-    </update>
-
     <update id="updateAuthority">
         UPDATE members
         SET authority = #{authority}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateIsDeleted">
+        UPDATE members
+        SET is_deleted = #{isDeleted}
         WHERE id = #{id}
     </update>
 
@@ -55,14 +49,14 @@
     </delete>
 
     <select id="findById" resultType="com.gregori.member.domain.Member" parameterType="Long">
-        SELECT id, name, email, password, status, authority, created_at, updated_at
+        SELECT id, name, email, password, authority, is_deleted, created_at, updated_at
         FROM members
-        WHERE id = #{id}
+        WHERE id = #{id} AND is_deleted = 'FALSE'
     </select>
 
     <select id="findByEmail" resultType="com.gregori.member.domain.Member" parameterType="String">
-        SELECT id, name, email, password, status, authority, created_at, updated_at
+        SELECT id, name, email, password, authority, is_deleted, created_at, updated_at
         FROM members
-        WHERE email = #{email}
+        WHERE email = #{email} AND is_deleted = 'FALSE'
     </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.gregori.member.dto;
 
+import com.gregori.common.domain.IsDeleted;
 import com.gregori.member.domain.Member;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ public class MemberResponseDto {
 	private Long id;
 	private String email;
 	private String name;
-	private Member.Status status;
+	private IsDeleted isDeleted;
 
 	public MemberResponseDto toEntity(Member member) {
 
@@ -24,7 +25,7 @@ public class MemberResponseDto {
 			.id(member.getId())
 			.name(member.getName())
 			.email(member.getEmail())
-			.status(member.getStatus())
+			.isDeleted(member.getIsDeleted())
 			.build();
 	}
 }

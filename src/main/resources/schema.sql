@@ -11,8 +11,8 @@ CREATE TABLE members (
      name       VARCHAR(255) NOT NULL                                                       COMMENT '회원 이름',
      email      VARCHAR(255) NOT NULL                                                       COMMENT '회원 이메일',
      password   VARCHAR(255) NOT NULL                                                       COMMENT '회원 비밀번호',
-     status     VARCHAR(255) NOT NULL                                                       COMMENT '회원 상태',
      authority  VARCHAR(255) NOT NULL                                                       COMMENT '회원 권한',
+     is_deleted VARCHAR(255) NOT NULL                                                       COMMENT '회원 삭제 여부',
      created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '회원 가입 날짜',
      updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '회원 수정 날짜'
 );

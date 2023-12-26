@@ -26,7 +26,7 @@ import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
-import static com.gregori.member.domain.Member.Status.DEACTIVATE;
+import static com.gregori.common.domain.IsDeleted.TRUE;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -141,7 +141,7 @@ class MemberServiceImplTest {
 		memberService.deleteMember(memberId);
 
 		// then
-		verify(memberMapper).updateStatus(memberId, DEACTIVATE);
+		verify(memberMapper).updateIsDeleted(memberId, TRUE);
 		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
 	}
 
@@ -170,7 +170,7 @@ class MemberServiceImplTest {
 		memberService.deleteMember(memberId);
 
 		// then
-		verify(memberMapper).updateStatus(memberId, DEACTIVATE);
+		verify(memberMapper).updateIsDeleted(memberId, TRUE);
 		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
 	}
 
