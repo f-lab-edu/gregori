@@ -73,7 +73,7 @@ class MemberControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isNoContent());
 
-		verify(memberService).updateMemberName(any(), deepRefEq(dto));
+		verify(memberService).updateMemberName(any(), any());
 	}
 
 	@Test

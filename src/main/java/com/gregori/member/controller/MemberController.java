@@ -2,9 +2,9 @@ package com.gregori.member.controller;
 
 import java.net.URI;
 
+import com.gregori.auth.domain.CurrentMember;
 import com.gregori.common.CookieGenerator;
-import com.gregori.auth.domain.Login;
-import com.gregori.auth.service.AuthService;
+import com.gregori.auth.domain.LoginCheck;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.member.domain.SessionMember;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import static com.gregori.auth.domain.Authority.ADMIN_MEMBER;
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.common.CookieGenerator.COOKIE_NAME;
 
 @Controller
@@ -38,7 +41,6 @@ import static com.gregori.common.CookieGenerator.COOKIE_NAME;
 public class MemberController {
 
     private final MemberService memberService;
-    private final AuthService authService;
 
     @PostMapping("/register")
     public ResponseEntity<Void> register(@RequestBody @Validated MemberRegisterDto dto) {
@@ -48,17 +50,19 @@ public class MemberController {
         return ResponseEntity.created(URI.create("/member/" + memberId)).build();
     }
 
+    @LoginCheck({ GENERAL_MEMBER, SELLING_MEMBER, ADMIN_MEMBER })
     @PostMapping("/name")
-    public ResponseEntity<Void> updateMemberName(@Login SessionMember sessionMember,
+    public ResponseEntity<Void> updateMemberName(@CurrentMember SessionMember sessionMember,
         @RequestBody @Validated MemberNameUpdateDto dto) {
 
-        memberService.updateMemberName(sessionMember.getId(), dto);
+        memberService.updateMemberName(sessionMember.getId(), dto.getName());
 
         return ResponseEntity.noContent().build();
     }
 
+    @LoginCheck({ GENERAL_MEMBER, SELLING_MEMBER, ADMIN_MEMBER })
     @PostMapping("/password")
-    public ResponseEntity<Void> updateMemberPassword(@Login SessionMember sessionMember,
+    public ResponseEntity<Void> updateMemberPassword(@CurrentMember SessionMember sessionMember,
         @RequestBody @Validated MemberPasswordUpdateDto dto) {
 
         memberService.updateMemberPassword(sessionMember.getId(), dto);
@@ -66,8 +70,9 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
+    @LoginCheck({ GENERAL_MEMBER, SELLING_MEMBER, ADMIN_MEMBER })
     @DeleteMapping
-    public ResponseEntity<Void> deleteMember(@Login SessionMember sessionMember,
+    public ResponseEntity<Void> deleteMember(@CurrentMember SessionMember sessionMember,
         HttpSession session, @CookieValue(name = COOKIE_NAME) Cookie cookie) {
 
         if (session == null || cookie == null) {
@@ -84,8 +89,9 @@ public class MemberController {
             .build();
     }
 
+    @LoginCheck({ GENERAL_MEMBER, SELLING_MEMBER, ADMIN_MEMBER })
     @GetMapping
-    public ResponseEntity<MemberResponseDto> getMember(@Login SessionMember sessionMember) {
+    public ResponseEntity<MemberResponseDto> getMember(@CurrentMember SessionMember sessionMember) {
 
         MemberResponseDto response = memberService.getMember(sessionMember.getId());
 

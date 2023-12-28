@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +14,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gregori.auth.domain.LoginCheck;
 import com.gregori.category.domain.Category;
+import com.gregori.category.dto.CategoryRequestDto;
 import com.gregori.category.service.CategoryService;
 
 import lombok.RequiredArgsConstructor;
+
+import static com.gregori.auth.domain.Authority.ADMIN_MEMBER;
 
 @Controller
 @RequiredArgsConstructor
@@ -25,22 +30,26 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
 
+	@LoginCheck(ADMIN_MEMBER)
 	@PostMapping
-	public ResponseEntity<Void> createCategory(@RequestBody String name) {
+	public ResponseEntity<Void> createCategory(@RequestBody @Validated CategoryRequestDto dto) {
 
-		Long categoryId = categoryService.saveCategory(name);
+		Long categoryId = categoryService.saveCategory(dto.getName());
 
 		return ResponseEntity.created(URI.create("/category/" + categoryId)).build();
 	}
 
+	@LoginCheck(ADMIN_MEMBER)
 	@PostMapping("/{categoryId}")
-	public ResponseEntity<Void> updateCategoryName(@PathVariable Long categoryId, @RequestBody String name) {
+	public ResponseEntity<Void> updateCategoryName(@PathVariable Long categoryId,
+		@RequestBody @Validated CategoryRequestDto dto) {
 
-		categoryService.updateCategoryName(categoryId, name);
+		categoryService.updateCategoryName(categoryId, dto.getName());
 
 		return ResponseEntity.noContent().build();
 	}
 
+	@LoginCheck(ADMIN_MEMBER)
 	@DeleteMapping("/{categoryId}")
 	public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
 

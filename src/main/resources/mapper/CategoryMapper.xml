@@ -22,13 +22,13 @@
     </delete>
 
     <select id="findById" resultType="com.gregori.category.domain.Category" parameterType="Long">
-        SELECT id, name
+        SELECT id, name, created_at, updated_at
         FROM categories
         WHERE id = #{id}
     </select>
 
     <select id="find" resultType="com.gregori.category.domain.Category">
-        SELECT id, name
+        SELECT id, name, created_at, updated_at
         FROM categories
         <include refid="limitAndOffset"/>
     </select>

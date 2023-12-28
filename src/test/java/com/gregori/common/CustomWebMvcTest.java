@@ -9,6 +9,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.gregori.auth.service.AuthService;
 import com.gregori.category.service.CategoryService;
 import com.gregori.config.security.AuthArgumentResolver;
+import com.gregori.config.security.AuthIntercepter;
+import com.gregori.config.security.SessionMemberManager;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.member.service.MemberService;
 import com.gregori.order.service.OrderService;
@@ -16,7 +18,7 @@ import com.gregori.product.service.ProductService;
 import com.gregori.seller.service.SellerService;
 
 @WebMvcTest
-@Import(AuthArgumentResolver.class)
+@Import({ AuthArgumentResolver.class, AuthIntercepter.class, SessionMemberManager.class })
 public abstract class CustomWebMvcTest {
 
 	@Autowired

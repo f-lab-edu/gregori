@@ -82,15 +82,15 @@ class MemberServiceTest {
 
 		// given
 		Long memberId = 1L;
-		MemberNameUpdateDto dto = new MemberNameUpdateDto("이름");
+		String name = "name";
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(new Member()));
 
 		// when
-		memberService.updateMemberName(memberId, dto);
+		memberService.updateMemberName(memberId, name);
 
 		// then
-		verify(memberMapper).updateName(memberId, dto.getName());
+		verify(memberMapper).updateName(memberId, name);
 	}
 
 	@Test
@@ -243,7 +243,7 @@ class MemberServiceTest {
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(1L, dto1));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(1L, "name"));
 		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(1L, dto2));
 		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
 		assertThrows(NotFoundException.class, () -> memberService.getMember(1L));

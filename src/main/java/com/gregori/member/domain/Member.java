@@ -35,6 +35,10 @@ public class Member extends AbstractEntity {
         this.authority = Authority.SELLING_MEMBER;
     }
 
+    public void adminMember() {
+        this.authority = Authority.ADMIN_MEMBER;
+    }
+
     public void isDeletedTrue() {
         this.isDeleted = TRUE;
     }

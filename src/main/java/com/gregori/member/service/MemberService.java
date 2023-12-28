@@ -53,10 +53,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberName(Long memberId, MemberNameUpdateDto dto) {
+    public void updateMemberName(Long memberId, String name) {
 
         memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
-        memberMapper.updateName(memberId, dto.getName());
+        memberMapper.updateName(memberId, name);
     }
 
     public void updateMemberPassword(Long memberId, MemberPasswordUpdateDto dto) {
