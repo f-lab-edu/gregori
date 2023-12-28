@@ -53,15 +53,15 @@ public class MemberService {
     }
 
     @Transactional
-    public void updateMemberName(MemberNameUpdateDto dto) {
+    public void updateMemberName(Long memberId, MemberNameUpdateDto dto) {
 
-        memberMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
-        memberMapper.updateName(dto.getId(), dto.getName());
+        memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
+        memberMapper.updateName(memberId, dto.getName());
     }
 
-    public void updateMemberPassword(MemberPasswordUpdateDto dto) {
+    public void updateMemberPassword(Long memberId, MemberPasswordUpdateDto dto) {
 
-        Member member = memberMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+        Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
         String oldPassword = passwordEncoder.encode(dto.getOldPassword());
 
         if (!StringUtils.equals(oldPassword, member.getPassword())) {
@@ -69,7 +69,7 @@ public class MemberService {
         }
 
         String newPassword = passwordEncoder.encode(dto.getNewPassword());
-        memberMapper.updatePassword(dto.getId(), newPassword);
+        memberMapper.updatePassword(memberId, newPassword);
     }
 
     @Transactional
@@ -94,7 +94,6 @@ public class MemberService {
 
         member.isDeletedTrue();
         memberMapper.updateIsDeleted(memberId, member.getIsDeleted());
-        // TODO: 회원 탈퇴 시 세션 처리
     }
 
     public MemberResponseDto getMember(Long memberId) {
