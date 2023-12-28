@@ -33,7 +33,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class MemberServiceImplTest {
+class MemberServiceTest {
 
 	@Mock
 	private PasswordEncoder passwordEncoder;
@@ -47,7 +47,7 @@ class MemberServiceImplTest {
 	private RefreshTokenMapper refreshTokenMapper;
 
 	@InjectMocks
-	private MemberServiceImpl memberService;
+	private MemberService memberService;
 
 	@Test
 	@DisplayName("회원가입을 성공하면 id를 반환한다.")
