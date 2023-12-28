@@ -2,8 +2,6 @@ package com.gregori.auth.dto;
 
 import static com.gregori.common.RegexPatterns.PASSWORD_REGEX;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -21,9 +19,4 @@ public class AuthSignInDto {
 	@NotBlank
 	@Pattern(regexp = PASSWORD_REGEX, message = "password 형식이 일치해야 합니다.")
 	private String password;
-
-	public UsernamePasswordAuthenticationToken toAuthentication() {
-
-		return new UsernamePasswordAuthenticationToken(email, password);
-	}
 }

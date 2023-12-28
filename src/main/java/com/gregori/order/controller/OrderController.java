@@ -4,8 +4,6 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,8 +19,6 @@ import com.gregori.order.service.OrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import static java.lang.Long.parseLong;
 
 @Controller
 @RequiredArgsConstructor
@@ -42,7 +38,8 @@ public class OrderController {
 	@PatchMapping("/{orderId}")
 	public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
 
-		orderService.cancelOrder(getMemberId(), orderId);
+		// TODO: memberId 변경
+		orderService.cancelOrder(0L, orderId);
 
 		return ResponseEntity.noContent().build();
 	}
@@ -66,13 +63,9 @@ public class OrderController {
 	@GetMapping
 	public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestParam(defaultValue = "1") int page) {
 
-		List<OrderResponseDto> response = orderService.getOrders(getMemberId(), page);
+		// TODO: memberId 변경
+		List<OrderResponseDto> response = orderService.getOrders(0L, page);
 
 		return ResponseEntity.ok().body(response);
-	}
-
-	private Long getMemberId() {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return parseLong(authentication.getName());
 	}
 }

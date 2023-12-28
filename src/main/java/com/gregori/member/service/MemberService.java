@@ -14,7 +14,6 @@ import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
@@ -38,7 +37,6 @@ public class MemberService {
     private final MemberMapper memberMapper;
     private final SellerMapper sellerMapper;
     private final OrderMapper orderMapper;
-    private final RefreshTokenMapper refreshTokenMapper;
 
     @Transactional
     public Long register(@Valid MemberRegisterDto dto) throws DuplicateException {
@@ -96,8 +94,7 @@ public class MemberService {
 
         member.isDeletedTrue();
         memberMapper.updateIsDeleted(memberId, member.getIsDeleted());
-        refreshTokenMapper.findByRefreshTokenKey(memberId.toString())
-            .ifPresent(token -> refreshTokenMapper.deleteById(token.getId()));
+        // TODO: 회원 탈퇴 시 세션 처리
     }
 
     public MemberResponseDto getMember(Long memberId) {
