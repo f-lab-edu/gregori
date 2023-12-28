@@ -1,18 +1,25 @@
 package com.gregori.auth.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.gregori.auth.dto.AuthSignInDto;
-import com.gregori.auth.dto.TokenDto;
-import com.gregori.auth.dto.TokenRequestDto;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.auth.service.AuthService;
+import com.gregori.common.exception.NotFoundException;
 
-import jakarta.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+
+import static org.springframework.boot.web.server.Cookie.SameSite.NONE;
 
 @Controller
 @RequiredArgsConstructor
@@ -22,26 +29,36 @@ public class AuthController {
 	private final AuthService authService;
 
 	@PostMapping("/signin")
-	public ResponseEntity<TokenDto> signIn(@RequestBody @Valid AuthSignInDto dto) {
+	public ResponseEntity<Void> signIn(@RequestBody @Validated AuthSignInDto dto, HttpSession session) {
 
-		TokenDto response = authService.signIn(dto);
+		SessionMember response = authService.signIn(dto);
+		session.setAttribute("member", response);
 
-		return ResponseEntity.ok().body(response);
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/signout")
-	public ResponseEntity<Void> signOut(@RequestBody TokenRequestDto dto) {
+	public ResponseEntity<Void> signOut(HttpSession session, @CookieValue(name = "JSESSIONID") Cookie cookie) {
 
-		authService.signOut(dto);
+		if (session == null || cookie == null) {
+			throw new NotFoundException("쿠키 혹은 세션을 찾을 수 없습니다.");
+		}
+		session.invalidate();
 
-		return ResponseEntity.noContent().build();
+		ResponseCookie logoutCookie = createLogoutCookie();
+
+		return ResponseEntity.noContent()
+			.header(HttpHeaders.SET_COOKIE, logoutCookie.toString())
+			.build();
 	}
 
-	@PostMapping("/refresh")
-	public ResponseEntity<TokenDto> refresh(@RequestBody TokenRequestDto dto) {
+	private ResponseCookie createLogoutCookie() {
 
-		TokenDto response = authService.refresh(dto);
-
-		return ResponseEntity.ok().body(response);
+		return ResponseCookie.from("JSESSIONID", "0")
+			.httpOnly(true)
+			.secure(true)
+			.path("/")
+			.sameSite(NONE.attributeValue())
+			.build();
 	}
 }

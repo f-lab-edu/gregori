@@ -1,92 +1,34 @@
 package com.gregori.auth.service;
 
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.auth.dto.AuthSignInDto;
-import com.gregori.auth.dto.TokenDto;
-import com.gregori.auth.dto.TokenRequestDto;
-import com.gregori.common.exception.UnauthorizedException;
+import com.gregori.member.domain.SessionMember;
+import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
-import com.gregori.config.jwt.TokenProvider;
-import com.gregori.auth.domain.RefreshToken;
-import com.gregori.auth.mapper.RefreshTokenMapper;
+import com.gregori.member.domain.Member;
+import com.gregori.member.mapper.MemberMapper;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final RefreshTokenMapper refreshTokenMapper;
-	private final TokenProvider tokenProvider;
-	private final AuthenticationManager authenticationManager;
+	private final MemberMapper memberMapper;
+	private final PasswordEncoder passwordEncoder;
 
 	@Transactional
-	public TokenDto signIn(AuthSignInDto authSignInDto) {
-		
-		UsernamePasswordAuthenticationToken authenticationToken = authSignInDto.toAuthentication();
-		Authentication authentication = authenticationManager.authenticate(authenticationToken);
-		TokenDto tokenDto = tokenProvider.generateToken(authentication);
+	public SessionMember signIn(AuthSignInDto authSignInDto) {
 
-		refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
-			.ifPresent(refreshToken -> refreshTokenMapper.deleteById(refreshToken.getId()));
-
-		refreshTokenMapper.insert(RefreshToken.builder()
-			.refreshTokenKey(authentication.getName())
-			.refreshTokenValue(tokenDto.getRefreshToken())
-			.build());
-
-		return tokenDto;
-	}
-
-	@Transactional
-	public void signOut(TokenRequestDto tokenRequestDto) {
-
-		Authentication authentication = getAuthentication(tokenRequestDto);
-		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
-
-		refreshTokenMapper.deleteById(refreshToken.getId());
-	}
-
-	@Transactional
-	public TokenDto refresh(TokenRequestDto tokenRequestDto) {
-
-		Authentication authentication = getAuthentication(tokenRequestDto);
-		RefreshToken refreshToken = getRefreshToken(tokenRequestDto.getRefreshToken(), authentication);
-
-		TokenDto tokenDto = tokenProvider.generateToken(authentication);
-
-		refreshToken.updateRefreshTokenValue(tokenDto.getRefreshToken());
-		refreshTokenMapper.update(refreshToken);
-
-		return tokenDto;
-  	}
-
-	private RefreshToken getRefreshToken(String requestRefreshToken, Authentication authentication) {
-
-		RefreshToken refreshToken = refreshTokenMapper.findByRefreshTokenKey(authentication.getName())
-			.orElseThrow(() -> new UnauthorizedException("로그아웃한 사용자입니다."));
-
-		if (!StringUtils.equals(refreshToken.getRefreshTokenValue(), requestRefreshToken)) {
-			throw new UnauthorizedException("토큰의 유저 정보가 일치하지 않습니다.");
+		Member member = memberMapper.findByEmail(authSignInDto.getEmail()).orElseThrow(NotFoundException::new);
+		boolean matches = passwordEncoder.matches(authSignInDto.getPassword(), member.getPassword());
+		if (!matches) {
+			throw new ValidationException("비밀번호가 일치하지 않습니다.");
 		}
 
-		return refreshToken;
-	}
-
-	private Authentication getAuthentication(TokenRequestDto tokenRequestDto) {
-
-		if (!tokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
-			throw new ValidationException("Refresh Token이 유효하지 않습니다.");
-		}
-
-		return tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
+		return new SessionMember().toEntity(member);
 	}
 }
