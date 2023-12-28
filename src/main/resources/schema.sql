@@ -2,7 +2,6 @@ DROP TABLE IF EXISTS order_details CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS sellers CASCADE;
-DROP TABLE IF EXISTS refresh_tokens;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS members;
 
@@ -22,14 +21,6 @@ CREATE TABLE categories (
     name       VARCHAR(255) NOT NULL                                                       COMMENT '카테고리 이름',
     created_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '카테고리 가입 날짜',
     updated_at TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '카테고리 수정 날짜'
-);
-
-CREATE TABLE refresh_tokens (
-    id                  BIGINT       AUTO_INCREMENT PRIMARY KEY NOT NULL                            COMMENT '토큰 인덱스',
-    refresh_token_key   VARCHAR(255) NOT NULL                                                       COMMENT '토큰 키',
-    refresh_token_value VARCHAR(255) NOT NULL                                                       COMMENT '토큰 값',
-    created_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP                             COMMENT '토큰 생성 날짜',
-    updated_at          TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '토큰 수정 날짜'
 );
 
 CREATE TABLE sellers (
