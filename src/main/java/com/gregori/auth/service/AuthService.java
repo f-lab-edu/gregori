@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthService {
 
-	private final MemberMapper memberMapper;
 	private final PasswordEncoder passwordEncoder;
+	private final MemberMapper memberMapper;
 
 	@Transactional
 	public SessionMember signIn(AuthSignInDto authSignInDto) {

@@ -146,26 +146,4 @@ class MemberControllerTest extends CustomWebMvcTest {
 
 		verify(memberService).getMember(1L);
 	}
-
-	@Test
-	@DisplayName("회원 id가 토큰 id와 불일치하면 Forbidden 응답을 반환한다.")
-	void should_AccessDeniedException_when_invalidMemberId() throws Exception {
-
-		// given
-		Authentication authentication = mock(Authentication.class);
-		SecurityContext securityContext = mock(SecurityContext.class);
-
-		given(securityContext.getAuthentication()).willReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		given(authentication.getName()).willReturn("2");
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/member/1")
-				.with(csrf())
-				.contentType(MediaType.APPLICATION_JSON));
-
-		// then
-		actions.andExpect(status().isForbidden()).andDo(print());
-	}
 }

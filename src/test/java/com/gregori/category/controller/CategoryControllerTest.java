@@ -9,7 +9,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import com.gregori.common.CustomWebMvcTest;
 
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,7 +24,6 @@ class CategoryControllerTest extends CustomWebMvcTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/category")
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(categoryName));
 
@@ -46,7 +44,6 @@ class CategoryControllerTest extends CustomWebMvcTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/category/" + categoryId)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(categoryName));
 
@@ -66,7 +63,6 @@ class CategoryControllerTest extends CustomWebMvcTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.delete("/category/" + categoryId)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
@@ -85,7 +81,6 @@ class CategoryControllerTest extends CustomWebMvcTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/category/" + categoryId)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
@@ -101,7 +96,6 @@ class CategoryControllerTest extends CustomWebMvcTest {
 		// given, when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/category?page=1")
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then

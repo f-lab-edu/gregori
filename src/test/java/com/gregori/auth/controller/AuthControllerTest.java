@@ -13,8 +13,8 @@ import com.gregori.auth.dto.AuthSignInDto;
 import com.gregori.common.CustomWebMvcTest;
 import com.gregori.member.domain.SessionMember;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import jakarta.servlet.http.Cookie;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class AuthControllerTest extends CustomWebMvcTest {
@@ -46,14 +46,18 @@ class AuthControllerTest extends CustomWebMvcTest {
 	void should_responseNoContent_when_requestSignOut() throws Exception {
 
 		// given
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(1L, "a@a.a", Authority.GENERAL_MEMBER));
+		Cookie cookie = new Cookie("JSESSIONID", "0");
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/signout")
-				.with(csrf())
+				.session(session)
+				.cookie(cookie)
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 	}
 }

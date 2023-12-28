@@ -39,7 +39,7 @@ public class OrderController {
 	public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
 
 		// TODO: memberId 변경
-		orderService.cancelOrder(0L, orderId);
+		orderService.cancelOrder(1L, orderId);
 
 		return ResponseEntity.noContent().build();
 	}
@@ -64,7 +64,7 @@ public class OrderController {
 	public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestParam(defaultValue = "1") int page) {
 
 		// TODO: memberId 변경
-		List<OrderResponseDto> response = orderService.getOrders(0L, page);
+		List<OrderResponseDto> response = orderService.getOrders(1L, page);
 
 		return ResponseEntity.ok().body(response);
 	}

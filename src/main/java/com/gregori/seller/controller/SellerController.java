@@ -64,7 +64,7 @@ public class SellerController {
 	public ResponseEntity<List<SellerResponseDto>> getSellers() {
 
 		// TODO: memberId 변경
-		List<SellerResponseDto> response = sellerService.getSellers(0L);
+		List<SellerResponseDto> response = sellerService.getSellers(1L);
 
 		return ResponseEntity.ok().body(response);
 	}
