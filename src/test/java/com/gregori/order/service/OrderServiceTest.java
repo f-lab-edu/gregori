@@ -35,7 +35,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceImplTest {
+class OrderServiceTest {
 
 	@Mock
 	private MemberMapper memberMapper;
@@ -50,7 +50,7 @@ class OrderServiceImplTest {
 	private OrderDetailMapper orderDetailMapper;
 
 	@InjectMocks
-	private OrderServiceImpl orderService;
+	private OrderService orderService;
 
 	@Test
 	@DisplayName("주문 생성을 성공하면 id를 반환한다.")

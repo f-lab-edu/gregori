@@ -19,13 +19,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class CategoryServiceImplTest {
+class CategoryServiceTest {
 
 	@Mock
 	private CategoryMapper categoryMapper;
 
 	@InjectMocks
-	private CategoryServiceImpl categoryService;
+	private CategoryService categoryService;
 
 	@Test
 	@DisplayName("카테고리 생성을 성공하면 id를 반환한다.")

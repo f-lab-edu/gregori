@@ -26,7 +26,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceImplTest {
+class AuthServiceTest {
 
 	@Mock
 	private RefreshTokenMapper refreshTokenMapper;
@@ -36,7 +36,7 @@ class AuthServiceImplTest {
 	private AuthenticationManager authManager;
 
 	@InjectMocks
-	private AuthServiceImpl authService;
+	private AuthService authService;
 
 	@Test
 	@DisplayName("로그인을 성공하면 토큰을 발급한다.")

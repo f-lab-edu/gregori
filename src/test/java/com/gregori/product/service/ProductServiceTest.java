@@ -30,7 +30,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class ProductServiceImplTest {
+class ProductServiceTest {
 
 	@Mock
 	private ProductMapper productMapper;
@@ -39,7 +39,7 @@ class ProductServiceImplTest {
 	private OrderDetailMapper orderDetailMapper;
 
 	@InjectMocks
-	private ProductServiceImpl productService;
+	private ProductService productService;
 
 	@Test
 	@DisplayName("상품 생성을 성공하면 id를 반환한다.")

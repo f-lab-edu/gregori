@@ -17,9 +17,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gregori.order.service.OrderService;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderDetailRequestDto;
+import com.gregori.order.service.OrderService;
 
 import static com.gregori.common.DeepReflectionEqMatcher.deepRefEq;
 import static org.mockito.BDDMockito.given;
