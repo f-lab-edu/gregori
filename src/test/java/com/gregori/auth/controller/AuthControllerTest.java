@@ -2,56 +2,43 @@ package com.gregori.auth.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.auth.domain.Authority;
 import com.gregori.auth.dto.AuthSignInDto;
-import com.gregori.auth.dto.TokenRequestDto;
-import com.gregori.auth.service.AuthService;
+import com.gregori.common.CustomWebMvcTest;
+import com.gregori.member.domain.SessionMember;
 
-import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = AuthController.class)
-class AuthControllerTest {
+class AuthControllerTest extends CustomWebMvcTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@MockBean
-	AuthService authService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
 	@DisplayName("로그인을 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestSignIn() throws Exception {
 
 		// given
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(1L, "a@a.a", Authority.GENERAL_MEMBER));
 		AuthSignInDto dto = new AuthSignInDto("a@a.a", "aa11111!");
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/signin")
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
-
-		verify(authService).signIn(refEq(dto));
+		actions.andExpect(status().isOk());
 	}
 
 	@Test
@@ -59,38 +46,14 @@ class AuthControllerTest {
 	void should_responseNoContent_when_requestSignOut() throws Exception {
 
 		// given
-		TokenRequestDto dto = new TokenRequestDto("access_token", "refresh_token");
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/auth/signout")
 				.with(csrf())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(dto)));
+				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
 		actions.andExpect(status().isNoContent()).andDo(print());
-
-		verify(authService).signOut(refEq(dto));
-	}
-
-	@Test
-	@DisplayName("리프레시를 요청하면 Ok 응답을 반환한다.")
-	void should_responseOk_when_requestRefresh() throws Exception {
-
-		// given
-		TokenRequestDto dto = new TokenRequestDto("access_token", "refresh_token");
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.post("/auth/refresh")
-				.with(csrf())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(dto)));
-
-		// then
-		actions.andExpect(status().isOk()).andDo(print());
-
-		verify(authService).refresh(refEq(dto));
 	}
 }

@@ -2,31 +2,18 @@ package com.gregori.category.controller;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.gregori.category.service.CategoryService;
+import com.gregori.common.CustomWebMvcTest;
 
 import static org.mockito.Mockito.verify;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = CategoryController.class)
-class CategoryControllerTest {
-
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockBean
-	CategoryService categoryService;
+class CategoryControllerTest extends CustomWebMvcTest {
 
 	@Test
 	@DisplayName("카테고리 생성을 요청하면 Created 응답을 반환한다.")

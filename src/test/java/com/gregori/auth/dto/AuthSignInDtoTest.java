@@ -115,19 +115,4 @@ class AuthSignInDtoTest {
 		assertThat(result5.isEmpty()).isFalse();
 		assertThat(result6.isEmpty()).isFalse();
 	}
-
-	@Test
-	@DisplayName("toAuthentication 메서드를 호출하면 auth token을 반환한다.")
-	void should_returnAuthToken_when_toAuthenticationMethodCalled() {
-
-		// given
-		AuthSignInDto dto = new AuthSignInDto("a@a.a", "aa11111!");
-
-		// when
-		UsernamePasswordAuthenticationToken result = dto.toAuthentication();
-
-		// then
-		assertThat(result.getPrincipal()).isEqualTo(dto.getEmail());
-		assertThat(result.getCredentials()).isEqualTo(dto.getPassword());
-	}
 }
