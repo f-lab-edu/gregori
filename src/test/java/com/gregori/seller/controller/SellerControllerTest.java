@@ -5,9 +5,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -18,11 +15,9 @@ import com.gregori.member.domain.SessionMember;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 
-import static com.gregori.auth.domain.Authority.ADMIN_MEMBER;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -98,11 +93,17 @@ class SellerControllerTest extends CustomWebMvcTest {
 
 		// given
 		Long sellerId = 1L;
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/seller/" + sellerId)
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON));
 
 		// then
@@ -110,7 +111,6 @@ class SellerControllerTest extends CustomWebMvcTest {
 
 		verify(sellerService).getSeller(sellerId);
 	}
-
 
 	@Test
 	@DisplayName("판매자 목록 조회를 요청하면 Ok 응답을 반환한다.")

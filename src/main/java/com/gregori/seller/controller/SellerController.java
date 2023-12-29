@@ -59,6 +59,7 @@ public class SellerController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@LoginCheck(SELLING_MEMBER)
 	@GetMapping("/{sellerId}")
 	public ResponseEntity<SellerResponseDto> getSeller(@PathVariable Long sellerId) {
 
