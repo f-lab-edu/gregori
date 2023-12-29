@@ -47,18 +47,20 @@ public class ProductController {
 
 	@LoginCheck(SELLING_MEMBER)
 	@PutMapping
-	public ResponseEntity<Void> updateProduct(@RequestBody @Valid ProductUpdateDto dto) {
+	public ResponseEntity<Void> updateProduct(
+		@CurrentMember SessionMember sessionMember, @RequestBody @Valid ProductUpdateDto dto) {
 
-		productService.updateProduct(dto);
+		productService.updateProduct(sessionMember.getId(), dto);
 
 		return ResponseEntity.noContent().build();
 	}
 
 	@LoginCheck(SELLING_MEMBER)
 	@DeleteMapping("/{productId}")
-	public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
+	public ResponseEntity<Void> deleteProduct(
+		@CurrentMember SessionMember sessionMember, @PathVariable Long productId) {
 
-		productService.deleteProduct(productId);
+		productService.deleteProduct(sessionMember.getId(), productId);
 
 		return ResponseEntity.noContent().build();
 	}

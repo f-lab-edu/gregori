@@ -20,11 +20,10 @@ import com.gregori.product.dto.ProductUpdateDto;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.product.domain.Product.Status.PRE_SALE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class ProductControllerTest extends CustomWebMvcTest {
@@ -82,7 +81,7 @@ class ProductControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isNoContent());
 
-		verify(productService).updateProduct(refEq(dto));
+		verify(productService).updateProduct(any(), refEq(dto));
 	}
 
 	@Test
@@ -108,7 +107,7 @@ class ProductControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isNoContent());
 
-		verify(productService).deleteProduct(productId);
+		verify(productService).deleteProduct(any(), any());
 	}
 
 	@Test

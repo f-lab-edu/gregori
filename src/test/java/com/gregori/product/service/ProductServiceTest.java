@@ -20,6 +20,8 @@ import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductUpdateDto;
 import com.gregori.product.mapper.ProductMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 import static com.gregori.common.domain.IsDeleted.TRUE;
 import static com.gregori.product.domain.Product.Status.PRE_SALE;
@@ -31,6 +33,9 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceTest {
+
+	@Mock
+	private SellerMapper sellerMapper;
 
 	@Mock
 	private ProductMapper productMapper;
@@ -61,11 +66,13 @@ class ProductServiceTest {
 
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, 1L, PRE_SALE);
+		Seller seller = new Seller(1L, "123-45-67891", "name");
 
+		given(sellerMapper.findById(null)).willReturn(Optional.of(seller));
 		given(productMapper.findById(1L)).willReturn(Optional.of(new Product()));
 
 		// when
-		productService.updateProduct(dto);
+		productService.updateProduct(1L, dto);
 
 		// then
 		verify(productMapper).update(any(Product.class));
@@ -81,7 +88,7 @@ class ProductServiceTest {
 
 		// when, then
 		assertThrows(ValidationException.class, () -> productService.saveProduct(dto1));
-		assertThrows(ValidationException.class, () -> productService.updateProduct(dto2));
+		assertThrows(ValidationException.class, () -> productService.updateProduct(1L, dto2));
 	}
 
 	@Test
@@ -90,12 +97,14 @@ class ProductServiceTest {
 
 		// given
 		Long productId = 1L;
+		Seller seller = new Seller(1L, "123-45-67891", "name");
 
+		given(sellerMapper.findById(null)).willReturn(Optional.of(seller));
 		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
 		given(orderDetailMapper.findByProductId(productId)).willReturn(List.of());
 
 		// when
-		productService.deleteProduct(productId);
+		productService.deleteProduct(1L, productId);
 
 		// then
 		verify(productMapper).updateIsDeleted(productId, TRUE);
@@ -108,12 +117,14 @@ class ProductServiceTest {
 		// given
 		Long productId = 1L;
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
+		Seller seller = new Seller(1L, "123-45-67891", "name");
 
+		given(sellerMapper.findById(null)).willReturn(Optional.of(seller));
 		given(productMapper.findById(productId)).willReturn(Optional.of(new Product()));
 		given(orderDetailMapper.findByProductId(productId)).willReturn(List.of(orderDetail));
 
 		// when, then
-		assertThrows(BusinessRuleViolationException.class, () -> productService.deleteProduct(productId));
+		assertThrows(BusinessRuleViolationException.class, () -> productService.deleteProduct(1L, productId));
 	}
 
 	@Test
@@ -142,8 +153,8 @@ class ProductServiceTest {
 		given(productMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> productService.updateProduct(dto));
-		assertThrows(NotFoundException.class, () -> productService.deleteProduct(1L));
+		assertThrows(NotFoundException.class, () -> productService.updateProduct(1L, dto));
+		assertThrows(NotFoundException.class, () -> productService.deleteProduct(1L, 1L));
 		assertThrows(NotFoundException.class, () -> productService.getProduct(1L));
 	}
 
