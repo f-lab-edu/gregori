@@ -163,12 +163,12 @@ class SellerServiceTest {
 		// given
 		Long sellerId = 1L;
 
-		given(sellerMapper.findByMemberId(sellerId, null, null)).willReturn(List.of(new Seller()));
+		given(sellerMapper.findByMemberId(sellerId, 10, 0)).willReturn(List.of(new Seller()));
 
 		// when
-		sellerService.getSellers(sellerId);
+		sellerService.getSellers(sellerId, 1);
 
 		// then
-		verify(sellerMapper).findByMemberId(sellerId, null, null);
+		verify(sellerMapper).findByMemberId(sellerId, 10, 0);
 	}
 }

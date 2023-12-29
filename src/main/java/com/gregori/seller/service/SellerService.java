@@ -83,9 +83,12 @@ public class SellerService {
 		return new SellerResponseDto().toEntity(seller);
 	}
 
-	public List<SellerResponseDto> getSellers(Long memberId) {
+	public List<SellerResponseDto> getSellers(Long memberId, int page) {
 
-		List<Seller> sellers = sellerMapper.findByMemberId(memberId, null, null);
+		int limit = 10;
+		int offset = (page - 1) * limit;
+
+		List<Seller> sellers = sellerMapper.findByMemberId(memberId, limit, offset);
 
 		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
 	}

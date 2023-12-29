@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gregori.auth.domain.CurrentMember;
+import com.gregori.auth.domain.LoginCheck;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerResponseDto;
 import com.gregori.seller.dto.SellerUpdateDto;
@@ -20,6 +24,9 @@ import com.gregori.seller.service.SellerService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,11 +67,12 @@ public class SellerController {
 		return ResponseEntity.ok().body(response);
 	}
 
+	@LoginCheck(SELLING_MEMBER)
 	@GetMapping
-	public ResponseEntity<List<SellerResponseDto>> getSellers() {
+	public ResponseEntity<List<SellerResponseDto>> getSellers(@CurrentMember SessionMember sessionMember,
+		@RequestParam(defaultValue = "1") int page) {
 
-		// TODO: memberId 변경
-		List<SellerResponseDto> response = sellerService.getSellers(1L);
+		List<SellerResponseDto> response = sellerService.getSellers(sessionMember.getId(), page);
 
 		return ResponseEntity.ok().body(response);
 	}
