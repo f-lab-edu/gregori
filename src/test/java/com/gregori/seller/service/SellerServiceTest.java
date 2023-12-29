@@ -67,7 +67,7 @@ class SellerServiceTest {
 	void should_returnId_when_updateSellerSuccess() {
 
 		// given
-		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, 1L, "123-45-67891", "name");
+		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, "123-45-67891", "name");
 		Seller seller = new Seller(1L, "123-45-67891", "name");
 
 		given(sellerMapper.findById(1L)).willReturn(Optional.of(seller));
@@ -85,7 +85,7 @@ class SellerServiceTest {
 
 		// given
 		SellerRegisterDto dto1 = new SellerRegisterDto(1L, "111-11-11111", "name");
-		SellerUpdateDto dto2 = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
+		SellerUpdateDto dto2 = new SellerUpdateDto(1L, "111-11-11111", "name");
 
 		// when, then
 		assertThrows(ValidationException.class, () -> sellerService.saveSeller(dto1));
@@ -148,7 +148,7 @@ class SellerServiceTest {
 
 		// given
 		SellerRegisterDto dto1 = new SellerRegisterDto(1L, "123-45-67891", "name");
-		SellerUpdateDto dto2 = new SellerUpdateDto(1L, 1L, "123-45-67891", "name");
+		SellerUpdateDto dto2 = new SellerUpdateDto(1L, "123-45-67891", "name");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 

@@ -60,7 +60,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 	void should_responseNoContent_when_requestUpdateSeller() throws Exception {
 
 		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
+		SellerUpdateDto dto = new SellerUpdateDto(1L, "111-11-11111", "name");
 
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));

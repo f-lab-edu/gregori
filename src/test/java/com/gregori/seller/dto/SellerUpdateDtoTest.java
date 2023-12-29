@@ -20,7 +20,7 @@ class SellerUpdateDtoTest {
 	void should_SellerUpdateDto_when_validInput() {
 
 		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "000-00-00000", "name");
+		SellerUpdateDto dto = new SellerUpdateDto(1L, "000-00-00000", "name");
 
 		// when
 		var result = validator.validate(dto);
@@ -34,21 +34,7 @@ class SellerUpdateDtoTest {
 	void should_ValidException_when_nullId() {
 
 		// given
-		SellerUpdateDto dto = new SellerUpdateDto(null,1L, "000-00-00000", "name");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertThat(result.isEmpty()).isFalse();
-	}
-
-	@Test
-	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
-	void should_ValidException_when_nullMemberId() {
-
-		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L,null, "000-00-00000", "name");
+		SellerUpdateDto dto = new SellerUpdateDto(null, "000-00-00000", "name");
 
 		// when
 		var result = validator.validate(dto);
@@ -62,9 +48,9 @@ class SellerUpdateDtoTest {
 	void should_ValidException_when_blankBusinessNumber() {
 
 		// given
-		SellerUpdateDto dto1 = new SellerUpdateDto(1L,1L, null, "name");
-		SellerUpdateDto dto2 = new SellerUpdateDto(1L,1L, "", "name");
-		SellerUpdateDto dto3 = new SellerUpdateDto(1L,1L, " ", "name");
+		SellerUpdateDto dto1 = new SellerUpdateDto(1L, null, "name");
+		SellerUpdateDto dto2 = new SellerUpdateDto(1L, "", "name");
+		SellerUpdateDto dto3 = new SellerUpdateDto(1L, " ", "name");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -82,7 +68,7 @@ class SellerUpdateDtoTest {
 	void should_ValidException_when_mismatchedBusinessNumber() {
 
 		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L,1L, "00-00-00", "name");
+		SellerUpdateDto dto = new SellerUpdateDto(1L, "00-00-00", "name");
 
 		// when
 		var result = validator.validate(dto);
@@ -96,9 +82,9 @@ class SellerUpdateDtoTest {
 	void should_ValidException_when_blankBusinessName() {
 
 		// given
-		SellerUpdateDto dto1 = new SellerUpdateDto(1L,1L, "000-00-00000", null);
-		SellerUpdateDto dto2 = new SellerUpdateDto(1L,1L, "000-00-00000", "");
-		SellerUpdateDto dto3 = new SellerUpdateDto(1L,1L, "000-00-00000", " ");
+		SellerUpdateDto dto1 = new SellerUpdateDto(1L, "000-00-00000", null);
+		SellerUpdateDto dto2 = new SellerUpdateDto(1L, "000-00-00000", "");
+		SellerUpdateDto dto3 = new SellerUpdateDto(1L, "000-00-00000", " ");
 
 		// when
 		var result1 = validator.validate(dto1);
