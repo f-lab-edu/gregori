@@ -75,14 +75,21 @@ class SellerControllerTest extends CustomWebMvcTest {
 		// given
 		Long sellerId = 1L;
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.delete("/seller/" + sellerId)
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
 		verify(sellerService).deleteSeller(sellerId);
 	}
@@ -93,6 +100,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 
 		// given
 		Long sellerId = 1L;
+
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
 		Member member = new Member("name", "a@a.a", "password");
@@ -107,7 +115,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 				.contentType(APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(sellerService).getSeller(sellerId);
 	}

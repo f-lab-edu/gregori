@@ -51,6 +51,7 @@ public class SellerController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@LoginCheck(SELLING_MEMBER)
 	@DeleteMapping("/{sellerId}")
 	public ResponseEntity<Void> deleteSeller(@PathVariable Long sellerId) {
 
