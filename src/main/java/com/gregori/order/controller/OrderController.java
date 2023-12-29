@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gregori.auth.domain.CurrentMember;
+import com.gregori.auth.domain.LoginCheck;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.service.OrderService;
@@ -20,13 +23,18 @@ import com.gregori.order.service.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/order")
 public class OrderController {
 
+
 	private final OrderService orderService;
 
+	@LoginCheck
 	@PostMapping
 	public ResponseEntity<Void> createOrder(@RequestBody @Valid OrderRequestDto dto) {
 
@@ -35,15 +43,17 @@ public class OrderController {
 		return ResponseEntity.created(URI.create("/order/" + orderId)).build();
 	}
 
+	@LoginCheck
 	@PatchMapping("/{orderId}")
-	public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
+	public ResponseEntity<Void> cancelOrder(
+		@CurrentMember SessionMember sessionMember, @PathVariable Long orderId) {
 
-		// TODO: memberId 변경
-		orderService.cancelOrder(1L, orderId);
+		orderService.cancelOrder(sessionMember.getId(), orderId);
 
 		return ResponseEntity.noContent().build();
 	}
 
+	@LoginCheck({ GENERAL_MEMBER, SELLING_MEMBER })
 	@PatchMapping("/detail/{orderDetailId}")
 	public ResponseEntity<Void> cancelOrderDetail(@PathVariable Long orderDetailId) {
 
@@ -52,6 +62,7 @@ public class OrderController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@LoginCheck
 	@GetMapping("/{orderId}")
 	public ResponseEntity<OrderResponseDto> getOrder(@PathVariable Long orderId) {
 
@@ -60,11 +71,12 @@ public class OrderController {
 		return ResponseEntity.ok().body(response);
 	}
 
+	@LoginCheck
 	@GetMapping
-	public ResponseEntity<List<OrderResponseDto>> getOrders(@RequestParam(defaultValue = "1") int page) {
+	public ResponseEntity<List<OrderResponseDto>> getOrders(
+		@CurrentMember SessionMember sessionMember, @RequestParam(defaultValue = "1") int page) {
 
-		// TODO: memberId 변경
-		List<OrderResponseDto> response = orderService.getOrders(1L, page);
+		List<OrderResponseDto> response = orderService.getOrders(sessionMember.getId(), page);
 
 		return ResponseEntity.ok().body(response);
 	}
