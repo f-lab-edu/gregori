@@ -55,15 +55,22 @@ class SellerControllerTest extends CustomWebMvcTest {
 		// given
 		SellerUpdateDto dto = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.patch("/seller")
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
 		verify(sellerService).updateSeller(refEq(dto));
 	}

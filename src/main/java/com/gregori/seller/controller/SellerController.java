@@ -43,10 +43,11 @@ public class SellerController {
 		return ResponseEntity.created(URI.create("/seller/" + sellerId)).build();
 	}
 
+	@LoginCheck(SELLING_MEMBER)
 	@PatchMapping
-	public ResponseEntity<Void> updateSeller(@RequestBody @Valid SellerUpdateDto sellerUpdateDto) {
+	public ResponseEntity<Void> updateSeller(@RequestBody @Valid SellerUpdateDto dto) {
 
-		sellerService.updateSeller(sellerUpdateDto);
+		sellerService.updateSeller(dto);
 
 		return ResponseEntity.noContent().build();
 	}
