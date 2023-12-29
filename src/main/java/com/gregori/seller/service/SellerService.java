@@ -54,11 +54,15 @@ public class SellerService {
 	}
 
 	@Transactional
-	public void updateSeller(SellerUpdateDto dto) throws ValidationException {
+	public void updateSeller(Long memberId, SellerUpdateDto dto) throws ValidationException {
 
 		checkBusinessNumberValidation(dto.getBusinessNumber());
 
 		Seller seller = sellerMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
+		}
+
 		seller.updateSellerInfo(dto.getBusinessNumber(), dto.getBusinessName());
 		sellerMapper.update(seller);
 	}

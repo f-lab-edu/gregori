@@ -16,6 +16,7 @@ import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -79,7 +80,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isNoContent());
 
-		verify(sellerService).updateSeller(refEq(dto));
+		verify(sellerService).updateSeller(any(), refEq(dto));
 	}
 
 	@Test

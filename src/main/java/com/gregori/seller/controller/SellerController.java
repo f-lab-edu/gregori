@@ -46,9 +46,10 @@ public class SellerController {
 
 	@LoginCheck(SELLING_MEMBER)
 	@PatchMapping
-	public ResponseEntity<Void> updateSeller(@RequestBody @Valid SellerUpdateDto dto) {
+	public ResponseEntity<Void> updateSeller(
+		@CurrentMember SessionMember sessionMember, @RequestBody @Valid SellerUpdateDto dto) {
 
-		sellerService.updateSeller(dto);
+		sellerService.updateSeller(sessionMember.getId(), dto);
 
 		return ResponseEntity.noContent().build();
 	}

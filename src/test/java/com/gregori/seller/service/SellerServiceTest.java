@@ -73,7 +73,7 @@ class SellerServiceTest {
 		given(sellerMapper.findById(1L)).willReturn(Optional.of(seller));
 
 		// when
-		sellerService.updateSeller(sellerUpdateDto);
+		sellerService.updateSeller(1L, sellerUpdateDto);
 
 		// then
 		verify(sellerMapper).update(any(Seller.class));
@@ -89,7 +89,7 @@ class SellerServiceTest {
 
 		// when, then
 		assertThrows(ValidationException.class, () -> sellerService.saveSeller(dto1));
-		assertThrows(ValidationException.class, () -> sellerService.updateSeller(dto2));
+		assertThrows(ValidationException.class, () -> sellerService.updateSeller(null, dto2));
 	}
 
 	@Test
@@ -154,7 +154,7 @@ class SellerServiceTest {
 
 		// when, then
 		assertThrows(NotFoundException.class, () -> sellerService.saveSeller(dto1));
-		assertThrows(NotFoundException.class, () -> sellerService.updateSeller(dto2));
+		assertThrows(NotFoundException.class, () -> sellerService.updateSeller(null, dto2));
 		assertThrows(NotFoundException.class, () -> sellerService.deleteSeller(1L, 1L));
 		assertThrows(NotFoundException.class, () -> sellerService.getSeller(1L, 1L));
 	}
