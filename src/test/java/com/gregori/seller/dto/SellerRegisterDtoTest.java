@@ -19,7 +19,7 @@ class SellerRegisterDtoTest {
 	void should_craeteSellerRegisterDto_when_validInput() {
 
 		// given
-		SellerRegisterDto dto = new SellerRegisterDto(1L, "000-00-00000", "name");
+		SellerRegisterDto dto = new SellerRegisterDto("000-00-00000", "name");
 
 		// when
 		var result = validator.validate(dto);
@@ -29,27 +29,13 @@ class SellerRegisterDtoTest {
 	}
 
 	@Test
-	@DisplayName("memberId 필드가 비어 있으면 에러가 발생한다.")
-	void should_ValidException_when_nullMemberId() {
-
-		// given
-		SellerRegisterDto dto = new SellerRegisterDto(null, "000-00-00000", "name");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertThat(result.isEmpty()).isFalse();
-	}
-
-	@Test
 	@DisplayName("businessNumber 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankBusinessNumber() {
 
 		// given
-		SellerRegisterDto dto1 = new SellerRegisterDto(1L, null, "name");
-		SellerRegisterDto dto2 = new SellerRegisterDto(1L, "", "name");
-		SellerRegisterDto dto3 = new SellerRegisterDto(1L, " ", "name");
+		SellerRegisterDto dto1 = new SellerRegisterDto(null, "name");
+		SellerRegisterDto dto2 = new SellerRegisterDto("", "name");
+		SellerRegisterDto dto3 = new SellerRegisterDto(" ", "name");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -67,7 +53,7 @@ class SellerRegisterDtoTest {
 	void should_ValidException_when_mismatchedBusinessNumber() {
 
 		// given
-		SellerRegisterDto dto = new SellerRegisterDto(1L, "00-00-00", "name");
+		SellerRegisterDto dto = new SellerRegisterDto("00-00-00", "name");
 
 		// when
 		var result = validator.validate(dto);
@@ -81,9 +67,9 @@ class SellerRegisterDtoTest {
 	void should_ValidException_when_blankBusinessName() {
 
 		// given
-		SellerRegisterDto dto1 = new SellerRegisterDto(1L, "000-00-00000", null);
-		SellerRegisterDto dto2 = new SellerRegisterDto(1L, "000-00-00000", "");
-		SellerRegisterDto dto3 = new SellerRegisterDto(1L, "000-00-00000", " ");
+		SellerRegisterDto dto1 = new SellerRegisterDto("000-00-00000", null);
+		SellerRegisterDto dto2 = new SellerRegisterDto("000-00-00000", "");
+		SellerRegisterDto dto3 = new SellerRegisterDto("000-00-00000", " ");
 
 		// when
 		var result1 = validator.validate(dto1);

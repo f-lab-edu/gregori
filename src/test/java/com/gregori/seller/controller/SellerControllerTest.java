@@ -21,8 +21,6 @@ import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class SellerControllerTest extends CustomWebMvcTest {
@@ -34,7 +32,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 	void should_responseCreated_when_requestCreateSeller() throws Exception {
 
 		// given
-		SellerRegisterDto dto = new SellerRegisterDto(1L, "111-11-11111", "name");
+		SellerRegisterDto dto = new SellerRegisterDto("111-11-11111", "name");
 
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
@@ -53,7 +51,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isCreated());
 
-		verify(sellerService).saveSeller(refEq(dto));
+		verify(sellerService).saveSeller(any(), refEq(dto));
 	}
 
 	@Test

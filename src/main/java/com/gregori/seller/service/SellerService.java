@@ -10,6 +10,7 @@ import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.member.domain.Member;
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.common.domain.IsDeleted.FALSE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 
@@ -37,17 +39,15 @@ public class SellerService {
 	private final ProductMapper productMapper;
 
 	@Transactional
-	public Long saveSeller(SellerRegisterDto dto) throws ValidationException {
+	public Long saveSeller(SessionMember sessionMember, SellerRegisterDto dto) throws ValidationException {
 
 		checkBusinessNumberValidation(dto.getBusinessNumber());
 
-		Member member = memberMapper.findById(dto.getMemberId()).orElseThrow(NotFoundException::new);
-		if (member.getAuthority() == GENERAL_MEMBER) {
-			member.sellingMember();
-			memberMapper.updateAuthority(member.getId(), member.getAuthority());
+		if (sessionMember.getAuthority() == GENERAL_MEMBER) {
+			memberMapper.updateAuthority(sessionMember.getId(), SELLING_MEMBER);
 		}
 
-		Seller seller = dto.toEntity();
+		Seller seller = dto.toEntity(sessionMember.getId());
 		sellerMapper.insert(seller);
 
 		return seller.getId();

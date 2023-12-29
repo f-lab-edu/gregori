@@ -37,9 +37,10 @@ public class SellerController {
 
 	@LoginCheck({GENERAL_MEMBER, SELLING_MEMBER })
 	@PostMapping
-	public ResponseEntity<Void> createSeller(@RequestBody @Valid SellerRegisterDto dto) {
+	public ResponseEntity<Void> createSeller(
+		@CurrentMember SessionMember sessionMember, @RequestBody @Valid SellerRegisterDto dto) {
 
-		Long sellerId = sellerService.saveSeller(dto);
+		Long sellerId = sellerService.saveSeller(sessionMember, dto);
 
 		return ResponseEntity.created(URI.create("/seller/" + sellerId)).build();
 	}
