@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.gregori.auth.domain.CurrentMember;
+import com.gregori.auth.domain.LoginCheck;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductResponseDto;
@@ -23,6 +27,8 @@ import com.gregori.product.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/product")
@@ -30,6 +36,7 @@ public class ProductController {
 
 	private final ProductService productService;
 
+	@LoginCheck(SELLING_MEMBER)
 	@PostMapping
 	public ResponseEntity<Void> createProduct(@RequestBody @Valid ProductCreateDto dto) {
 
@@ -38,6 +45,7 @@ public class ProductController {
 		return ResponseEntity.created(URI.create("/product/" + productId)).build();
 	}
 
+	@LoginCheck(SELLING_MEMBER)
 	@PutMapping
 	public ResponseEntity<Void> updateProduct(@RequestBody @Valid ProductUpdateDto dto) {
 
@@ -46,6 +54,7 @@ public class ProductController {
 		return ResponseEntity.noContent().build();
 	}
 
+	@LoginCheck(SELLING_MEMBER)
 	@DeleteMapping("/{productId}")
 	public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
 
