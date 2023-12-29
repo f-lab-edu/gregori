@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.gregori.auth.domain.CurrentMember;
 import com.gregori.auth.domain.LoginCheck;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.member.domain.SessionMember;
+import com.gregori.order.dto.OrderDetailStatusUpdateDto;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderResponseDto;
 import com.gregori.order.service.OrderService;
@@ -25,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,19 +48,22 @@ public class OrderController {
 
 	@LoginCheck
 	@PatchMapping("/{orderId}")
-	public ResponseEntity<Void> cancelOrder(
-		@CurrentMember SessionMember sessionMember, @PathVariable Long orderId) {
+	public ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) {
 
-		orderService.cancelOrder(sessionMember.getId(), orderId);
+		orderService.cancelOrder(orderId);
 
 		return ResponseEntity.noContent().build();
 	}
 
 	@LoginCheck({ GENERAL_MEMBER, SELLING_MEMBER })
-	@PatchMapping("/detail/{orderDetailId}")
-	public ResponseEntity<Void> cancelOrderDetail(@PathVariable Long orderDetailId) {
+	@PatchMapping("/detail")
+	public ResponseEntity<Void> updateOrderDetailStatus(
+		@CurrentMember SessionMember sessionMember, OrderDetailStatusUpdateDto dto) {
 
-		orderService.cancelOrderDetail(orderDetailId);
+		if ((sessionMember.getAuthority() == GENERAL_MEMBER && dto.getStatus() == PAYMENT_CANCELED) ||
+			sessionMember.getAuthority() == SELLING_MEMBER) {
+			orderService.updateOrderDetailStatus(dto);
+		}
 
 		return ResponseEntity.noContent().build();
 	}

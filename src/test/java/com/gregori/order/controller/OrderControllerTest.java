@@ -14,11 +14,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gregori.common.CustomWebMvcTest;
 import com.gregori.member.domain.Member;
 import com.gregori.member.domain.SessionMember;
+import com.gregori.order.dto.OrderDetailStatusUpdateDto;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderDetailRequestDto;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.common.DeepReflectionEqMatcher.deepRefEq;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -72,23 +74,23 @@ class OrderControllerTest extends CustomWebMvcTest {
 	}
 
 	@Test
-	@DisplayName("주문 상세 취소를 요청하면 NoContent 응답을 반환한다.")
-	void should_responseNoContent_when_requestCancelOrderDetail() throws Exception {
+	@DisplayName("주문 상세 갱신을 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestUpdateOrderDetailStatus() throws Exception {
 
 		// given
-		Long orderrDetailId = 1L;
-
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("member", new SessionMember(null, "a@a.a", GENERAL_MEMBER));
 		Member member = new Member("name", "a@a.a", "password");
+		OrderDetailStatusUpdateDto dto = new OrderDetailStatusUpdateDto(1L, PAYMENT_CANCELED);
 
 		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when, then
 		mockMvc.perform(
-				MockMvcRequestBuilders.patch("/order/detail/1")
+				MockMvcRequestBuilders.patch("/order/detail")
 					.session(session)
-					.contentType(APPLICATION_JSON))
+					.contentType(APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(dto)))
 			.andExpect(status().isNoContent());
 	}
 

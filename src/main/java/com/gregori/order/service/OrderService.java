@@ -7,10 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
-import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
-import com.gregori.member.domain.Member;
-import com.gregori.member.mapper.MemberMapper;
+import com.gregori.order.dto.OrderDetailStatusUpdateDto;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.domain.Order;
@@ -23,10 +21,9 @@ import com.gregori.order.mapper.OrderDetailMapper;
 
 import lombok.RequiredArgsConstructor;
 
-import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
-import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
 import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPMENT_PREPARATION;
 import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
@@ -35,7 +32,6 @@ import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
 @RequiredArgsConstructor
 public class OrderService {
 
-	private final MemberMapper memberMapper;
 	private final ProductMapper productMapper;
 	private final OrderMapper orderMapper;
 	private final OrderDetailMapper orderDetailMapper;
@@ -63,12 +59,8 @@ public class OrderService {
 	}
 
 	@Transactional
-	public void cancelOrder(Long memberId, Long orderId) throws NotFoundException {
+	public void cancelOrder(Long orderId) throws NotFoundException {
 
-		Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
-		if (member.getAuthority() == SELLING_MEMBER) {
-			throw new UnauthorizedException("판매자 회원은 주문 전체를 취소할 수 없습니다.");
-		}
 		Order order = orderMapper.findById(orderId).orElseThrow(NotFoundException::new);
 		order.orderCanceled();
 		orderMapper.updateStatus(orderId, order.getStatus());
@@ -81,10 +73,30 @@ public class OrderService {
 		orderDetails.forEach(this::cancelOrderDetail);
 	}
 
-	public void cancelOrderDetail(Long orderDetailId) throws NotFoundException {
+	@Transactional
+	public void updateOrderDetailStatus(OrderDetailStatusUpdateDto dto) throws NotFoundException {
 
-		OrderDetail orderDetail = orderDetailMapper.findById(orderDetailId).orElseThrow(NotFoundException::new);
-		cancelOrderDetail(orderDetail);
+		OrderDetail orderDetail = orderDetailMapper.findById(dto.getOrderDetailId()).orElseThrow(NotFoundException::new);
+
+		if (dto.getStatus() == PAYMENT_CANCELED) {
+			cancelOrderDetail(orderDetail);
+		} else {
+			if (dto.getStatus() == DELIVERED) {
+				List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderDetail.getOrderId())
+					.stream()
+					.filter(detail -> detail.getId() != dto.getOrderDetailId() && (
+						detail.getStatus() == PAYMENT_COMPLETED ||
+							detail.getStatus() == SHIPMENT_PREPARATION ||
+							detail.getStatus() == SHIPPED))
+					.toList();
+
+				if (orderDetails.isEmpty()) {
+					orderMapper.updateStatus(orderDetail.getOrderId(), ORDER_COMPLETED);
+				}
+			}
+
+			orderDetailMapper.updateStatus(dto.getOrderDetailId(), dto.getStatus());
+		}
 	}
 
 	private void cancelOrderDetail(OrderDetail orderDetail) {
@@ -98,32 +110,6 @@ public class OrderService {
 		orderDetailMapper.updateStatus(orderDetail.getId(), orderDetail.getStatus());
 	}
 
-	@Transactional
-	public void updateOrderDetailStatus(Long memberId, Long orderDetailId, OrderDetail.Status status) throws NotFoundException {
-
-		Member member = memberMapper.findById(memberId).orElseThrow(NotFoundException::new);
-		if (member.getAuthority() == GENERAL_MEMBER) {
-			throw new UnauthorizedException("일반 회원은 주문 상품 상태를 변경할 수 없습니다.");
-		}
-
-		OrderDetail orderDetail = orderDetailMapper.findById(orderDetailId).orElseThrow(NotFoundException::new);
-
-		if (status == DELIVERED) {
-			List<OrderDetail> orderDetails = orderDetailMapper.findByOrderId(orderDetail.getOrderId())
-				.stream()
-				.filter(detail -> detail.getId() != orderDetailId && (
-					detail.getStatus() == PAYMENT_COMPLETED ||
-					detail.getStatus() == SHIPMENT_PREPARATION ||
-					detail.getStatus() == SHIPPED))
-				.toList();
-
-			if (orderDetails.isEmpty()) {
-				orderMapper.updateStatus(orderDetail.getOrderId(), ORDER_COMPLETED);
-			}
-		}
-
-		orderDetailMapper.updateStatus(orderDetailId, status);
-	}
 
 	@Transactional
 	public OrderResponseDto getOrder(Long orderId) throws NotFoundException {
