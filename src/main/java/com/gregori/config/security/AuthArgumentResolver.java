@@ -9,6 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.gregori.auth.domain.CurrentMember;
+import com.gregori.auth.domain.LoginCheck;
 import com.gregori.member.domain.SessionMember;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +35,11 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
 		HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
-		return manager.getSessionMember(request);
+		SessionMember sessionMember = manager.getSessionMember(request);
+		if (!parameter.hasMethodAnnotation(LoginCheck.class)) {
+			manager.sessionMemberValidation(sessionMember);
+		}
+
+		return sessionMember;
 	}
 }

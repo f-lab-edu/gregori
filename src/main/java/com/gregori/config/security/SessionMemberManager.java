@@ -28,10 +28,7 @@ public class SessionMemberManager {
 			throw new NotFoundException("세션을 찾을 수 없습니다.");
 		}
 
-		SessionMember sessionMember = (SessionMember)session.getAttribute("member");
-		sessionMemberValidation(sessionMember);
-
-		return sessionMember;
+		return (SessionMember)session.getAttribute("member");
 	}
 
 	public void sessionMemberValidation(SessionMember sessionMember) {

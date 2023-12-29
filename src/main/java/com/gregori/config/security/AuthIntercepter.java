@@ -35,6 +35,7 @@ public class AuthIntercepter implements HandlerInterceptor {
 
 		Authority[] authorities = Objects.requireNonNull(loginCheck).authority();
 		SessionMember sessionMember = manager.getSessionMember(request);
+		manager.sessionMemberValidation(sessionMember);
 		if (!List.of(authorities).contains(sessionMember.getAuthority())) {
 			throw new UnauthorizedException("접근 권한이 없습니다.");
 		}
