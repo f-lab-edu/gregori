@@ -85,7 +85,7 @@ public class SellerService {
 
 	public List<SellerResponseDto> getSellers(Long memberId) {
 
-		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
+		List<Seller> sellers = sellerMapper.findByMemberId(memberId, null, null);
 
 		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
 	}

@@ -159,7 +159,7 @@ class MemberServiceTest {
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findByMemberId(memberId, null, null)).willReturn(List.of(order1, order2));
-		given(sellerMapper.findByMemberId(1L)).willReturn(List.of());
+		given(sellerMapper.findByMemberId(1L, null, null)).willReturn(List.of());
 
 		// when
 		memberService.deleteMember(memberId);
@@ -210,7 +210,7 @@ class MemberServiceTest {
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 		given(orderMapper.findByMemberId(1L, null, null)).willReturn(List.of());
-		given(sellerMapper.findByMemberId(1L)).willReturn(List.of(seller));
+		given(sellerMapper.findByMemberId(1L, null, null)).willReturn(List.of(seller));
 
 		// when, then
 		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));

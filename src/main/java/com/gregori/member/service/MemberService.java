@@ -7,7 +7,6 @@ import com.gregori.common.exception.DuplicateException;
 import com.gregori.common.exception.NotFoundException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
-import com.gregori.member.dto.MemberNameUpdateDto;
 import com.gregori.member.dto.MemberRegisterDto;
 import com.gregori.member.dto.MemberResponseDto;
 import com.gregori.member.dto.MemberPasswordUpdateDto;
@@ -86,7 +85,7 @@ public class MemberService {
         }
 
         if (member.getAuthority() == SELLING_MEMBER) {
-            List<Seller> sellers = sellerMapper.findByMemberId(memberId);
+            List<Seller> sellers = sellerMapper.findByMemberId(memberId, null, null);
             if (!sellers.isEmpty()) {
                 throw new BusinessRuleViolationException("사업장을 전부 폐업하지 않으면 탈퇴 신청이 불가합니다.");
             }
