@@ -1,12 +1,14 @@
 package com.gregori.seller.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
@@ -35,29 +37,29 @@ public class SellerService {
 	private final ProductMapper productMapper;
 
 	@Transactional
-	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
+	public Long saveSeller(SellerRegisterDto dto) throws ValidationException {
 
-		checkBusinessNumberValidation(sellerRegisterDto.getBusinessNumber());
+		checkBusinessNumberValidation(dto.getBusinessNumber());
 
-		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
+		Member member = memberMapper.findById(dto.getMemberId()).orElseThrow(NotFoundException::new);
 		if (member.getAuthority() == GENERAL_MEMBER) {
 			member.sellingMember();
 			memberMapper.updateAuthority(member.getId(), member.getAuthority());
 		}
 
-		Seller seller = sellerRegisterDto.toEntity();
+		Seller seller = dto.toEntity();
 		sellerMapper.insert(seller);
 
 		return seller.getId();
 	}
 
 	@Transactional
-	public void updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
+	public void updateSeller(SellerUpdateDto dto) throws ValidationException {
 
-		checkBusinessNumberValidation(sellerUpdateDto.getBusinessNumber());
+		checkBusinessNumberValidation(dto.getBusinessNumber());
 
-		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
-		seller.updateSellerInfo(sellerUpdateDto.getBusinessNumber(), sellerUpdateDto.getBusinessName());
+		Seller seller = sellerMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+		seller.updateSellerInfo(dto.getBusinessNumber(), dto.getBusinessName());
 		sellerMapper.update(seller);
 	}
 
@@ -114,6 +116,14 @@ public class SellerService {
 
 		if (lastNumber != errorCheckingNumber) {
 			throw new ValidationException();
+		}
+	}
+
+	private void checkAuthorization(Long memberId, Long sellerId) {
+
+		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
 		}
 	}
 }
