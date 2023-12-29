@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
 import com.gregori.member.mapper.MemberMapper;
@@ -102,7 +103,7 @@ class SellerServiceTest {
 		given(productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.name())).willReturn(List.of());
 
 		// when
-		sellerService.deleteSeller(sellerId);
+		sellerService.deleteSeller(null, sellerId);
 
 		// then
 		verify(sellerMapper).updateIsDeleted(sellerId, TRUE);
@@ -120,7 +121,7 @@ class SellerServiceTest {
 		given(productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString())).willReturn(List.of(product));
 
 		// when, then
-		assertThrows(BusinessRuleViolationException.class, () -> sellerService.deleteSeller(sellerId));
+		assertThrows(BusinessRuleViolationException.class, () -> sellerService.deleteSeller(null, sellerId));
 	}
 
 	@Test
@@ -130,10 +131,12 @@ class SellerServiceTest {
 		// given
 		Long sellerId = 1L;
 
-		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
+		given(sellerMapper.findById(sellerId))
+			.willReturn(Optional.of(new Seller()))
+			.willReturn(Optional.of(new Seller()));
 
 		// when
-		sellerService.getSeller(sellerId);
+		sellerService.getSeller(null, sellerId);
 
 		// then
 		verify(sellerMapper).findById(sellerId);
@@ -152,8 +155,8 @@ class SellerServiceTest {
 		// when, then
 		assertThrows(NotFoundException.class, () -> sellerService.saveSeller(dto1));
 		assertThrows(NotFoundException.class, () -> sellerService.updateSeller(dto2));
-		assertThrows(NotFoundException.class, () -> sellerService.deleteSeller(1L));
-		assertThrows(NotFoundException.class, () -> sellerService.getSeller(1L));
+		assertThrows(NotFoundException.class, () -> sellerService.deleteSeller(1L, 1L));
+		assertThrows(NotFoundException.class, () -> sellerService.getSeller(1L, 1L));
 	}
 
 	@Test
@@ -170,5 +173,19 @@ class SellerServiceTest {
 
 		// then
 		verify(sellerMapper).findByMemberId(sellerId, 10, 0);
+	}
+
+	@Test
+	@DisplayName("세션의 회원 id와 판매자의 회원 id가 다르면 에러가 발생한다.")
+	void should_UnauthorizedException_when_invalidMemberId() {
+
+		// given
+		Long sellerId = 1L;
+
+		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
+
+		// when, then
+		assertThrows(UnauthorizedException.class, () -> sellerService.deleteSeller(1L, 1L));
+		assertThrows(UnauthorizedException.class, () -> sellerService.getSeller(1L, 1L));
 	}
 }

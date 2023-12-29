@@ -55,18 +55,20 @@ public class SellerController {
 
 	@LoginCheck(SELLING_MEMBER)
 	@DeleteMapping("/{sellerId}")
-	public ResponseEntity<Void> deleteSeller(@PathVariable Long sellerId) {
+	public ResponseEntity<Void> deleteSeller(
+		@CurrentMember SessionMember sessionMember, @PathVariable Long sellerId) {
 
-		sellerService.deleteSeller(sellerId);
+		sellerService.deleteSeller(sessionMember.getId(), sellerId);
 
 		return ResponseEntity.noContent().build();
 	}
 
 	@LoginCheck(SELLING_MEMBER)
 	@GetMapping("/{sellerId}")
-	public ResponseEntity<SellerResponseDto> getSeller(@PathVariable Long sellerId) {
+	public ResponseEntity<SellerResponseDto> getSeller(
+		@CurrentMember SessionMember sessionMember, @PathVariable Long sellerId) {
 
-		SellerResponseDto response = sellerService.getSeller(sellerId);
+		SellerResponseDto response = sellerService.getSeller(sessionMember.getId(), sellerId);
 
 		return ResponseEntity.ok().body(response);
 	}

@@ -105,7 +105,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isNoContent());
 
-		verify(sellerService).deleteSeller(sellerId);
+		verify(sellerService).deleteSeller(null, sellerId);
 	}
 
 	@Test
@@ -131,7 +131,7 @@ class SellerControllerTest extends CustomWebMvcTest {
 		// then
 		actions.andExpect(status().isOk());
 
-		verify(sellerService).getSeller(sellerId);
+		verify(sellerService).getSeller(null, sellerId);
 	}
 
 	@Test

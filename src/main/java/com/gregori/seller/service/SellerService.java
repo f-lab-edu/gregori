@@ -64,9 +64,12 @@ public class SellerService {
 	}
 
 	@Transactional
-	public void deleteSeller(Long sellerId) throws NotFoundException {
+	public void deleteSeller(Long memberId, Long sellerId) throws NotFoundException {
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
+		}
 
 		List<Product> products = productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString())
 			.stream().filter(product -> product.getIsDeleted() == FALSE).toList();
@@ -78,9 +81,12 @@ public class SellerService {
 		sellerMapper.updateIsDeleted(sellerId, seller.getIsDeleted());
 	}
 
-	public SellerResponseDto getSeller(Long sellerId) throws NotFoundException {
+	public SellerResponseDto getSeller(Long memberId, Long sellerId) throws NotFoundException {
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
+		}
 
 		return new SellerResponseDto().toEntity(seller);
 	}
@@ -116,14 +122,6 @@ public class SellerService {
 
 		if (lastNumber != errorCheckingNumber) {
 			throw new ValidationException();
-		}
-	}
-
-	private void checkAuthorization(Long memberId, Long sellerId) {
-
-		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
-		if (!Objects.equals(memberId, seller.getMemberId())) {
-			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
 		}
 	}
 }
