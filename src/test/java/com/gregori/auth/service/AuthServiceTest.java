@@ -8,111 +8,44 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.gregori.auth.dto.AuthSignInDto;
-import com.gregori.auth.dto.TokenDto;
-import com.gregori.auth.dto.TokenRequestDto;
-import com.gregori.config.jwt.TokenProvider;
-import com.gregori.auth.domain.RefreshToken;
-import com.gregori.auth.mapper.RefreshTokenMapper;
+import com.gregori.member.domain.Member;
+import com.gregori.member.domain.SessionMember;
+import com.gregori.member.mapper.MemberMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
 	@Mock
-	private RefreshTokenMapper refreshTokenMapper;
+	private PasswordEncoder passwordEncoder;
+
 	@Mock
-	private TokenProvider tokenProvider;
-	@Mock
-	private AuthenticationManager authManager;
+	private MemberMapper memberMapper;
 
 	@InjectMocks
 	private AuthService authService;
 
 	@Test
-	@DisplayName("로그인을 성공하면 토큰을 발급한다.")
-	void should_issueToken_when_signInSuccess() {
+	@DisplayName("로그인을 성공하면 세션 회원을 반환한다.")
+	void should_returnSessionMember_when_signInSuccess() {
 
 		// given
-		AuthSignInDto authSignInDto = new AuthSignInDto("a@a.a", "aa11111!");
-		TokenDto tokenDto = new TokenDto("type", "accessToken", "refreshToken", 1L);
+		AuthSignInDto dto = new AuthSignInDto("email", "password");
+		Member member = new Member("email", "name", "password");
 
-		UsernamePasswordAuthenticationToken authToken = authSignInDto.toAuthentication();
-		Authentication authentication = mock(Authentication.class);
-		given(authManager.authenticate(authToken)).willReturn(authentication);
-		given(tokenProvider.generateToken(authentication)).willReturn(tokenDto);
-		given(refreshTokenMapper.findByRefreshTokenKey(null)).willReturn(Optional.empty());
+		given(memberMapper.findByEmail("email")).willReturn(Optional.of(member));
+		given(passwordEncoder.matches(dto.getPassword(), member.getPassword())).willReturn(true);
 
 		// when
-		TokenDto result = authService.signIn(authSignInDto);
+		SessionMember result = authService.signIn(dto);
 
 		// then
-		assertThat(result).isEqualTo(tokenDto);
-
-		verify(authManager).authenticate(authToken);
-		verify(tokenProvider).generateToken(authentication);
-
-		verify(refreshTokenMapper).findByRefreshTokenKey(null);
-		verify(refreshTokenMapper).insert(any(RefreshToken.class));
-	}
-
-	@Test
-	@DisplayName("로그아웃을 성공하면 리프레시 토큰을 삭제한다.")
-	void should_revokeAuthorization_when_signOutSuccess() {
-
-		// given
-		TokenRequestDto tokenRequestDto = new TokenRequestDto("accessToken", "refreshToken");
-		Authentication authentication = mock(Authentication.class);
-		RefreshToken refreshToken = new RefreshToken("accessToken", "refreshToken");
-
-		given(tokenProvider.validateToken(tokenRequestDto.getRefreshToken())).willReturn(true);
-		given(tokenProvider.getAuthentication(tokenRequestDto.getAccessToken())).willReturn(authentication);
-		given(refreshTokenMapper.findByRefreshTokenKey(null)).willReturn(Optional.of(refreshToken));
-
-		// when
-		authService.signOut(tokenRequestDto);
-
-		// then
-		verify(tokenProvider).validateToken(tokenRequestDto.getRefreshToken());
-		verify(tokenProvider).getAuthentication(tokenRequestDto.getAccessToken());
-
-		verify(refreshTokenMapper).findByRefreshTokenKey(null);
-		verify(refreshTokenMapper).deleteById(null);
-	}
-
-	@Test
-	@DisplayName("리프레시 토큰 재발급을 성공하면 토큰을 업데이트한다.")
-	void should_updateToken_when_refreshSuccess() {
-
-		// given
-		TokenRequestDto tokenRequestDto = new TokenRequestDto("accessToken", "refreshToken");
-		RefreshToken refreshToken = new RefreshToken("accessToken", "refreshToken");
-		TokenDto tokenDto = new TokenDto("type", "accessToken2", "refreshToken2", 1L);
-		Authentication authentication = mock(Authentication.class);
-
-		given(tokenProvider.validateToken(tokenRequestDto.getRefreshToken())).willReturn(true);
-		given(tokenProvider.getAuthentication(tokenRequestDto.getAccessToken())).willReturn(authentication);
-		given(tokenProvider.generateToken(authentication)).willReturn(tokenDto);
-		given(refreshTokenMapper.findByRefreshTokenKey(null)).willReturn(Optional.of(refreshToken));
-
-		// when
-		authService.refresh(tokenRequestDto);
-
-		// then
-		verify(tokenProvider).validateToken(tokenRequestDto.getRefreshToken());
-		verify(tokenProvider).getAuthentication(tokenRequestDto.getAccessToken());
-		verify(tokenProvider).generateToken(authentication);
-
-		verify(refreshTokenMapper).findByRefreshTokenKey(null);
-		verify(refreshTokenMapper).update(refreshToken);
+		assertThat(result).isNotNull();
+		assertThat(result.getEmail()).isEqualTo(member.getEmail());
 	}
 }

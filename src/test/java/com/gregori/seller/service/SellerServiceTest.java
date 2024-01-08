@@ -12,8 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.member.domain.Member;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
@@ -22,6 +24,7 @@ import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
 import com.gregori.seller.mapper.SellerMapper;
 
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.common.domain.IsDeleted.TRUE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -49,13 +52,11 @@ class SellerServiceTest {
 	void should_returnId_when_saveSellerSuccess() {
 
 		// given
-		SellerRegisterDto dto = new SellerRegisterDto(1L, "123-45-67891", "name");
-		Member member = new Member("name", "email", "password");
-
-		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
+		SessionMember sessionMember = new SessionMember(null, "email", SELLING_MEMBER);
+		SellerRegisterDto dto = new SellerRegisterDto("123-45-67891", "name");
 
 		// when
-		sellerService.saveSeller(dto);
+		sellerService.saveSeller(sessionMember, dto);
 
 		// then
 		verify(sellerMapper).insert(any(Seller.class));
@@ -66,13 +67,13 @@ class SellerServiceTest {
 	void should_returnId_when_updateSellerSuccess() {
 
 		// given
-		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, 1L, "123-45-67891", "name");
+		SellerUpdateDto sellerUpdateDto = new SellerUpdateDto(1L, "123-45-67891", "name");
 		Seller seller = new Seller(1L, "123-45-67891", "name");
 
 		given(sellerMapper.findById(1L)).willReturn(Optional.of(seller));
 
 		// when
-		sellerService.updateSeller(sellerUpdateDto);
+		sellerService.updateSeller(1L, sellerUpdateDto);
 
 		// then
 		verify(sellerMapper).update(any(Seller.class));
@@ -83,12 +84,12 @@ class SellerServiceTest {
 	void should_ValidationException_when_invalidBusinessNumber() {
 
 		// given
-		SellerRegisterDto dto1 = new SellerRegisterDto(1L, "111-11-11111", "name");
-		SellerUpdateDto dto2 = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
+		SellerRegisterDto dto1 = new SellerRegisterDto("111-11-11111", "name");
+		SellerUpdateDto dto2 = new SellerUpdateDto(1L, "111-11-11111", "name");
 
 		// when, then
-		assertThrows(ValidationException.class, () -> sellerService.saveSeller(dto1));
-		assertThrows(ValidationException.class, () -> sellerService.updateSeller(dto2));
+		assertThrows(ValidationException.class, () -> sellerService.saveSeller(null, dto1));
+		assertThrows(ValidationException.class, () -> sellerService.updateSeller(null, dto2));
 	}
 
 	@Test
@@ -102,7 +103,7 @@ class SellerServiceTest {
 		given(productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.name())).willReturn(List.of());
 
 		// when
-		sellerService.deleteSeller(sellerId);
+		sellerService.deleteSeller(null, sellerId);
 
 		// then
 		verify(sellerMapper).updateIsDeleted(sellerId, TRUE);
@@ -120,7 +121,7 @@ class SellerServiceTest {
 		given(productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString())).willReturn(List.of(product));
 
 		// when, then
-		assertThrows(BusinessRuleViolationException.class, () -> sellerService.deleteSeller(sellerId));
+		assertThrows(BusinessRuleViolationException.class, () -> sellerService.deleteSeller(null, sellerId));
 	}
 
 	@Test
@@ -130,10 +131,12 @@ class SellerServiceTest {
 		// given
 		Long sellerId = 1L;
 
-		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
+		given(sellerMapper.findById(sellerId))
+			.willReturn(Optional.of(new Seller()))
+			.willReturn(Optional.of(new Seller()));
 
 		// when
-		sellerService.getSeller(sellerId);
+		sellerService.getSeller(null, sellerId);
 
 		// then
 		verify(sellerMapper).findById(sellerId);
@@ -144,16 +147,14 @@ class SellerServiceTest {
 	void should_NotFoundException_when_findSellerFailure() {
 
 		// given
-		SellerRegisterDto dto1 = new SellerRegisterDto(1L, "123-45-67891", "name");
-		SellerUpdateDto dto2 = new SellerUpdateDto(1L, 1L, "123-45-67891", "name");
+		SellerUpdateDto dto = new SellerUpdateDto(1L, "123-45-67891", "name");
 
-		given(memberMapper.findById(1L)).willReturn(Optional.empty());
+		given(sellerMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> sellerService.saveSeller(dto1));
-		assertThrows(NotFoundException.class, () -> sellerService.updateSeller(dto2));
-		assertThrows(NotFoundException.class, () -> sellerService.deleteSeller(1L));
-		assertThrows(NotFoundException.class, () -> sellerService.getSeller(1L));
+		assertThrows(NotFoundException.class, () -> sellerService.updateSeller(null, dto));
+		assertThrows(NotFoundException.class, () -> sellerService.deleteSeller(1L, 1L));
+		assertThrows(NotFoundException.class, () -> sellerService.getSeller(1L, 1L));
 	}
 
 	@Test
@@ -163,12 +164,26 @@ class SellerServiceTest {
 		// given
 		Long sellerId = 1L;
 
-		given(sellerMapper.findByMemberId(sellerId)).willReturn(List.of(new Seller()));
+		given(sellerMapper.findByMemberId(sellerId, 10, 0)).willReturn(List.of(new Seller()));
 
 		// when
-		sellerService.getSellers(sellerId);
+		sellerService.getSellers(sellerId, 1);
 
 		// then
-		verify(sellerMapper).findByMemberId(sellerId);
+		verify(sellerMapper).findByMemberId(sellerId, 10, 0);
+	}
+
+	@Test
+	@DisplayName("세션의 회원 id와 판매자의 회원 id가 다르면 에러가 발생한다.")
+	void should_UnauthorizedException_when_invalidMemberId() {
+
+		// given
+		Long sellerId = 1L;
+
+		given(sellerMapper.findById(sellerId)).willReturn(Optional.of(new Seller()));
+
+		// when, then
+		assertThrows(UnauthorizedException.class, () -> sellerService.deleteSeller(1L, 1L));
+		assertThrows(UnauthorizedException.class, () -> sellerService.getSeller(1L, 1L));
 	}
 }

@@ -17,9 +17,6 @@ public class SellerUpdateDto {
 	@NotNull
 	private Long id;
 
-	@NotNull
-	private Long memberId;
-
 	@NotBlank
 	@Pattern(regexp = BUSINESS_NO_REGEX, message = "사업자 등록번호의 형식이 올바르지 않습니다.")
 	private String businessNumber;
@@ -27,7 +24,7 @@ public class SellerUpdateDto {
 	@NotBlank
 	private String businessName;
 
-	public Seller toEntity() {
+	public Seller toEntity(Long memberId) {
 
 		return Seller.builder()
 			.memberId(memberId)

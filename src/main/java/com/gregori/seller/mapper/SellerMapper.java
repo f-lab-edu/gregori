@@ -16,5 +16,5 @@ public interface SellerMapper {
 	void updateIsDeleted(Long id, IsDeleted isDeleted);
 	void deleteByIds(List<Long> ids);
 	Optional<Seller> findById(Long id);
-	List<Seller> findByMemberId(Long memberId);
+	List<Seller> findByMemberId(Long memberId, Integer limit, Integer offset);
 }

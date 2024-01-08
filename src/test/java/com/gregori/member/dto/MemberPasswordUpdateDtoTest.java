@@ -19,7 +19,7 @@ class MemberPasswordUpdateDtoTest {
 	void should_createMemberPasswordUpdateDto_when_validInput() {
 
 		// given
-		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "aa11111!", "aa11111!");
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto("aa11111!", "aa11111!");
 
 		// when
 		var result = validator.validate(dto);
@@ -29,27 +29,13 @@ class MemberPasswordUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
-	void should_ValidException_when_nullId() {
-
-		// given
-		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(null, "aa11111!", "aa11111!");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertThat(result.isEmpty()).isFalse();
-	}
-
-	@Test
 	@DisplayName("oldPassword 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankOldPassword() {
 
 		// given
-		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(1L,null, "aa11111!");
-		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L,"", "aa11111!");
-		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(1L," ", "aa11111!");
+		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(null, "aa11111!");
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto("", "aa11111!");
+		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(" ", "aa11111!");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -67,12 +53,12 @@ class MemberPasswordUpdateDtoTest {
 	void should_ValidException_when_mismatchedOldPassword() {
 
 		// given
-		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(1L, "pass%5", "aa11111!");
-		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L, "passwordpassword%5", "aa11111!");
-		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(1L, "374833e**", "aa11111!");
-		MemberPasswordUpdateDto dto4 = new MemberPasswordUpdateDto(1L, "password!", "aa11111!");
-		MemberPasswordUpdateDto dto5 = new MemberPasswordUpdateDto(1L, "pass5324", "aa11111!");
-		MemberPasswordUpdateDto dto6 = new MemberPasswordUpdateDto(1L, "pass 5324", "aa11111!");
+		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto("pass%5", "aa11111!");
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto("passwordpassword%5", "aa11111!");
+		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto("374833e**", "aa11111!");
+		MemberPasswordUpdateDto dto4 = new MemberPasswordUpdateDto("password!", "aa11111!");
+		MemberPasswordUpdateDto dto5 = new MemberPasswordUpdateDto("pass5324", "aa11111!");
+		MemberPasswordUpdateDto dto6 = new MemberPasswordUpdateDto("pass 5324", "aa11111!");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -96,9 +82,9 @@ class MemberPasswordUpdateDtoTest {
 	void should_ValidException_when_blankNewPassword() {
 
 		// given
-		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(1L, "aa11111!", null);
-		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L, "aa11111!", "");
-		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(1L, "aa11111!", " ");
+		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto("aa11111!", null);
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto("aa11111!", "");
+		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto("aa11111!", " ");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -116,12 +102,12 @@ class MemberPasswordUpdateDtoTest {
 	void should_ValidException_when_mismatchedNewPassword() {
 
 		// given
-		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto(1L, "aa11111!", "pass%5");
-		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L, "aa11111!", "passwordpassword%5");
-		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto(1L, "aa11111!", "374833e**");
-		MemberPasswordUpdateDto dto4 = new MemberPasswordUpdateDto(1L, "aa11111!", "password!");
-		MemberPasswordUpdateDto dto5 = new MemberPasswordUpdateDto(1L, "aa11111!", "pass5324");
-		MemberPasswordUpdateDto dto6 = new MemberPasswordUpdateDto(1L, "aa11111!", "pass 5324");
+		MemberPasswordUpdateDto dto1 = new MemberPasswordUpdateDto("aa11111!", "pass%5");
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto("aa11111!", "passwordpassword%5");
+		MemberPasswordUpdateDto dto3 = new MemberPasswordUpdateDto("aa11111!", "374833e**");
+		MemberPasswordUpdateDto dto4 = new MemberPasswordUpdateDto("aa11111!", "password!");
+		MemberPasswordUpdateDto dto5 = new MemberPasswordUpdateDto("aa11111!", "pass5324");
+		MemberPasswordUpdateDto dto6 = new MemberPasswordUpdateDto("aa11111!", "pass 5324");
 
 		// when
 		var result1 = validator.validate(dto1);

@@ -1,43 +1,34 @@
 package com.gregori.product.controller;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.common.CustomWebMvcTest;
+import com.gregori.member.domain.Member;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.product.domain.Sorter;
 import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductUpdateDto;
-import com.gregori.product.service.ProductService;
 
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.product.domain.Product.Status.PRE_SALE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = ProductController.class)
-class ProductControllerTest {
+class ProductControllerTest extends CustomWebMvcTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-
-	@MockBean
-	ProductService productService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
 	@DisplayName("상품 등록을 요청하면 Created 응답을 반환한다.")
@@ -46,15 +37,22 @@ class ProductControllerTest {
 		// given
 		ProductCreateDto dto = new ProductCreateDto(1L, "name", 1L, 1L);
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/product")
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isCreated()).andDo(print());
+		actions.andExpect(status().isCreated());
 
 		verify(productService).saveProduct(refEq(dto));
 	}
@@ -66,17 +64,24 @@ class ProductControllerTest {
 		// given
 		ProductUpdateDto dto = new ProductUpdateDto(1L, 1L, "name", 1L, 1L, PRE_SALE);
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.put("/product")
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
-		verify(productService).updateProduct(refEq(dto));
+		verify(productService).updateProduct(any(), refEq(dto));
 	}
 
 	@Test
@@ -86,16 +91,23 @@ class ProductControllerTest {
 		// given
 		Long productId = 1L;
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.delete("/product/" + productId)
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
-		verify(productService).deleteProduct(productId);
+		verify(productService).deleteProduct(any(), any());
 	}
 
 	@Test
@@ -108,11 +120,10 @@ class ProductControllerTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/product/" + productId)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(productService).getProduct(productId);
 	}
@@ -129,11 +140,10 @@ class ProductControllerTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/product?keyword=" + keyword + "&page=" + page + "&sorter=" + sorter)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(productService).getProducts(keyword, null, null, page, sorter);
 	}
@@ -150,11 +160,10 @@ class ProductControllerTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/product?categoryId=" + categoryId + "&page=" + page + "&sorter=" + sorter)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(productService).getProducts(null, categoryId, null, page, sorter);
 	}
@@ -171,11 +180,10 @@ class ProductControllerTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/product?&sellerId=" + sellerId + "&page=" + page + "&sorter=" + sorter)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(productService).getProducts(null, null, sellerId, page, sorter);
 	}

@@ -1,63 +1,57 @@
 package com.gregori.seller.controller;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.common.CustomWebMvcTest;
+import com.gregori.member.domain.Member;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.seller.dto.SellerRegisterDto;
 import com.gregori.seller.dto.SellerUpdateDto;
-import com.gregori.seller.service.SellerService;
 
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = SellerController.class)
-class SellerControllerTest {
+class SellerControllerTest extends CustomWebMvcTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@MockBean
-	SellerService sellerService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
 	@DisplayName("판매자 생성을 요청하면 Created 응답을 반환한다.")
 	void should_responseCreated_when_requestCreateSeller() throws Exception {
 
 		// given
-		SellerRegisterDto dto = new SellerRegisterDto(1L, "111-11-11111", "name");
+		SellerRegisterDto dto = new SellerRegisterDto("111-11-11111", "name");
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/seller")
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isCreated()).andDo(print());
+		actions.andExpect(status().isCreated());
 
-		verify(sellerService).saveSeller(refEq(dto));
+		verify(sellerService).saveSeller(any(), refEq(dto));
 	}
 
 	@Test
@@ -65,19 +59,26 @@ class SellerControllerTest {
 	void should_responseNoContent_when_requestUpdateSeller() throws Exception {
 
 		// given
-		SellerUpdateDto dto = new SellerUpdateDto(1L, 1L, "111-11-11111", "name");
+		SellerUpdateDto dto = new SellerUpdateDto(1L, "111-11-11111", "name");
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.patch("/seller")
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
-		verify(sellerService).updateSeller(refEq(dto));
+		verify(sellerService).updateSeller(any(), refEq(dto));
 	}
 
 	@Test
@@ -87,16 +88,23 @@ class SellerControllerTest {
 		// given
 		Long sellerId = 1L;
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.delete("/seller/" + sellerId)
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
-		verify(sellerService).deleteSeller(sellerId);
+		verify(sellerService).deleteSeller(null, sellerId);
 	}
 
 	@Test
@@ -106,42 +114,46 @@ class SellerControllerTest {
 		// given
 		Long sellerId = 1L;
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/seller/" + sellerId)
-				.with(csrf())
+				.session(session)
 				.contentType(APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
-		verify(sellerService).getSeller(sellerId);
+		verify(sellerService).getSeller(null, sellerId);
 	}
-
 
 	@Test
 	@DisplayName("판매자 목록 조회를 요청하면 Ok 응답을 반환한다.")
 	void should_responseOk_when_requestGetSellers() throws Exception {
 
 		// given
-		Long memberId = 1L;
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", SELLING_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.sellingMember();
 
-		Authentication authentication = mock(Authentication.class);
-		SecurityContext securityContext = mock(SecurityContext.class);
-
-		given(securityContext.getAuthentication()).willReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		given(authentication.getName()).willReturn(memberId.toString());
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when
 		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/seller")
-				.with(csrf())
+			MockMvcRequestBuilders.get("/seller?page=1")
+				.session(session)
 				.contentType(APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
-		verify(sellerService).getSellers(memberId);
+		verify(sellerService).getSellers(null, 1);
 	}
 }

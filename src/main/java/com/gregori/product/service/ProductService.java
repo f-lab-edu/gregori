@@ -1,12 +1,14 @@
 package com.gregori.product.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
 import com.gregori.order.domain.OrderDetail;
 import com.gregori.order.mapper.OrderDetailMapper;
@@ -16,6 +18,8 @@ import com.gregori.product.dto.ProductCreateDto;
 import com.gregori.product.dto.ProductResponseDto;
 import com.gregori.product.dto.ProductUpdateDto;
 import com.gregori.product.mapper.ProductMapper;
+import com.gregori.seller.domain.Seller;
+import com.gregori.seller.mapper.SellerMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +30,7 @@ import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
 @RequiredArgsConstructor
 public class ProductService {
 
+	private final SellerMapper sellerMapper;
 	private final ProductMapper productMapper;
 	private final OrderDetailMapper orderDetailMapper;
 
@@ -40,23 +45,27 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void updateProduct(ProductUpdateDto dto) throws NotFoundException {
+	public void updateProduct(Long memberId, ProductUpdateDto dto) throws NotFoundException {
 
 		checkPriceAndInventoryValidation(dto.getPrice(), dto.getInventory());
 
 		Product product = productMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+
+		checkAuthorization(memberId, product.getSellerId());
 
 		product.updateProductInfo(dto.getCategoryId(), dto.getName(), dto.getPrice(), dto.getInventory(), dto.getStatus());
 		productMapper.update(product);
 	}
 
 	@Transactional
-	public void deleteProduct(Long productId) throws NotFoundException {
+	public void deleteProduct(Long memberId, Long productId) throws NotFoundException {
 
-		productMapper.findById(productId).orElseThrow(NotFoundException::new);
+		Product product = productMapper.findById(productId).orElseThrow(NotFoundException::new);
+
+		checkAuthorization(memberId, product.getSellerId());
+
 		List<OrderDetail> orderDetails = orderDetailMapper.findByProductId(productId)
 			.stream().filter(orderDetail -> orderDetail.getStatus() != DELIVERED).toList();
-
 		if (!orderDetails.isEmpty()) {
 			throw new BusinessRuleViolationException("주문 상품의 배송이 완료되지 않았으면 상품을 삭제할 수 없습니다.");
 		}
@@ -86,6 +95,14 @@ public class ProductService {
 
 		if (price < 0 || inventory < 0) {
 			throw new ValidationException("가격과 재고는 마이너스가 될 수 없습니다.");
+		}
+	}
+
+	private void checkAuthorization(Long memberId, Long sellerId) {
+
+		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
 		}
 	}
 }

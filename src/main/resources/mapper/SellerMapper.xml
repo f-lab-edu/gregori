@@ -41,5 +41,15 @@
         SELECT id, member_id, business_number, business_name, is_deleted, created_at, updated_at
         FROM sellers
         WHERE member_id = #{memberId} AND is_deleted = 'FALSE'
+        <include refid="limitAndOffset"/>
     </select>
+
+    <sql id="limitAndOffset">
+        <if test="limit != null">
+            LIMIT #{limit}
+        </if>
+        <if test="offset != null">
+            OFFSET #{offset}
+        </if>
+    </sql>
 </mapper>

@@ -1,7 +1,5 @@
 package com.gregori.seller.domain;
 
-import javax.net.ssl.SSLEngineResult;
-
 import com.gregori.common.AbstractEntity;
 import com.gregori.common.domain.IsDeleted;
 

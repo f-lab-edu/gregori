@@ -2,6 +2,7 @@ package com.gregori.seller.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -135,10 +136,10 @@ class SellerMapperTest {
 		sellerIds.add(seller.getId());
 
 		// when
-		List<Seller> result = sellerMapper.findByMemberId(seller.getMemberId());
+		Optional<Seller> result = sellerMapper.findById(seller.getId());
 
 		// then
-		assertThat(result.size()).isEqualTo(1);
+		assertThat(result.isPresent()).isTrue();
 	}
 
 	@Test

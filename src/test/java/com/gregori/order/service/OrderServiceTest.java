@@ -19,6 +19,8 @@ import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.domain.OrderDetail;
 import com.gregori.order.dto.OrderDetailRequestDto;
+import com.gregori.order.dto.OrderDetailResponseDto;
+import com.gregori.order.dto.OrderDetailStatusUpdateDto;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.order.dto.OrderRequestDto;
@@ -29,6 +31,7 @@ import static com.gregori.order.domain.Order.Status.ORDER_CANCELED;
 import static com.gregori.order.domain.Order.Status.ORDER_COMPLETED;
 import static com.gregori.order.domain.OrderDetail.Status.DELIVERED;
 import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
+import static com.gregori.order.domain.OrderDetail.Status.SHIPPED;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -86,18 +89,15 @@ class OrderServiceTest {
 	void should_cancelOrderSuccess() {
 
 		// given
-		Long memberId = 1L;
 		Long orderId = 1L;
-		Member member = new Member("name", "email", "password");
 		Order order = new Order(1L, "method", 1L, 1L);
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 
-		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
 		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
 
 		// when
-		orderService.cancelOrder(memberId, orderId);
+		orderService.cancelOrder(orderId);
 
 		// then
 		verify(orderMapper).updateStatus(orderId, ORDER_CANCELED);
@@ -105,63 +105,18 @@ class OrderServiceTest {
 	}
 
 	@Test
-	@DisplayName("회원 정보 조회를 실패하면 주문 취소를 실패한다.")
-	void should_NotFoundException_when_findMemberFailure() {
-
-		// given
-		given(memberMapper.findById(1L)).willReturn(Optional.empty());
-
-		// when, then
-		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(1L, 1L));
-	}
-
-	@Test
-	@DisplayName("판매자 회원이면 주문 취소를 실패한다.")
-	void should_UnauthorizedException_when_sellingMember() {
-
-		// given
-		Member member = new Member("name", "email", "password");
-		member.sellingMember();
-
-		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
-
-		// when, then
-		assertThrows(UnauthorizedException.class, () -> orderService.cancelOrder(1L, 1L));
-	}
-
-	@Test
 	@DisplayName("주문 상세를 찾을 수 없으면 주문 취소를 실패한다.")
 	void should_NotFonudException_when_findOrderDetailFailure() {
 
 		// given
-		Long memberId = 1L;
 		Long orderId = 1L;
-		Member member = new Member("name", "email", "password");
 		Order order = new Order(1L, "method", 1L, 1L);
 
-		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
 		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(memberId, orderId));
-	}
-
-	@Test
-	@DisplayName("주문 상세 취소를 성공한다.")
-	void should_cancelOrderDetailSuccess() {
-
-		// given
-		Long orderDetailId = 1L;
-		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
-
-		given(orderDetailMapper.findById(orderDetailId)).willReturn(Optional.of(orderDetail));
-
-		// when
-		orderService.cancelOrderDetail(orderDetailId);
-
-		// then
-		verify(orderDetailMapper).updateStatus(null, PAYMENT_CANCELED);
+		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(orderId));
 	}
 
 	@Test
@@ -169,22 +124,20 @@ class OrderServiceTest {
 	void should_BusinessRuleViolationException_when_preparedDelivery() {
 
 		// given
-		Long memberId = 1L;
 		Long orderId = 1L;
 		Long orderDetailId = 1L;
-		Member member = new Member("name", "email", "password");
 		Order order = new Order(1L, "method", 1L, 1L);
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		orderDetail.shipmentPreparation();
+		OrderDetailStatusUpdateDto dto = new OrderDetailStatusUpdateDto(1L, PAYMENT_CANCELED);
 
-		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findById(orderId)).willReturn(Optional.of(order));
 		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
 		given(orderDetailMapper.findById(orderDetailId)).willReturn(Optional.of(orderDetail));
 
 		// when, then
-		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrder(memberId, orderId));
-		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrderDetail(orderDetailId));
+		assertThrows(BusinessRuleViolationException.class, () -> orderService.cancelOrder(orderId));
+		assertThrows(BusinessRuleViolationException.class, () -> orderService.updateOrderDetailStatus(dto));
 	}
 
 	@Test
@@ -192,38 +145,23 @@ class OrderServiceTest {
 	void should_updateOrderDetailStatus() {
 
 		// given
-		Long memberId = 1L;
 		Long orderId = 1L;
 		Long orderDetailId = 1L;
-		OrderDetail.Status status = DELIVERED;
 		Member member = new Member("name", "email", "password");
 		member.sellingMember();
 		OrderDetail orderDetail = new OrderDetail(1L, 1L, 1L, "name", 1L, 1L);
 		orderDetail.delivered();
+		OrderDetailStatusUpdateDto dto = new OrderDetailStatusUpdateDto(1L, DELIVERED);
 
-		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderDetailMapper.findById(orderDetailId)).willReturn(Optional.of(orderDetail));
 		given(orderDetailMapper.findByOrderId(orderId)).willReturn(List.of(orderDetail));
 
 		// when
-		orderService.updateOrderDetailStatus(memberId, orderDetailId, status);
+		orderService.updateOrderDetailStatus(dto);
 
 		// then
 		verify(orderMapper).updateStatus(orderId, ORDER_COMPLETED);
-		verify(orderDetailMapper).updateStatus(orderDetailId, status);
-	}
-
-	@Test
-	@DisplayName("일반 회원이면 주문 상품 상태 갱신을 실패한다.")
-	void should_UnauthorizedException_when_generalMember() {
-
-		// given
-		Member member = new Member("name", "email", "password");
-
-		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
-
-		// when, then
-		assertThrows(UnauthorizedException.class, () -> orderService.updateOrderDetailStatus(1L, 1L, DELIVERED));
+		verify(orderDetailMapper).updateStatus(orderDetailId, DELIVERED);
 	}
 
 	@Test
@@ -251,13 +189,10 @@ class OrderServiceTest {
 	void should_NotFoundException_when_findOrderFailure() {
 
 		// given
-		Member member = new Member("name", "email", "password");
-
-		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 		given(orderMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(1L, 1L));
+		assertThrows(NotFoundException.class, () -> orderService.cancelOrder(1L));
 		assertThrows(NotFoundException.class, () -> orderService.getOrder(1L));
 	}
 

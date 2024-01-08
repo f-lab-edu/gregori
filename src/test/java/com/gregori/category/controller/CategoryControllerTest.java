@@ -1,51 +1,54 @@
 package com.gregori.category.controller;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.gregori.category.service.CategoryService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.category.dto.CategoryRequestDto;
+import com.gregori.common.CustomWebMvcTest;
+import com.gregori.member.domain.Member;
+import com.gregori.member.domain.SessionMember;
 
+import static com.gregori.auth.domain.Authority.ADMIN_MEMBER;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = CategoryController.class)
-class CategoryControllerTest {
+class CategoryControllerTest extends CustomWebMvcTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockBean
-	CategoryService categoryService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
 	@DisplayName("카테고리 생성을 요청하면 Created 응답을 반환한다.")
 	void should_responseCreated_when_requestSaveCategory() throws Exception {
 
 		// given
-		String categoryName = "name";
+		CategoryRequestDto dto = new CategoryRequestDto("name");
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", ADMIN_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.adminMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/category")
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(categoryName));
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isCreated()).andDo(print());
+		actions.andExpect(status().isCreated());
 
-		verify(categoryService).saveCategory(categoryName);
+		verify(categoryService).saveCategory(dto.getName());
 	}
 
 	@Test
@@ -54,19 +57,26 @@ class CategoryControllerTest {
 
 		// given
 		Long categoryId = 1L;
-		String categoryName = "name";
+		CategoryRequestDto dto = new CategoryRequestDto("name");
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", ADMIN_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.adminMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.post("/category/" + categoryId)
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(categoryName));
+				.content(objectMapper.writeValueAsString(dto)));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
-		verify(categoryService).updateCategoryName(categoryId, categoryName);
+		verify(categoryService).updateCategoryName(categoryId, dto.getName());
 	}
 
 	@Test
@@ -76,14 +86,21 @@ class CategoryControllerTest {
 		// given
 		Long categoryId = 1L;
 
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", ADMIN_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		member.adminMember();
+
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
+
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.delete("/category/" + categoryId)
-				.with(csrf())
+				.session(session)
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
+		actions.andExpect(status().isNoContent());
 
 		verify(categoryService).deleteCategory(categoryId);
 	}
@@ -98,11 +115,10 @@ class CategoryControllerTest {
 		// when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/category/" + categoryId)
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(categoryService).getCategory(categoryId);
 	}
@@ -114,11 +130,10 @@ class CategoryControllerTest {
 		// given, when
 		ResultActions actions = mockMvc.perform(
 			MockMvcRequestBuilders.get("/category?page=1")
-				.with(csrf())
 				.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		actions.andExpect(status().isOk()).andDo(print());
+		actions.andExpect(status().isOk());
 
 		verify(categoryService).getCategories(1);
 	}

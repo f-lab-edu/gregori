@@ -22,7 +22,6 @@ import com.gregori.member.dto.MemberPasswordUpdateDto;
 import com.gregori.member.mapper.MemberMapper;
 import com.gregori.order.domain.Order;
 import com.gregori.order.mapper.OrderMapper;
-import com.gregori.auth.mapper.RefreshTokenMapper;
 import com.gregori.seller.domain.Seller;
 import com.gregori.seller.mapper.SellerMapper;
 
@@ -43,8 +42,6 @@ class MemberServiceTest {
 	private SellerMapper sellerMapper;
 	@Mock
 	private OrderMapper orderMapper;
-	@Mock
-	private RefreshTokenMapper refreshTokenMapper;
 
 	@InjectMocks
 	private MemberService memberService;
@@ -84,15 +81,16 @@ class MemberServiceTest {
 	void should_updateMemberName() {
 
 		// given
-		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "이름");
+		Long memberId = 1L;
+		String name = "name";
 
-		given(memberMapper.findById(1L)).willReturn(Optional.of(new Member()));
+		given(memberMapper.findById(memberId)).willReturn(Optional.of(new Member()));
 
 		// when
-		memberService.updateMemberName(dto);
+		memberService.updateMemberName(memberId, name);
 
 		// then
-		verify(memberMapper).updateName(dto.getId(), dto.getName());
+		verify(memberMapper).updateName(memberId, name);
 	}
 
 	@Test
@@ -100,13 +98,14 @@ class MemberServiceTest {
 	void should_updateMemberPasswordSuccess() {
 
 		// given
+		Long memberId = 1L;
 		Member member = new Member("name", "email", passwordEncoder.encode("password"));
-		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto("password", "newPassword");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 
 		// when
-		memberService.updateMemberPassword(dto);
+		memberService.updateMemberPassword(memberId, dto);
 
 		// then
 		verify(memberMapper).updatePassword(any(), any());
@@ -118,12 +117,12 @@ class MemberServiceTest {
 
 		// given
 		Member member = new Member("name", "email", "aa11111!");
-		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+		MemberPasswordUpdateDto dto = new MemberPasswordUpdateDto("password", "newPassword");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 
 		// when, then
-		assertThrows(ValidationException.class, () -> memberService.updateMemberPassword(dto));
+		assertThrows(ValidationException.class, () -> memberService.updateMemberPassword(1L, dto));
 	}
 
 	@Test
@@ -142,7 +141,6 @@ class MemberServiceTest {
 
 		// then
 		verify(memberMapper).updateIsDeleted(memberId, TRUE);
-		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
 	}
 
 	@Test
@@ -161,14 +159,13 @@ class MemberServiceTest {
 
 		given(memberMapper.findById(memberId)).willReturn(Optional.of(member));
 		given(orderMapper.findByMemberId(memberId, null, null)).willReturn(List.of(order1, order2));
-		given(sellerMapper.findByMemberId(1L)).willReturn(List.of());
+		given(sellerMapper.findByMemberId(1L, null, null)).willReturn(List.of());
 
 		// when
 		memberService.deleteMember(memberId);
 
 		// then
 		verify(memberMapper).updateIsDeleted(memberId, TRUE);
-		verify(refreshTokenMapper).findByRefreshTokenKey(memberId.toString());
 	}
 
 	@Test
@@ -213,7 +210,7 @@ class MemberServiceTest {
 
 		given(memberMapper.findById(1L)).willReturn(Optional.of(member));
 		given(orderMapper.findByMemberId(1L, null, null)).willReturn(List.of());
-		given(sellerMapper.findByMemberId(1L)).willReturn(List.of(seller));
+		given(sellerMapper.findByMemberId(1L, null, null)).willReturn(List.of(seller));
 
 		// when, then
 		assertThrows(BusinessRuleViolationException.class, () -> memberService.deleteMember(1L));
@@ -240,14 +237,14 @@ class MemberServiceTest {
 	void should_NotFoundException_when_findMemberFailure() {
 
 		// given
-		MemberNameUpdateDto dto1 = new MemberNameUpdateDto(1L, "이름");
-		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto(1L, "password", "newPassword");
+		MemberNameUpdateDto dto1 = new MemberNameUpdateDto("이름");
+		MemberPasswordUpdateDto dto2 = new MemberPasswordUpdateDto("password", "newPassword");
 
 		given(memberMapper.findById(1L)).willReturn(Optional.empty());
 
 		// when, then
-		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(dto1));
-		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(dto2));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberName(1L, "name"));
+		assertThrows(NotFoundException.class, () -> memberService.updateMemberPassword(1L, dto2));
 		assertThrows(NotFoundException.class, () -> memberService.deleteMember(1L));
 		assertThrows(NotFoundException.class, () -> memberService.getMember(1L));
 	}

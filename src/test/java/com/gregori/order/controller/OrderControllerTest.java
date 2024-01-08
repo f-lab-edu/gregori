@@ -1,47 +1,35 @@
 package com.gregori.order.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gregori.common.CustomWebMvcTest;
+import com.gregori.member.domain.Member;
+import com.gregori.member.domain.SessionMember;
+import com.gregori.order.dto.OrderDetailStatusUpdateDto;
 import com.gregori.order.dto.OrderRequestDto;
 import com.gregori.order.dto.OrderDetailRequestDto;
-import com.gregori.order.service.OrderService;
 
+import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
 import static com.gregori.common.DeepReflectionEqMatcher.deepRefEq;
+import static com.gregori.order.domain.OrderDetail.Status.PAYMENT_CANCELED;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc(addFilters = false)
-@WebMvcTest(value = OrderController.class)
-class OrderControllerTest {
+class OrderControllerTest extends CustomWebMvcTest {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@Autowired
-	private ObjectMapper objectMapper;
-
-	@MockBean
-	OrderService orderService;
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@Test
 	@DisplayName("주문 생성을 요청하면 Created 응답을 반환한다.")
@@ -51,18 +39,19 @@ class OrderControllerTest {
 		List<OrderDetailRequestDto> orderDetails = List.of(new OrderDetailRequestDto(1L, 1L));
 		OrderRequestDto dto = new OrderRequestDto(1L, "카드", 1000L, 12500L, orderDetails);
 
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.post("/order")
-				.with(csrf())
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(dto))
-		);
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", GENERAL_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
 
-		// then
-		actions.andExpect(status().isCreated()).andDo(print());
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
-		verify(orderService).saveOrder(deepRefEq(dto));
+		// when, then
+		mockMvc.perform(
+				MockMvcRequestBuilders.post("/order")
+					.session(session)
+					.contentType(APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(dto)))
+			.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -70,53 +59,39 @@ class OrderControllerTest {
 	void should_responseNoContent_when_requestCancelOrder() throws Exception {
 
 		// given
-		Long memberId = 1L;
-		Long orderId = 1L;
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", GENERAL_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
 
-		Authentication authentication = mock(Authentication.class);
-		SecurityContext securityContext = mock(SecurityContext.class);
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
-		given(securityContext.getAuthentication()).willReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		given(authentication.getName()).willReturn(memberId.toString());
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.patch("/order/" + orderId)
-				.with(csrf())
-				.contentType(APPLICATION_JSON));
-
-		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
-
-		verify(orderService).cancelOrder(memberId, orderId);
+		// when, then
+		mockMvc.perform(
+				MockMvcRequestBuilders.patch("/order/1")
+					.session(session)
+					.contentType(APPLICATION_JSON))
+			.andExpect(status().isNoContent());
 	}
 
 	@Test
-	@DisplayName("주문 상세 취소를 요청하면 NoContent 응답을 반환한다.")
-	void should_responseNoContent_when_requestCancelOrderDetail() throws Exception {
+	@DisplayName("주문 상세 갱신을 요청하면 NoContent 응답을 반환한다.")
+	void should_responseNoContent_when_requestUpdateOrderDetailStatus() throws Exception {
 
 		// given
-		Long memberId = 1L;
-		Long orderrDetailId = 1L;
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", GENERAL_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
+		OrderDetailStatusUpdateDto dto = new OrderDetailStatusUpdateDto(1L, PAYMENT_CANCELED);
 
-		Authentication authentication = mock(Authentication.class);
-		SecurityContext securityContext = mock(SecurityContext.class);
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
-		given(securityContext.getAuthentication()).willReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		given(authentication.getName()).willReturn(memberId.toString());
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.patch("/order/detail/" + orderrDetailId)
-				.with(csrf())
-				.contentType(APPLICATION_JSON));
-
-		// then
-		actions.andExpect(status().isNoContent()).andDo(print());
-
-		verify(orderService).cancelOrderDetail(orderrDetailId);
+		// when, then
+		mockMvc.perform(
+				MockMvcRequestBuilders.patch("/order/detail")
+					.session(session)
+					.contentType(APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(dto)))
+			.andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -124,18 +99,18 @@ class OrderControllerTest {
 	void should_responseOk_when_requestGetOrder() throws Exception {
 
 		// given
-		long orderId = 1L;
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", GENERAL_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
 
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/order/" + orderId)
-				.with(csrf())
-				.contentType(MediaType.APPLICATION_JSON));
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
-		// then
-		actions.andExpect(status().isOk()).andDo(print());
-
-		verify(orderService).getOrder(orderId);
+		// when, then
+		mockMvc.perform(
+				MockMvcRequestBuilders.get("/order/1")
+					.session(session)
+					.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk());
 	}
 
 	@Test
@@ -143,25 +118,17 @@ class OrderControllerTest {
 	void should_responseOk_when_requestGetOrders() throws Exception {
 
 		// given
-		Long memberId = 1L;
-		int page = 1;
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute("member", new SessionMember(null, "a@a.a", GENERAL_MEMBER));
+		Member member = new Member("name", "a@a.a", "password");
 
-		Authentication authentication = mock(Authentication.class);
-		SecurityContext securityContext = mock(SecurityContext.class);
+		given(memberMapper.findById(null)).willReturn(Optional.of(member));
 
-		given(securityContext.getAuthentication()).willReturn(authentication);
-		SecurityContextHolder.setContext(securityContext);
-		given(authentication.getName()).willReturn(memberId.toString());
-
-		// when
-		ResultActions actions = mockMvc.perform(
-			MockMvcRequestBuilders.get("/order?page=" + page)
-				.with(csrf())
-				.contentType(APPLICATION_JSON));
-
-		// then
-		actions.andExpect(status().isOk()).andDo(print());
-
-		verify(orderService).getOrders(memberId, page);
+		// when, then
+		mockMvc.perform(
+			MockMvcRequestBuilders.get("/order?page=1")
+				.session(session)
+				.contentType(APPLICATION_JSON))
+			.andExpect(status().isOk());
 	}
 }

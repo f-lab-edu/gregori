@@ -1,13 +1,16 @@
 package com.gregori.seller.service;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.gregori.common.exception.BusinessRuleViolationException;
 import com.gregori.common.exception.NotFoundException;
+import com.gregori.common.exception.UnauthorizedException;
 import com.gregori.common.exception.ValidationException;
+import com.gregori.member.domain.SessionMember;
 import com.gregori.product.domain.Product;
 import com.gregori.product.mapper.ProductMapper;
 import com.gregori.member.domain.Member;
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import static com.gregori.auth.domain.Authority.GENERAL_MEMBER;
+import static com.gregori.auth.domain.Authority.SELLING_MEMBER;
 import static com.gregori.common.domain.IsDeleted.FALSE;
 import static com.gregori.product.domain.Sorter.CREATED_AT_DESC;
 
@@ -35,36 +39,41 @@ public class SellerService {
 	private final ProductMapper productMapper;
 
 	@Transactional
-	public Long saveSeller(SellerRegisterDto sellerRegisterDto) throws ValidationException {
+	public Long saveSeller(SessionMember sessionMember, SellerRegisterDto dto) throws ValidationException {
 
-		checkBusinessNumberValidation(sellerRegisterDto.getBusinessNumber());
+		checkBusinessNumberValidation(dto.getBusinessNumber());
 
-		Member member = memberMapper.findById(sellerRegisterDto.getMemberId()).orElseThrow(NotFoundException::new);
-		if (member.getAuthority() == GENERAL_MEMBER) {
-			member.sellingMember();
-			memberMapper.updateAuthority(member.getId(), member.getAuthority());
+		if (sessionMember.getAuthority() == GENERAL_MEMBER) {
+			memberMapper.updateAuthority(sessionMember.getId(), SELLING_MEMBER);
 		}
 
-		Seller seller = sellerRegisterDto.toEntity();
+		Seller seller = dto.toEntity(sessionMember.getId());
 		sellerMapper.insert(seller);
 
 		return seller.getId();
 	}
 
 	@Transactional
-	public void updateSeller(SellerUpdateDto sellerUpdateDto) throws ValidationException {
+	public void updateSeller(Long memberId, SellerUpdateDto dto) throws ValidationException {
 
-		checkBusinessNumberValidation(sellerUpdateDto.getBusinessNumber());
+		checkBusinessNumberValidation(dto.getBusinessNumber());
 
-		Seller seller = sellerMapper.findById(sellerUpdateDto.getId()).orElseThrow(NotFoundException::new);
-		seller.updateSellerInfo(sellerUpdateDto.getBusinessNumber(), sellerUpdateDto.getBusinessName());
+		Seller seller = sellerMapper.findById(dto.getId()).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
+		}
+
+		seller.updateSellerInfo(dto.getBusinessNumber(), dto.getBusinessName());
 		sellerMapper.update(seller);
 	}
 
 	@Transactional
-	public void deleteSeller(Long sellerId) throws NotFoundException {
+	public void deleteSeller(Long memberId, Long sellerId) throws NotFoundException {
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
+		}
 
 		List<Product> products = productMapper.find(null, null, sellerId, null, null, CREATED_AT_DESC.toString())
 			.stream().filter(product -> product.getIsDeleted() == FALSE).toList();
@@ -76,16 +85,22 @@ public class SellerService {
 		sellerMapper.updateIsDeleted(sellerId, seller.getIsDeleted());
 	}
 
-	public SellerResponseDto getSeller(Long sellerId) throws NotFoundException {
+	public SellerResponseDto getSeller(Long memberId, Long sellerId) throws NotFoundException {
 
 		Seller seller = sellerMapper.findById(sellerId).orElseThrow(NotFoundException::new);
+		if (!Objects.equals(memberId, seller.getMemberId())) {
+			throw new UnauthorizedException("요청한 회원과 판매자가 일치하지 않습니다.");
+		}
 
 		return new SellerResponseDto().toEntity(seller);
 	}
 
-	public List<SellerResponseDto> getSellers(Long memberId) {
+	public List<SellerResponseDto> getSellers(Long memberId, int page) {
 
-		List<Seller> sellers = sellerMapper.findByMemberId(memberId);
+		int limit = 10;
+		int offset = (page - 1) * limit;
+
+		List<Seller> sellers = sellerMapper.findByMemberId(memberId, limit, offset);
 
 		return sellers.stream().map(seller -> new SellerResponseDto().toEntity(seller)).toList();
 	}

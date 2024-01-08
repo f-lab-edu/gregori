@@ -25,6 +25,7 @@ public class CategoryService {
 		return category.getId();
 	}
 
+	@Transactional
 	public void updateCategoryName(Long categoryId, String name) throws NotFoundException {
 
 		Category category = categoryMapper.findById(categoryId).orElseThrow(NotFoundException::new);
@@ -32,7 +33,6 @@ public class CategoryService {
 		categoryMapper.updateName(category);
 	}
 
-	@Transactional
 	public void deleteCategory(Long categoryId) {
 
 		categoryMapper.deleteById(categoryId);

@@ -19,7 +19,7 @@ class MemberNameUpdateDtoTest {
 	void should_createMemberNameUpdateDto_when_validInput() {
 
 		// given
-		MemberNameUpdateDto dto = new MemberNameUpdateDto(1L, "일호");
+		MemberNameUpdateDto dto = new MemberNameUpdateDto("일호");
 
 		// when
 		var result = validator.validate(dto);
@@ -29,27 +29,13 @@ class MemberNameUpdateDtoTest {
 	}
 
 	@Test
-	@DisplayName("id 필드가 비어 있으면 에러가 발생한다.")
-	void should_ValidException_when_nullId() {
-
-		// given
-		MemberNameUpdateDto dto = new MemberNameUpdateDto(null, "이름");
-
-		// when
-		var result = validator.validate(dto);
-
-		// then
-		assertThat(result.isEmpty()).isFalse();
-	}
-
-	@Test
 	@DisplayName("name 필드가 비어 있거나 빈 문자열이면 에러가 발생한다.")
 	void should_ValidException_when_blankName() {
 
 		// given
-		MemberNameUpdateDto dto1 = new MemberNameUpdateDto(1L, null);
-		MemberNameUpdateDto dto2 = new MemberNameUpdateDto(1L, "");
-		MemberNameUpdateDto dto3 = new MemberNameUpdateDto(1L, " ");
+		MemberNameUpdateDto dto1 = new MemberNameUpdateDto(null);
+		MemberNameUpdateDto dto2 = new MemberNameUpdateDto("");
+		MemberNameUpdateDto dto3 = new MemberNameUpdateDto(" ");
 
 		// when
 		var result1 = validator.validate(dto1);
@@ -67,9 +53,9 @@ class MemberNameUpdateDtoTest {
 	void should_ValidException_when_mismatchedName() {
 
 		// given
-		MemberNameUpdateDto dto1 = new MemberNameUpdateDto(1L, "김");
-		MemberNameUpdateDto dto2 = new MemberNameUpdateDto(1L, "kimchulsu");
-		MemberNameUpdateDto dto3 = new MemberNameUpdateDto(1L, "김철수1");
+		MemberNameUpdateDto dto1 = new MemberNameUpdateDto("김");
+		MemberNameUpdateDto dto2 = new MemberNameUpdateDto("kimchulsu");
+		MemberNameUpdateDto dto3 = new MemberNameUpdateDto("김철수1");
 
 		// when
 		var result1 = validator.validate(dto1);
